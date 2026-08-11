@@ -36,7 +36,7 @@
           "is_required": true,
           "display_on_wizard": false,
           "is_invisible": false,
-          "variable_string_format": ""
+          "variable_string_format": "text"
         },
         "unique_name": "variable_workflow_02XOKCY8L72EG1LAtcK4VqtCkvhimA02nuT",
         "object_type": "variable_workflow"
@@ -52,7 +52,7 @@
           "is_required": true,
           "display_on_wizard": false,
           "is_invisible": false,
-          "variable_string_format": ""
+          "variable_string_format": "text"
         },
         "unique_name": "variable_workflow_02XOKCY8L72EH3fE0JBBdyyOzB43uUSUN5a",
         "object_type": "variable_workflow"
@@ -68,7 +68,7 @@
           "is_required": true,
           "display_on_wizard": false,
           "is_invisible": false,
-          "variable_string_format": ""
+          "variable_string_format": "text"
         },
         "unique_name": "variable_workflow_02XOKCY8L72EI5gjwTb7IDcYzcNcdtmaZsf",
         "object_type": "variable_workflow"
@@ -84,7 +84,7 @@
           "is_required": true,
           "display_on_wizard": false,
           "is_invisible": false,
-          "variable_string_format": ""
+          "variable_string_format": "text"
         },
         "unique_name": "variable_workflow_02XOKCY8L72EJ4KqhjsdDrI5E6Es8GdzkFS",
         "object_type": "variable_workflow"
@@ -100,7 +100,7 @@
           "is_required": true,
           "display_on_wizard": false,
           "is_invisible": false,
-          "variable_string_format": ""
+          "variable_string_format": "text"
         },
         "unique_name": "variable_workflow_02XOKCY8L72EK5Sh6tKR9xajwgz0HGl0pb3",
         "object_type": "variable_workflow"
@@ -116,7 +116,7 @@
           "is_required": true,
           "display_on_wizard": false,
           "is_invisible": false,
-          "variable_string_format": ""
+          "variable_string_format": "text"
         },
         "unique_name": "variable_workflow_02XOKCY8L72EL63KwNLQrQAiIu2JHJkfAaB",
         "object_type": "variable_workflow"

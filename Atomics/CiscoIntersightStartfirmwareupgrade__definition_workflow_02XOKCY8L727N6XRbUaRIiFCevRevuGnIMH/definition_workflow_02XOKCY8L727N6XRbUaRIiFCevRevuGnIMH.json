@@ -36,7 +36,7 @@
           "is_required": true,
           "display_on_wizard": false,
           "is_invisible": false,
-          "variable_string_format": ""
+          "variable_string_format": "text"
         },
         "unique_name": "variable_workflow_02XOKCY8L72EU4Ct7gaVW8C4Pa5cMvhsQep",
         "object_type": "variable_workflow"
@@ -52,7 +52,7 @@
           "is_required": true,
           "display_on_wizard": false,
           "is_invisible": false,
-          "variable_string_format": ""
+          "variable_string_format": "text"
         },
         "unique_name": "variable_workflow_02XOKCY8L72EV4hVC2itz7f90bDXiyFWcjx",
         "object_type": "variable_workflow"
@@ -68,7 +68,7 @@
           "is_required": true,
           "display_on_wizard": false,
           "is_invisible": false,
-          "variable_string_format": ""
+          "variable_string_format": "text"
         },
         "unique_name": "variable_workflow_02XOKCY8L72EW72L40EM6CEzqmFQ3yyKK5K",
         "object_type": "variable_workflow"
@@ -84,7 +84,7 @@
           "is_required": true,
           "display_on_wizard": false,
           "is_invisible": false,
-          "variable_string_format": ""
+          "variable_string_format": "text"
         },
         "unique_name": "variable_workflow_02XOKCY8L72EX1RkGpfzpo5bPLzLwO72huv",
         "object_type": "variable_workflow"
@@ -100,7 +100,7 @@
           "is_required": true,
           "display_on_wizard": false,
           "is_invisible": false,
-          "variable_string_format": ""
+          "variable_string_format": "text"
         },
         "unique_name": "variable_workflow_02XOKCY8L72EY16ebaEgWbOBKrtxoN1Vj77",
         "object_type": "variable_workflow"
@@ -116,7 +116,7 @@
           "is_required": false,
           "display_on_wizard": false,
           "is_invisible": false,
-          "variable_string_format": ""
+          "variable_string_format": "text"
         },
         "unique_name": "variable_workflow_02XOKCY8L72EZ5xHAMXofX8gFmlRDbvgLyo",
         "object_type": "variable_workflow"
@@ -180,7 +180,7 @@
           "is_required": false,
           "display_on_wizard": false,
           "is_invisible": false,
-          "variable_string_format": ""
+          "variable_string_format": "text"
         },
         "unique_name": "variable_workflow_02XOKCY8L72F35sZOFCOIt2vobkwks7EhQs",
         "object_type": "variable_workflow"
