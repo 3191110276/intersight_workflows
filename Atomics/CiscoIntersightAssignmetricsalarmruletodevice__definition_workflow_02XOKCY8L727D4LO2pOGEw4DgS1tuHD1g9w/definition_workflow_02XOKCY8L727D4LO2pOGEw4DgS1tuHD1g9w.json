@@ -1,0 +1,2439 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w",
+    "name": "Cisco Intersight - Assign metrics alarm rule to device",
+    "title": "Cisco Intersight - Assign metrics alarm rule to device",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "Alarm Rule Name",
+          "type": "datatype.string",
+          "description": "Exact name of an existing cond.AlarmRule. The value is OData-escaped and must resolve to exactly one rule with its complete Devices array.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72BG042QC7U5oivlkkzvwqOy9S",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "Server",
+          "scope": "input",
+          "name": "Device Type",
+          "type": "datatype.string",
+          "description": "Choose exactly Server, Chassis, Fabric Interconnect, Unified Edge or eCMC, or Registered Target.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72BH1iL32eVXEpC3xKY18rUKjY",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "default",
+          "scope": "input",
+          "name": "Device Organization",
+          "type": "datatype.string",
+          "description": "Exact organization used to scope the selected device through PermissionResources.Moid.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72BI057nF76QqwAuzr0tLbCsmM",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "Device Name or Serial",
+          "type": "datatype.string",
+          "description": "Exact server/chassis Name or Serial, or exact asset target Name for the selected device route.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72BJ60dULSftk8AYEwnMYU1pa1",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "output",
+          "name": "Status Code",
+          "type": "datatype.string",
+          "description": "HTTP-style final status for validation, lookup, idempotent success, PATCH acceptance, or response verification.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "{}",
+          "scope": "output",
+          "name": "Result",
+          "type": "datatype.string",
+          "description": "JSON-formatted final identity, merge summary, or failure detail.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "json"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "output",
+          "name": "Status Message",
+          "type": "datatype.string",
+          "description": "Human-readable final outcome distinguishing idempotent success from a verified update.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "output",
+          "name": "Error Message",
+          "type": "datatype.string",
+          "description": "Actionable failure guidance; empty on success.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "atomic_group": "Cisco Intersight",
+        "is_atomic": true
+      },
+      "delete_workflow_instance": false,
+      "description": "Checks whether one organization-scoped device relationship is already present on an exact metrics alarm rule without removing assignments. Select an intersight.endpoint target whose default runtime user can read organizations, rules, inventory, and targets. Exact identity, ownership, cardinality, and every Devices entry are validated. An existing exact relationship returns idempotent success. If a new relationship would require replacing the complete Devices array, the workflow returns 422 before mutation because the current Generic Cisco Intersight API Request editor does not expose a supported conditional-header binding and an unguarded replacement could overwrite a concurrent edit. The 2026-07-27 Cisco SDK proves AlarmRules/Devices, but concrete mo.BaseMo mappings still require tenant validation. Use a supported purpose-built atomic when available.",
+      "display_name": "Cisco Intersight - Assign metrics alarm rule to device",
+      "runtime_user": {
+        "override_target_runtime_user": false,
+        "specify_on_workflow_start": false,
+        "target_default": true
+      },
+      "target": {
+        "target_type": "intersight.endpoint",
+        "specify_on_workflow_start": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_02XOKCY8L70975bIhiJamaDg0LaXcYiWe0m",
+        "name": "Group",
+        "title": "Validate and route inputs",
+        "type": "logic.group",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Validates the workflow contract and prepares only hardcoded OpenAPI device routes before any endpoint request.",
+          "display_as_suggestion": false,
+          "display_name": "Validate and route inputs",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz",
+            "name": "Execute Python Script",
+            "title": "Validate and route metrics alarm assignment inputs",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Validates exact input values without leaking them into URLs, doubles OData apostrophes, rejects URL query delimiters, and maps only the five documented device families to hardcoded collections, TargetType clauses, and selected fields.",
+              "display_name": "Validate and route metrics alarm assignment inputs",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport re\nimport sys\n\nvalidationStatus = \"helper-failure\"\nvalidationStatusCode = \"500\"\nvalidationMessage = \"Input validation did not complete.\"\nvalidationResultJson = json.dumps({\"error\":validationMessage}, separators=(\",\", \":\"))\nescapedRuleName = \"\"\nescapedOrganizationName = \"\"\ndeviceCollection = \"\"\ndeviceFilter = \"\"\ndeviceSelect = \"\"\ndeviceRoute = \"\"\n\ntry:\n    ruleRaw = sys.argv[1]\n    deviceTypeRaw = sys.argv[2]\n    organizationRaw = sys.argv[3]\n    selectorRaw = sys.argv[4]\n    ruleName = ruleRaw.strip()\n    deviceType = deviceTypeRaw.strip()\n    organizationName = organizationRaw.strip()\n    selector = selectorRaw.strip()\n    errors = []\n    allowedTypes = (\"Server\", \"Chassis\", \"Fabric Interconnect\", \"Unified Edge or eCMC\", \"Registered Target\")\n\n    if ruleRaw != ruleName or deviceTypeRaw != deviceType or organizationRaw != organizationName or selectorRaw != selector:\n        errors.append(\"Inputs must not contain leading or trailing whitespace.\")\n    if not ruleName or len(ruleName) > 255 or any(ord(ch) < 32 or ch in \"&?#%\" for ch in ruleName):\n        errors.append(\"Alarm Rule Name must contain 1-255 characters and no control or URL query-delimiter characters.\")\n    if deviceType not in allowedTypes:\n        errors.append(\"Device Type must be exactly Server, Chassis, Fabric Interconnect, Unified Edge or eCMC, or Registered Target.\")\n    if not re.fullmatch(r\"[A-Za-z0-9_.:-]{1,64}\", organizationName):\n        errors.append(\"Device Organization must match the organization Name schema: 1-64 letters, digits, underscores, periods, colons, or hyphens.\")\n    if not selector or len(selector) > 128 or any(ord(ch) < 32 or ch in \"&?#%\" for ch in selector):\n        errors.append(\"Device Name or Serial must contain 1-128 characters and no control or URL query-delimiter characters.\")\n\n    escapedRuleName = ruleName.replace(\"'\", \"''\")\n    escapedOrganizationName = organizationName.replace(\"'\", \"''\")\n    escapedSelector = selector.replace(\"'\", \"''\")\n    if deviceType == \"Server\":\n        deviceRoute = \"server\"\n        deviceCollection = \"/api/v1/compute/PhysicalSummaries\"\n        deviceFilter = \"(Name eq '\" + escapedSelector + \"' or Serial eq '\" + escapedSelector + \"')\"\n        deviceSelect = \"&$select=Moid,Name,Serial,ObjectType,ClassId,SourceObjectType,PermissionResources\"\n    elif deviceType == \"Chassis\":\n        deviceRoute = \"chassis\"\n        deviceCollection = \"/api/v1/equipment/Chasses\"\n        deviceFilter = \"(Name eq '\" + escapedSelector + \"' or Serial eq '\" + escapedSelector + \"')\"\n        deviceSelect = \"&$select=Moid,Name,Serial,ObjectType,ClassId,PermissionResources\"\n    elif deviceType == \"Fabric Interconnect\":\n        deviceRoute = \"fabric-interconnect\"\n        deviceCollection = \"/api/v1/asset/Targets\"\n        deviceFilter = \"Name eq '\" + escapedSelector + \"' and (TargetType eq 'UCSFI' or TargetType eq 'UCSFIISM')\"\n        deviceSelect = \"&$select=Moid,Name,ObjectType,ClassId,TargetType,PermissionResources,RegisteredDevice\"\n    elif deviceType == \"Unified Edge or eCMC\":\n        deviceRoute = \"unified-edge-ecmc\"\n        deviceCollection = \"/api/v1/asset/Targets\"\n        deviceFilter = \"Name eq '\" + escapedSelector + \"' and TargetType eq 'UCSXECMC'\"\n        deviceSelect = \"&$select=Moid,Name,ObjectType,ClassId,TargetType,PermissionResources,RegisteredDevice\"\n    elif deviceType == \"Registered Target\":\n        deviceRoute = \"registered-target\"\n        deviceCollection = \"/api/v1/asset/Targets\"\n        deviceFilter = \"Name eq '\" + escapedSelector + \"'\"\n        deviceSelect = \"&$select=Moid,Name,ObjectType,ClassId,TargetType,PermissionResources,RegisteredDevice\"\n\n    if errors:\n        validationStatus = \"invalid\"\n        validationStatusCode = \"400\"\n        validationMessage = \" \".join(errors)\n        validationResultJson = json.dumps({\"error\":\"Input validation failed\",\"details\":errors}, separators=(\",\", \":\"))\n    else:\n        validationStatus = \"ready\"\n        validationStatusCode = \"200\"\n        validationMessage = \"Inputs, OData escaping, and the exact device route are valid.\"\n        validationResultJson = json.dumps({\"validated\":True,\"deviceType\":deviceType,\"deviceRoute\":deviceRoute,\"relationshipMappingRequiresTenantValidation\":deviceType in (\"Server\",\"Fabric Interconnect\",\"Unified Edge or eCMC\",\"Registered Target\")}, separators=(\",\", \":\"))\nexcept Exception as exc:\n    validationStatus = \"helper-failure\"\n    validationStatusCode = \"500\"\n    validationMessage = str(exc)\n    validationResultJson = json.dumps({\"error\":\"Input validation helper failed\",\"detail\":validationMessage}, separators=(\",\", \":\"))\n",
+              "script_arguments": [
+                "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.input.variable_workflow_02XOKCY8L72BG042QC7U5oivlkkzvwqOy9S$",
+                "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.input.variable_workflow_02XOKCY8L72BH1iL32eVXEpC3xKY18rUKjY$",
+                "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.input.variable_workflow_02XOKCY8L72BI057nF76QqwAuzr0tLbCsmM$",
+                "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.input.variable_workflow_02XOKCY8L72BJ60dULSftk8AYEwnMYU1pa1$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "validationStatus",
+                  "script_query_name": "validationStatus",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "validationStatusCode",
+                  "script_query_name": "validationStatusCode",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "validationMessage",
+                  "script_query_name": "validationMessage",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "validationResultJson",
+                  "script_query_name": "validationResultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "escapedRuleName",
+                  "script_query_name": "escapedRuleName",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "escapedOrganizationName",
+                  "script_query_name": "escapedOrganizationName",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "deviceCollection",
+                  "script_query_name": "deviceCollection",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "deviceFilter",
+                  "script_query_name": "deviceFilter",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "deviceSelect",
+                  "script_query_name": "deviceSelect",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "deviceRoute",
+                  "script_query_name": "deviceRoute",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L708M2TeiFlhUIRHD3CBuObOzu4",
+            "name": "Condition Block",
+            "title": "Validate workflow input preparation",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Only an explicitly usable workflow input preparation result can continue.",
+              "display_name": "Validate workflow input preparation",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L708I22UwsGrzNevd53e44CjCv2",
+                "name": "Condition Branch",
+                "title": "workflow input preparation helper failed",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Stops on execution failure, caught helper failure, an unexpected status, or missing mandatory outputs.",
+                  "display_name": "workflow input preparation helper failed",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": {
+                              "left_operand": {
+                                "left_operand": {
+                                  "left_operand": {
+                                    "left_operand": {
+                                      "left_operand": {
+                                        "left_operand": {
+                                          "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.succeeded$",
+                                          "operator": "ne",
+                                          "right_operand": true
+                                        },
+                                        "operator": "or",
+                                        "right_operand": {
+                                          "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.validationStatus$",
+                                          "operator": "eq",
+                                          "right_operand": "helper-failure"
+                                        }
+                                      },
+                                      "operator": "or",
+                                      "right_operand": {
+                                        "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.validationStatus$",
+                                        "operator": "mregex",
+                                        "right_operand": "^(?!(?:helper\\-failure|invalid|ready)$).*$"
+                                      }
+                                    },
+                                    "operator": "or",
+                                    "right_operand": {
+                                      "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.validationStatusCode$",
+                                      "operator": "mregex",
+                                      "right_operand": "^\\s*$"
+                                    }
+                                  },
+                                  "operator": "or",
+                                  "right_operand": {
+                                    "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.validationMessage$",
+                                    "operator": "mregex",
+                                    "right_operand": "^\\s*$"
+                                  }
+                                },
+                                "operator": "or",
+                                "right_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.validationResultJson$",
+                                  "operator": "mregex",
+                                  "right_operand": "^\\s*$"
+                                }
+                              },
+                              "operator": "or",
+                              "right_operand": {
+                                "left_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.validationStatus$",
+                                  "operator": "eq",
+                                  "right_operand": "ready"
+                                },
+                                "operator": "and",
+                                "right_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.escapedRuleName$",
+                                  "operator": "mregex",
+                                  "right_operand": "^\\s*$"
+                                }
+                              }
+                            },
+                            "operator": "or",
+                            "right_operand": {
+                              "left_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.validationStatus$",
+                                "operator": "eq",
+                                "right_operand": "ready"
+                              },
+                              "operator": "and",
+                              "right_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.escapedOrganizationName$",
+                                "operator": "mregex",
+                                "right_operand": "^\\s*$"
+                              }
+                            }
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": {
+                              "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.validationStatus$",
+                              "operator": "eq",
+                              "right_operand": "ready"
+                            },
+                            "operator": "and",
+                            "right_operand": {
+                              "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.deviceCollection$",
+                              "operator": "mregex",
+                              "right_operand": "^\\s*$"
+                            }
+                          }
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.validationStatus$",
+                            "operator": "eq",
+                            "right_operand": "ready"
+                          },
+                          "operator": "and",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.deviceFilter$",
+                            "operator": "mregex",
+                            "right_operand": "^\\s*$"
+                          }
+                        }
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.validationStatus$",
+                          "operator": "eq",
+                          "right_operand": "ready"
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.deviceSelect$",
+                          "operator": "mregex",
+                          "right_operand": "^\\s*$"
+                        }
+                      }
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.validationStatus$",
+                        "operator": "eq",
+                        "right_operand": "ready"
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.deviceRoute$",
+                        "operator": "mregex",
+                        "right_operand": "^\\s*$"
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L708G0SZHg3uCteyplce1a0Nk8A",
+                    "name": "Set Variables",
+                    "title": "Set workflow input preparation helper failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the workflow input preparation helper failure terminal path.",
+                      "display_name": "Set workflow input preparation helper failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq$",
+                          "variable_value_new": "{\"error\":\"workflow input preparation helper failed or returned unusable output\",\"updateMayHaveBeenAccepted\":false}"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy$",
+                          "variable_value_new": "workflow input preparation failed technically"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs$",
+                          "variable_value_new": "The workflow input preparation helper failed or returned incomplete output. No alarm-rule update was attempted."
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L708H4w61fRMgMYtHHEG37X6xR5",
+                    "name": "Completed",
+                    "title": "Completed - workflow input preparation helper failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the workflow input preparation helper failure outputs are populated.",
+                      "display_name": "Completed - workflow input preparation helper failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "workflow input preparation failed technically"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L708L1Ou3I33pPBeiunskuLdxfn",
+                "name": "Condition Branch",
+                "title": "workflow input preparation result is invalid",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Stops when the helper deliberately reports invalid input, cardinality, identity, relationship, or response data.",
+                  "display_name": "workflow input preparation result is invalid",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.validationStatus$",
+                      "operator": "eq",
+                      "right_operand": "invalid"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L708J3nXtMfmeKFbA3A9MGScifI",
+                    "name": "Set Variables",
+                    "title": "Set workflow input preparation validation failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the workflow input preparation validation failure terminal path.",
+                      "display_name": "Set workflow input preparation validation failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.validationStatusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.validationResultJson$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy$",
+                          "variable_value_new": "workflow input preparation validation failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.validationMessage$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L708K3SMiVQYT9jevkggaXKUerV",
+                    "name": "Completed",
+                    "title": "Completed - workflow input preparation validation failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the workflow input preparation validation failure outputs are populated.",
+                      "display_name": "Completed - workflow input preparation validation failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "workflow input preparation validation failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L70AE5fib0lSmsYmPaMt0VfjEBC",
+        "name": "Group",
+        "title": "Resolve exact alarm rule and device",
+        "type": "logic.group",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Resolves and validates the organization, complete alarm-rule Devices state, and exactly one concrete device relationship before deciding idempotency or a pre-mutation safety gate.",
+          "display_as_suggestion": false,
+          "display_name": "Resolve exact alarm rule and device",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L708N3XyRrEWahLQql0333uwm6t",
+            "name": "Generic Cisco Intersight API Request",
+            "title": "Get organization by exact name",
+            "type": "intersight.api_request",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Resolves Device Organization with an escaped exact-name OData filter. A generic API request is used because no purpose-built organization resolver atomic is present; replace it if a supported equivalent becomes available.",
+              "display_name": "Get organization by exact name",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "api_method": "GET",
+              "api_url": "/api/v1/organization/Organizations?$filter=Name eq '$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.escapedOrganizationName$'&$select=Moid,Name,ObjectType,ClassId",
+              "content_type": "application/json",
+              "endpoint": "primary",
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L709E290CoHuHL6ud1CbMU9N7F7",
+            "name": "Condition Block",
+            "title": "Validate organization lookup HTTP result",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Separates transport failure from a confirmed non-2xx response; only a confirmed HTTP 2xx continues.",
+              "display_name": "Validate organization lookup HTTP result",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L709A64OaBQITfsFNgYHgZQq2M4",
+                "name": "Condition Branch",
+                "title": "organization lookup transport failed",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles activity execution failure without assuming that a remote mutation did or did not occur.",
+                  "display_name": "organization lookup transport failed",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": "$activity.definition_activity_02XOKCY8L708N3XyRrEWahLQql0333uwm6t.output.succeeded$",
+                    "operator": "ne",
+                    "right_operand": true
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L70980vW0jjP393YFByWp2S8wRw",
+                    "name": "Set Variables",
+                    "title": "Set organization lookup transport failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the organization lookup transport failure terminal path.",
+                      "display_name": "Set organization lookup transport failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq$",
+                          "variable_value_new": "{\"error\":\"organization lookup transport failed or its result is unknown\",\"updateMayHaveBeenAccepted\":false}"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy$",
+                          "variable_value_new": "organization lookup was not confirmed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs$",
+                          "variable_value_new": "The organization lookup activity failed without a confirmed HTTP result. No alarm-rule update was attempted."
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L709966hf9X3PeZ6W1R9fM4RnfQ",
+                    "name": "Completed",
+                    "title": "Completed - organization lookup transport failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the organization lookup transport failure outputs are populated.",
+                      "display_name": "Completed - organization lookup transport failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "organization lookup was not confirmed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L709D3JruTPE4Uyq3d3PBxuTyBk",
+                "name": "Condition Branch",
+                "title": "organization lookup returned non-2xx",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Preserves a confirmed non-2xx status and stops before dependent processing.",
+                  "display_name": "organization lookup returned non-2xx",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L708N3XyRrEWahLQql0333uwm6t.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708N3XyRrEWahLQql0333uwm6t.output.status_code$",
+                        "operator": "lt",
+                        "right_operand": 200
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708N3XyRrEWahLQql0333uwm6t.output.status_code$",
+                        "operator": "gt",
+                        "right_operand": 299
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L709B3erWHqP34mybulx3zBrCBj",
+                    "name": "Set Variables",
+                    "title": "Set organization lookup HTTP failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the organization lookup HTTP failure terminal path.",
+                      "display_name": "Set organization lookup HTTP failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708N3XyRrEWahLQql0333uwm6t.output.status_code$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq$",
+                          "variable_value_new": "{\"error\":\"organization lookup returned a non-2xx status\",\"updateMayHaveBeenAccepted\":false}"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy$",
+                          "variable_value_new": "organization lookup failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs$",
+                          "variable_value_new": "Cisco Intersight returned a non-2xx response for organization lookup. No alarm-rule update was attempted."
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L709C1lEXDj3pShJNIzn6N7feD3",
+                    "name": "Completed",
+                    "title": "Completed - organization lookup HTTP failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the organization lookup HTTP failure outputs are populated.",
+                      "display_name": "Completed - organization lookup HTTP failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "organization lookup failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L708O0bbPr1zMNXfwJ62zRtgB46",
+            "name": "Execute Python Script",
+            "title": "Inspect exact organization",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Requires exactly one organization and validates its Name, URL-safe Moid, and discriminator before it can scope the target lookup.",
+              "display_name": "Inspect exact organization",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport re\nimport sys\n\norganizationStatus = \"helper-failure\"\norganizationStatusCode = \"500\"\norganizationMessage = \"Organization inspection did not complete.\"\norganizationResultJson = json.dumps({\"error\":organizationMessage}, separators=(\",\", \":\"))\norganizationMoid = \"\"\ntry:\n    body = json.loads(sys.argv[1])\n    expectedName = sys.argv[2]\n    values = body.get(\"Results\") if isinstance(body, dict) else None\n    if not isinstance(values, list):\n        raise ValueError(\"Organization response is missing a Results array.\")\n    if len(values) == 0:\n        organizationStatus = \"invalid\"\n        organizationStatusCode = \"404\"\n        organizationMessage = \"No organization matched Device Organization exactly.\"\n    elif len(values) > 1:\n        organizationStatus = \"invalid\"\n        organizationStatusCode = \"409\"\n        organizationMessage = \"Multiple organizations matched Device Organization exactly.\"\n    else:\n        item = values[0]\n        moid = item.get(\"Moid\") if isinstance(item, dict) else None\n        if not isinstance(moid, str) or not re.fullmatch(r\"[A-Za-z0-9][A-Za-z0-9._~-]{0,127}\", moid):\n            raise ValueError(\"Organization Moid is missing or not URL-safe.\")\n        if item.get(\"Name\") != expectedName or item.get(\"ObjectType\") != \"organization.Organization\" or item.get(\"ClassId\") not in (None,\"organization.Organization\"):\n            organizationStatus = \"invalid\"\n            organizationStatusCode = \"502\"\n            organizationMessage = \"Organization response identity or discriminator is inconsistent.\"\n        else:\n            organizationMoid = moid\n            organizationStatus = \"ready\"\n            organizationStatusCode = \"200\"\n            organizationMessage = \"Exactly one organization was validated.\"\n    organizationResultJson = json.dumps({\"status\":organizationStatus,\"message\":organizationMessage,\"organizationMoid\":organizationMoid or None}, separators=(\",\", \":\"))\nexcept Exception as exc:\n    organizationStatus = \"helper-failure\"\n    organizationStatusCode = \"500\"\n    organizationMessage = str(exc)\n    organizationResultJson = json.dumps({\"error\":\"Organization inspection failed\",\"detail\":organizationMessage}, separators=(\",\", \":\"))\n",
+              "script_arguments": [
+                "$activity.definition_activity_02XOKCY8L708N3XyRrEWahLQql0333uwm6t.output.response_body$",
+                "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.input.variable_workflow_02XOKCY8L72BI057nF76QqwAuzr0tLbCsmM$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "organizationStatus",
+                  "script_query_name": "organizationStatus",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "organizationStatusCode",
+                  "script_query_name": "organizationStatusCode",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "organizationMessage",
+                  "script_query_name": "organizationMessage",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "organizationResultJson",
+                  "script_query_name": "organizationResultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "organizationMoid",
+                  "script_query_name": "organizationMoid",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L709L0ZGpQLZendgNESpyx42kSn",
+            "name": "Condition Block",
+            "title": "Validate organization inspection",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Only an explicitly usable organization inspection result can continue.",
+              "display_name": "Validate organization inspection",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L709H3iygSA0aROm5hKgVCC4oah",
+                "name": "Condition Branch",
+                "title": "organization inspection helper failed",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Stops on execution failure, caught helper failure, an unexpected status, or missing mandatory outputs.",
+                  "display_name": "organization inspection helper failed",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": {
+                              "left_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L708O0bbPr1zMNXfwJ62zRtgB46.output.succeeded$",
+                                "operator": "ne",
+                                "right_operand": true
+                              },
+                              "operator": "or",
+                              "right_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L708O0bbPr1zMNXfwJ62zRtgB46.output.script_queries.organizationStatus$",
+                                "operator": "eq",
+                                "right_operand": "helper-failure"
+                              }
+                            },
+                            "operator": "or",
+                            "right_operand": {
+                              "left_operand": "$activity.definition_activity_02XOKCY8L708O0bbPr1zMNXfwJ62zRtgB46.output.script_queries.organizationStatus$",
+                              "operator": "mregex",
+                              "right_operand": "^(?!(?:helper\\-failure|invalid|ready)$).*$"
+                            }
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L708O0bbPr1zMNXfwJ62zRtgB46.output.script_queries.organizationStatusCode$",
+                            "operator": "mregex",
+                            "right_operand": "^\\s*$"
+                          }
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L708O0bbPr1zMNXfwJ62zRtgB46.output.script_queries.organizationMessage$",
+                          "operator": "mregex",
+                          "right_operand": "^\\s*$"
+                        }
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708O0bbPr1zMNXfwJ62zRtgB46.output.script_queries.organizationResultJson$",
+                        "operator": "mregex",
+                        "right_operand": "^\\s*$"
+                      }
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708O0bbPr1zMNXfwJ62zRtgB46.output.script_queries.organizationStatus$",
+                        "operator": "eq",
+                        "right_operand": "ready"
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708O0bbPr1zMNXfwJ62zRtgB46.output.script_queries.organizationMoid$",
+                        "operator": "mregex",
+                        "right_operand": "^\\s*$"
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L709F0GN5Y5lLaqWzAKUdddXDhP",
+                    "name": "Set Variables",
+                    "title": "Set organization inspection helper failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the organization inspection helper failure terminal path.",
+                      "display_name": "Set organization inspection helper failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq$",
+                          "variable_value_new": "{\"error\":\"organization inspection helper failed or returned unusable output\",\"updateMayHaveBeenAccepted\":false}"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy$",
+                          "variable_value_new": "organization inspection failed technically"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs$",
+                          "variable_value_new": "The organization inspection helper failed or returned incomplete output. No alarm-rule update was attempted."
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L709G46aYnrm0WffOTI3V7JDT3T",
+                    "name": "Completed",
+                    "title": "Completed - organization inspection helper failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the organization inspection helper failure outputs are populated.",
+                      "display_name": "Completed - organization inspection helper failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "organization inspection failed technically"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L709K4Ljr7cOYWFYHw3WY8l9VYm",
+                "name": "Condition Branch",
+                "title": "organization inspection result is invalid",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Stops when the helper deliberately reports invalid input, cardinality, identity, relationship, or response data.",
+                  "display_name": "organization inspection result is invalid",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L708O0bbPr1zMNXfwJ62zRtgB46.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L708O0bbPr1zMNXfwJ62zRtgB46.output.script_queries.organizationStatus$",
+                      "operator": "eq",
+                      "right_operand": "invalid"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L709I3fsZ2c6Temq5UJDUSGVh8w",
+                    "name": "Set Variables",
+                    "title": "Set organization inspection validation failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the organization inspection validation failure terminal path.",
+                      "display_name": "Set organization inspection validation failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708O0bbPr1zMNXfwJ62zRtgB46.output.script_queries.organizationStatusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708O0bbPr1zMNXfwJ62zRtgB46.output.script_queries.organizationResultJson$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy$",
+                          "variable_value_new": "organization inspection validation failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708O0bbPr1zMNXfwJ62zRtgB46.output.script_queries.organizationMessage$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L709J4tytnqA4DwuUCTl2uSEYVU",
+                    "name": "Completed",
+                    "title": "Completed - organization inspection validation failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the organization inspection validation failure outputs are populated.",
+                      "display_name": "Completed - organization inspection validation failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "organization inspection validation failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L708P4L9Cer9aO9KFsdYkOYluK2",
+            "name": "Generic Cisco Intersight API Request",
+            "title": "Get exact metrics alarm rule with Devices",
+            "type": "intersight.api_request",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Retrieves the exact cond.AlarmRule and its complete Devices replacement array. Cisco SDK 1.0.11-2026072720 proves this endpoint and property. A generic request is required because no purpose-built alarm-rule resolver is present; replace it with a supported atomic when available.",
+              "display_name": "Get exact metrics alarm rule with Devices",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "api_method": "GET",
+              "api_url": "/api/v1/cond/AlarmRules?$filter=Name eq '$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.escapedRuleName$'&$select=Moid,Name,ObjectType,ClassId,Devices",
+              "content_type": "application/json",
+              "endpoint": "primary",
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L709S0OmidJsbcI82nOpQUnruIJ",
+            "name": "Condition Block",
+            "title": "Validate metrics alarm rule lookup HTTP result",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Separates transport failure from a confirmed non-2xx response; only a confirmed HTTP 2xx continues.",
+              "display_name": "Validate metrics alarm rule lookup HTTP result",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L709O79AxrumcX4qWcHi6aQ0Gcz",
+                "name": "Condition Branch",
+                "title": "metrics alarm rule lookup transport failed",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles activity execution failure without assuming that a remote mutation did or did not occur.",
+                  "display_name": "metrics alarm rule lookup transport failed",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": "$activity.definition_activity_02XOKCY8L708P4L9Cer9aO9KFsdYkOYluK2.output.succeeded$",
+                    "operator": "ne",
+                    "right_operand": true
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L709M5W9hASUbLP2rY5dXygU9np",
+                    "name": "Set Variables",
+                    "title": "Set metrics alarm rule lookup transport failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the metrics alarm rule lookup transport failure terminal path.",
+                      "display_name": "Set metrics alarm rule lookup transport failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq$",
+                          "variable_value_new": "{\"error\":\"metrics alarm rule lookup transport failed or its result is unknown\",\"updateMayHaveBeenAccepted\":false}"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy$",
+                          "variable_value_new": "metrics alarm rule lookup was not confirmed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs$",
+                          "variable_value_new": "The metrics alarm rule lookup activity failed without a confirmed HTTP result. No alarm-rule update was attempted."
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L709N2DhhoCSQjLYZz9mhUMxDQt",
+                    "name": "Completed",
+                    "title": "Completed - metrics alarm rule lookup transport failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the metrics alarm rule lookup transport failure outputs are populated.",
+                      "display_name": "Completed - metrics alarm rule lookup transport failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "metrics alarm rule lookup was not confirmed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L709R3q4sxZ0QFtUTmDGyftP0KF",
+                "name": "Condition Branch",
+                "title": "metrics alarm rule lookup returned non-2xx",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Preserves a confirmed non-2xx status and stops before dependent processing.",
+                  "display_name": "metrics alarm rule lookup returned non-2xx",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L708P4L9Cer9aO9KFsdYkOYluK2.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708P4L9Cer9aO9KFsdYkOYluK2.output.status_code$",
+                        "operator": "lt",
+                        "right_operand": 200
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708P4L9Cer9aO9KFsdYkOYluK2.output.status_code$",
+                        "operator": "gt",
+                        "right_operand": 299
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L709P4QvpALF6kIHoIokLnRMGQz",
+                    "name": "Set Variables",
+                    "title": "Set metrics alarm rule lookup HTTP failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the metrics alarm rule lookup HTTP failure terminal path.",
+                      "display_name": "Set metrics alarm rule lookup HTTP failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708P4L9Cer9aO9KFsdYkOYluK2.output.status_code$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq$",
+                          "variable_value_new": "{\"error\":\"metrics alarm rule lookup returned a non-2xx status\",\"updateMayHaveBeenAccepted\":false}"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy$",
+                          "variable_value_new": "metrics alarm rule lookup failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs$",
+                          "variable_value_new": "Cisco Intersight returned a non-2xx response for metrics alarm rule lookup. No alarm-rule update was attempted."
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L709Q72oMNaChei4RDtDLaT3twD",
+                    "name": "Completed",
+                    "title": "Completed - metrics alarm rule lookup HTTP failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the metrics alarm rule lookup HTTP failure outputs are populated.",
+                      "display_name": "Completed - metrics alarm rule lookup HTTP failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "metrics alarm rule lookup failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L708Q6VT7npduKJl9OdRvXwBvpx",
+            "name": "Execute Python Script",
+            "title": "Inspect exact metrics alarm rule",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Requires one exact cond.AlarmRule, a URL-safe Moid, matching Name and discriminator, and an explicitly returned complete Devices array before any merge.",
+              "display_name": "Inspect exact metrics alarm rule",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport re\nimport sys\n\nruleStatus = \"helper-failure\"\nruleStatusCode = \"500\"\nruleMessage = \"Alarm-rule inspection did not complete.\"\nruleResultJson = json.dumps({\"error\":ruleMessage}, separators=(\",\", \":\"))\nruleMoid = \"\"\ntry:\n    body = json.loads(sys.argv[1])\n    expectedName = sys.argv[2]\n    values = body.get(\"Results\") if isinstance(body, dict) else None\n    if not isinstance(values, list):\n        raise ValueError(\"Alarm-rule response is missing a Results array.\")\n    if len(values) == 0:\n        ruleStatus = \"invalid\"\n        ruleStatusCode = \"404\"\n        ruleMessage = \"No metrics alarm rule matched Alarm Rule Name exactly.\"\n    elif len(values) > 1:\n        ruleStatus = \"invalid\"\n        ruleStatusCode = \"409\"\n        ruleMessage = \"Multiple metrics alarm rules matched Alarm Rule Name exactly.\"\n    else:\n        item = values[0]\n        moid = item.get(\"Moid\") if isinstance(item, dict) else None\n        problems = []\n        if not isinstance(moid, str) or not re.fullmatch(r\"[A-Za-z0-9][A-Za-z0-9._~-]{0,127}\", moid):\n            problems.append(\"Alarm-rule Moid is missing or not URL-safe.\")\n        if not isinstance(item, dict) or item.get(\"Name\") != expectedName:\n            problems.append(\"Alarm-rule Name does not exactly match the requested value.\")\n        if not isinstance(item, dict) or item.get(\"ObjectType\") != \"cond.AlarmRule\" or item.get(\"ClassId\") not in (None,\"cond.AlarmRule\"):\n            problems.append(\"Alarm-rule discriminator is not cond.AlarmRule.\")\n        if not isinstance(item, dict) or \"Devices\" not in item or (item.get(\"Devices\") is not None and not isinstance(item.get(\"Devices\"), list)):\n            problems.append(\"Alarm-rule response omitted the complete Devices array or returned an invalid value.\")\n        if problems:\n            ruleStatus = \"invalid\"\n            ruleStatusCode = \"502\"\n            ruleMessage = \" \".join(problems)\n        else:\n            ruleMoid = moid\n            ruleStatus = \"ready\"\n            ruleStatusCode = \"200\"\n            ruleMessage = \"Exactly one metrics alarm rule and its complete Devices array were validated.\"\n    ruleResultJson = json.dumps({\"status\":ruleStatus,\"message\":ruleMessage,\"ruleMoid\":ruleMoid or None}, separators=(\",\", \":\"))\nexcept Exception as exc:\n    ruleStatus = \"helper-failure\"\n    ruleStatusCode = \"500\"\n    ruleMessage = str(exc)\n    ruleResultJson = json.dumps({\"error\":\"Alarm-rule inspection failed\",\"detail\":ruleMessage}, separators=(\",\", \":\"))\n",
+              "script_arguments": [
+                "$activity.definition_activity_02XOKCY8L708P4L9Cer9aO9KFsdYkOYluK2.output.response_body$",
+                "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.input.variable_workflow_02XOKCY8L72BG042QC7U5oivlkkzvwqOy9S$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "ruleStatus",
+                  "script_query_name": "ruleStatus",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "ruleStatusCode",
+                  "script_query_name": "ruleStatusCode",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "ruleMessage",
+                  "script_query_name": "ruleMessage",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "ruleResultJson",
+                  "script_query_name": "ruleResultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "ruleMoid",
+                  "script_query_name": "ruleMoid",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L709Z0mr4BDGfMcbaV8bVCKvVcO",
+            "name": "Condition Block",
+            "title": "Validate metrics alarm rule inspection",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Only an explicitly usable metrics alarm rule inspection result can continue.",
+              "display_name": "Validate metrics alarm rule inspection",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L709V5w5JLjiRRwou6pumVe1n5y",
+                "name": "Condition Branch",
+                "title": "metrics alarm rule inspection helper failed",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Stops on execution failure, caught helper failure, an unexpected status, or missing mandatory outputs.",
+                  "display_name": "metrics alarm rule inspection helper failed",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": {
+                              "left_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L708Q6VT7npduKJl9OdRvXwBvpx.output.succeeded$",
+                                "operator": "ne",
+                                "right_operand": true
+                              },
+                              "operator": "or",
+                              "right_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L708Q6VT7npduKJl9OdRvXwBvpx.output.script_queries.ruleStatus$",
+                                "operator": "eq",
+                                "right_operand": "helper-failure"
+                              }
+                            },
+                            "operator": "or",
+                            "right_operand": {
+                              "left_operand": "$activity.definition_activity_02XOKCY8L708Q6VT7npduKJl9OdRvXwBvpx.output.script_queries.ruleStatus$",
+                              "operator": "mregex",
+                              "right_operand": "^(?!(?:helper\\-failure|invalid|ready)$).*$"
+                            }
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L708Q6VT7npduKJl9OdRvXwBvpx.output.script_queries.ruleStatusCode$",
+                            "operator": "mregex",
+                            "right_operand": "^\\s*$"
+                          }
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L708Q6VT7npduKJl9OdRvXwBvpx.output.script_queries.ruleMessage$",
+                          "operator": "mregex",
+                          "right_operand": "^\\s*$"
+                        }
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708Q6VT7npduKJl9OdRvXwBvpx.output.script_queries.ruleResultJson$",
+                        "operator": "mregex",
+                        "right_operand": "^\\s*$"
+                      }
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708Q6VT7npduKJl9OdRvXwBvpx.output.script_queries.ruleStatus$",
+                        "operator": "eq",
+                        "right_operand": "ready"
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708Q6VT7npduKJl9OdRvXwBvpx.output.script_queries.ruleMoid$",
+                        "operator": "mregex",
+                        "right_operand": "^\\s*$"
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L709T1RlwaiRgFC0oiHSH2XJywL",
+                    "name": "Set Variables",
+                    "title": "Set metrics alarm rule inspection helper failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the metrics alarm rule inspection helper failure terminal path.",
+                      "display_name": "Set metrics alarm rule inspection helper failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq$",
+                          "variable_value_new": "{\"error\":\"metrics alarm rule inspection helper failed or returned unusable output\",\"updateMayHaveBeenAccepted\":false}"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy$",
+                          "variable_value_new": "metrics alarm rule inspection failed technically"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs$",
+                          "variable_value_new": "The metrics alarm rule inspection helper failed or returned incomplete output. No alarm-rule update was attempted."
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L709U5koS56OVhYngAwneEujrfw",
+                    "name": "Completed",
+                    "title": "Completed - metrics alarm rule inspection helper failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the metrics alarm rule inspection helper failure outputs are populated.",
+                      "display_name": "Completed - metrics alarm rule inspection helper failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "metrics alarm rule inspection failed technically"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L709Y6Kulj5YMX7iKnhrzZaUhCH",
+                "name": "Condition Branch",
+                "title": "metrics alarm rule inspection result is invalid",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Stops when the helper deliberately reports invalid input, cardinality, identity, relationship, or response data.",
+                  "display_name": "metrics alarm rule inspection result is invalid",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L708Q6VT7npduKJl9OdRvXwBvpx.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L708Q6VT7npduKJl9OdRvXwBvpx.output.script_queries.ruleStatus$",
+                      "operator": "eq",
+                      "right_operand": "invalid"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L709W74P3Zcda0sdYAgC17L7do5",
+                    "name": "Set Variables",
+                    "title": "Set metrics alarm rule inspection validation failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the metrics alarm rule inspection validation failure terminal path.",
+                      "display_name": "Set metrics alarm rule inspection validation failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708Q6VT7npduKJl9OdRvXwBvpx.output.script_queries.ruleStatusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708Q6VT7npduKJl9OdRvXwBvpx.output.script_queries.ruleResultJson$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy$",
+                          "variable_value_new": "metrics alarm rule inspection validation failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708Q6VT7npduKJl9OdRvXwBvpx.output.script_queries.ruleMessage$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L709X5f7CirRfJtRh1N1oEEduq7",
+                    "name": "Completed",
+                    "title": "Completed - metrics alarm rule inspection validation failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the metrics alarm rule inspection validation failure outputs are populated.",
+                      "display_name": "Completed - metrics alarm rule inspection validation failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "metrics alarm rule inspection validation failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L708R3CKCQcaPkNxNwXuQsnqnKp",
+            "name": "Generic Cisco Intersight API Request",
+            "title": "Get exact organization-scoped device",
+            "type": "intersight.api_request",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Uses the hardcoded route/filter/select tuple prepared for the chosen Device Type and scopes the lookup by PermissionResources.Moid. A generic API request is used because no purpose-built cross-family device resolver atomic exists; replace it if supported equivalents become available.",
+              "display_name": "Get exact organization-scoped device",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "api_method": "GET",
+              "api_url": "$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.deviceCollection$?$filter=$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.deviceFilter$ and PermissionResources.Moid eq '$activity.definition_activity_02XOKCY8L708O0bbPr1zMNXfwJ62zRtgB46.output.script_queries.organizationMoid$'$activity.definition_activity_02XOKCY8L708F1eYBelUxmXCsIi5ULe6ojz.output.script_queries.deviceSelect$",
+              "content_type": "application/json",
+              "endpoint": "primary",
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L70A630oiLhAA24wm6a9nw9evVD",
+            "name": "Condition Block",
+            "title": "Validate device lookup HTTP result",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Separates transport failure from a confirmed non-2xx response; only a confirmed HTTP 2xx continues.",
+              "display_name": "Validate device lookup HTTP result",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L70A22JcEKycaFKZs4HII2vIDD3",
+                "name": "Condition Branch",
+                "title": "device lookup transport failed",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles activity execution failure without assuming that a remote mutation did or did not occur.",
+                  "display_name": "device lookup transport failed",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": "$activity.definition_activity_02XOKCY8L708R3CKCQcaPkNxNwXuQsnqnKp.output.succeeded$",
+                    "operator": "ne",
+                    "right_operand": true
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L70A01AOPp1pcG5cuk7Xyp75nGL",
+                    "name": "Set Variables",
+                    "title": "Set device lookup transport failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the device lookup transport failure terminal path.",
+                      "display_name": "Set device lookup transport failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq$",
+                          "variable_value_new": "{\"error\":\"device lookup transport failed or its result is unknown\",\"updateMayHaveBeenAccepted\":false}"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy$",
+                          "variable_value_new": "device lookup was not confirmed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs$",
+                          "variable_value_new": "The device lookup activity failed without a confirmed HTTP result. No alarm-rule update was attempted."
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L70A14DQB1QJ6hVYzLHPASFIYpY",
+                    "name": "Completed",
+                    "title": "Completed - device lookup transport failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the device lookup transport failure outputs are populated.",
+                      "display_name": "Completed - device lookup transport failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "device lookup was not confirmed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L70A53VHuEq98y2FL0ac24ToqPE",
+                "name": "Condition Branch",
+                "title": "device lookup returned non-2xx",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Preserves a confirmed non-2xx status and stops before dependent processing.",
+                  "display_name": "device lookup returned non-2xx",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L708R3CKCQcaPkNxNwXuQsnqnKp.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708R3CKCQcaPkNxNwXuQsnqnKp.output.status_code$",
+                        "operator": "lt",
+                        "right_operand": 200
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708R3CKCQcaPkNxNwXuQsnqnKp.output.status_code$",
+                        "operator": "gt",
+                        "right_operand": 299
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L70A310N782JUi7K6fQGMVprmha",
+                    "name": "Set Variables",
+                    "title": "Set device lookup HTTP failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the device lookup HTTP failure terminal path.",
+                      "display_name": "Set device lookup HTTP failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708R3CKCQcaPkNxNwXuQsnqnKp.output.status_code$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq$",
+                          "variable_value_new": "{\"error\":\"device lookup returned a non-2xx status\",\"updateMayHaveBeenAccepted\":false}"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy$",
+                          "variable_value_new": "device lookup failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs$",
+                          "variable_value_new": "Cisco Intersight returned a non-2xx response for device lookup. No alarm-rule update was attempted."
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L70A47Zo86b74UCpdydNAcBmJPD",
+                    "name": "Completed",
+                    "title": "Completed - device lookup HTTP failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the device lookup HTTP failure outputs are populated.",
+                      "display_name": "Completed - device lookup HTTP failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "device lookup failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L708S5LzH9STOWadoSLWW6Fjpuk",
+            "name": "Execute Python Script",
+            "title": "Inspect exact device and derive relationship",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Requires exact-one cardinality; validates returned Name/Serial, discriminator, PermissionResources, SourceObjectType or TargetType, and RegisteredDevice where applicable. Server relationships use the concrete SourceObjectType; Registered Target uses asset.DeviceRegistration; other asset routes use asset.Target. Those generic mo.BaseMo mappings require live-tenant confirmation.",
+              "display_name": "Inspect exact device and derive relationship",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport re\nimport sys\n\ndeviceStatus = \"helper-failure\"\ndeviceStatusCode = \"500\"\ndeviceMessage = \"Device inspection did not complete.\"\ndeviceResultJson = json.dumps({\"error\":deviceMessage}, separators=(\",\", \":\"))\ndeviceRelationJson = \"\"\n\ndef safe_moid(value):\n    return isinstance(value, str) and re.fullmatch(r\"[A-Za-z0-9][A-Za-z0-9._~-]{0,127}\", value) is not None\n\ndef relationship_type_ok(value, expected):\n    return isinstance(value, dict) and value.get(\"ObjectType\") == expected and value.get(\"ClassId\") in (None,\"mo.MoRef\",expected)\n\ntry:\n    body = json.loads(sys.argv[1])\n    deviceType = sys.argv[2]\n    selector = sys.argv[3]\n    organizationMoid = sys.argv[4]\n    values = body.get(\"Results\") if isinstance(body, dict) else None\n    if not isinstance(values, list):\n        raise ValueError(\"Device response is missing a Results array.\")\n    if len(values) == 0:\n        deviceStatus = \"invalid\"\n        deviceStatusCode = \"404\"\n        deviceMessage = \"No device matched the exact selector, route, and organization scope.\"\n    elif len(values) > 1:\n        deviceStatus = \"invalid\"\n        deviceStatusCode = \"409\"\n        deviceMessage = \"Multiple devices matched the exact selector, route, and organization scope.\"\n    else:\n        item = values[0]\n        problems = []\n        if not isinstance(item, dict):\n            raise ValueError(\"The device result is not an object.\")\n        moid = item.get(\"Moid\")\n        if not safe_moid(moid):\n            problems.append(\"Device Moid is missing or not URL-safe.\")\n        permissions = item.get(\"PermissionResources\")\n        matches = [] if not isinstance(permissions, list) else [rel for rel in permissions if relationship_type_ok(rel,\"organization.Organization\") and rel.get(\"Moid\") == organizationMoid]\n        if len(matches) != 1:\n            problems.append(\"Device PermissionResources must contain exactly one matching organization relationship.\")\n        relationMoid = moid\n        relationType = \"\"\n        targetType = item.get(\"TargetType\")\n        if deviceType == \"Server\":\n            if item.get(\"ObjectType\") != \"compute.PhysicalSummary\" or item.get(\"ClassId\") not in (None,\"compute.PhysicalSummary\"):\n                problems.append(\"Server result must be compute.PhysicalSummary.\")\n            if item.get(\"Name\") != selector and item.get(\"Serial\") != selector:\n                problems.append(\"Server result Name or Serial does not exactly match the selector.\")\n            if item.get(\"SourceObjectType\") not in (\"compute.Blade\",\"compute.RackUnit\"):\n                problems.append(\"Server SourceObjectType must be compute.Blade or compute.RackUnit.\")\n            else:\n                relationType = item.get(\"SourceObjectType\")\n        elif deviceType == \"Chassis\":\n            if item.get(\"ObjectType\") != \"equipment.Chassis\" or item.get(\"ClassId\") not in (None,\"equipment.Chassis\"):\n                problems.append(\"Chassis result must be equipment.Chassis.\")\n            if item.get(\"Name\") != selector and item.get(\"Serial\") != selector:\n                problems.append(\"Chassis result Name or Serial does not exactly match the selector.\")\n            relationType = \"equipment.Chassis\"\n        else:\n            if item.get(\"ObjectType\") != \"asset.Target\" or item.get(\"ClassId\") not in (None,\"asset.Target\") or item.get(\"Name\") != selector:\n                problems.append(\"Asset target result identity or discriminator is inconsistent.\")\n            if deviceType == \"Fabric Interconnect\" and targetType not in (\"UCSFI\",\"UCSFIISM\"):\n                problems.append(\"Fabric Interconnect target must use TargetType UCSFI or UCSFIISM.\")\n            elif deviceType == \"Unified Edge or eCMC\" and targetType != \"UCSXECMC\":\n                problems.append(\"Unified Edge or eCMC target must use TargetType UCSXECMC.\")\n            elif deviceType == \"Registered Target\" and (not isinstance(targetType,str) or not targetType):\n                problems.append(\"Registered Target must return a nonblank TargetType.\")\n            if deviceType == \"Registered Target\":\n                registration = item.get(\"RegisteredDevice\")\n                if not relationship_type_ok(registration,\"asset.DeviceRegistration\") or not safe_moid(registration.get(\"Moid\")):\n                    problems.append(\"Registered Target must expose one valid asset.DeviceRegistration relationship.\")\n                else:\n                    relationMoid = registration.get(\"Moid\")\n                    relationType = \"asset.DeviceRegistration\"\n            else:\n                relationType = \"asset.Target\"\n        if problems:\n            deviceStatus = \"invalid\"\n            deviceStatusCode = \"502\"\n            deviceMessage = \" \".join(problems)\n        else:\n            relation = {\"ClassId\":\"mo.MoRef\",\"ObjectType\":relationType,\"Moid\":relationMoid}\n            deviceRelationJson = json.dumps(relation, separators=(\",\", \":\"))\n            deviceStatus = \"ready\"\n            deviceStatusCode = \"200\"\n            deviceMessage = \"Exactly one device and its concrete relationship identity were validated.\"\n    deviceResultJson = json.dumps({\"status\":deviceStatus,\"message\":deviceMessage,\"deviceType\":deviceType,\"relationship\":json.loads(deviceRelationJson) if deviceRelationJson else None,\"mappingRequiresTenantValidation\":deviceType in (\"Server\",\"Fabric Interconnect\",\"Unified Edge or eCMC\",\"Registered Target\")}, separators=(\",\", \":\"))\nexcept Exception as exc:\n    deviceStatus = \"helper-failure\"\n    deviceStatusCode = \"500\"\n    deviceMessage = str(exc)\n    deviceResultJson = json.dumps({\"error\":\"Device inspection failed\",\"detail\":deviceMessage}, separators=(\",\", \":\"))\n",
+              "script_arguments": [
+                "$activity.definition_activity_02XOKCY8L708R3CKCQcaPkNxNwXuQsnqnKp.output.response_body$",
+                "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.input.variable_workflow_02XOKCY8L72BH1iL32eVXEpC3xKY18rUKjY$",
+                "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.input.variable_workflow_02XOKCY8L72BJ60dULSftk8AYEwnMYU1pa1$",
+                "$activity.definition_activity_02XOKCY8L708O0bbPr1zMNXfwJ62zRtgB46.output.script_queries.organizationMoid$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "deviceStatus",
+                  "script_query_name": "deviceStatus",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "deviceStatusCode",
+                  "script_query_name": "deviceStatusCode",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "deviceMessage",
+                  "script_query_name": "deviceMessage",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "deviceResultJson",
+                  "script_query_name": "deviceResultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "deviceRelationJson",
+                  "script_query_name": "deviceRelationJson",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L70AD4S0r3gOlBBumGIsFhzPuc6",
+            "name": "Condition Block",
+            "title": "Validate device inspection",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Only an explicitly usable device inspection result can continue.",
+              "display_name": "Validate device inspection",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L70A97P4I5uVnQhzQrruw3us21h",
+                "name": "Condition Branch",
+                "title": "device inspection helper failed",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Stops on execution failure, caught helper failure, an unexpected status, or missing mandatory outputs.",
+                  "display_name": "device inspection helper failed",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": {
+                              "left_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L708S5LzH9STOWadoSLWW6Fjpuk.output.succeeded$",
+                                "operator": "ne",
+                                "right_operand": true
+                              },
+                              "operator": "or",
+                              "right_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L708S5LzH9STOWadoSLWW6Fjpuk.output.script_queries.deviceStatus$",
+                                "operator": "eq",
+                                "right_operand": "helper-failure"
+                              }
+                            },
+                            "operator": "or",
+                            "right_operand": {
+                              "left_operand": "$activity.definition_activity_02XOKCY8L708S5LzH9STOWadoSLWW6Fjpuk.output.script_queries.deviceStatus$",
+                              "operator": "mregex",
+                              "right_operand": "^(?!(?:helper\\-failure|invalid|ready)$).*$"
+                            }
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L708S5LzH9STOWadoSLWW6Fjpuk.output.script_queries.deviceStatusCode$",
+                            "operator": "mregex",
+                            "right_operand": "^\\s*$"
+                          }
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L708S5LzH9STOWadoSLWW6Fjpuk.output.script_queries.deviceMessage$",
+                          "operator": "mregex",
+                          "right_operand": "^\\s*$"
+                        }
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708S5LzH9STOWadoSLWW6Fjpuk.output.script_queries.deviceResultJson$",
+                        "operator": "mregex",
+                        "right_operand": "^\\s*$"
+                      }
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708S5LzH9STOWadoSLWW6Fjpuk.output.script_queries.deviceStatus$",
+                        "operator": "eq",
+                        "right_operand": "ready"
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708S5LzH9STOWadoSLWW6Fjpuk.output.script_queries.deviceRelationJson$",
+                        "operator": "mregex",
+                        "right_operand": "^\\s*$"
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L70A72yRtFBgB69eqttBYzAubLM",
+                    "name": "Set Variables",
+                    "title": "Set device inspection helper failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the device inspection helper failure terminal path.",
+                      "display_name": "Set device inspection helper failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq$",
+                          "variable_value_new": "{\"error\":\"device inspection helper failed or returned unusable output\",\"updateMayHaveBeenAccepted\":false}"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy$",
+                          "variable_value_new": "device inspection failed technically"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs$",
+                          "variable_value_new": "The device inspection helper failed or returned incomplete output. No alarm-rule update was attempted."
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L70A822cpjv0C2ywDRj3XRPJhe1",
+                    "name": "Completed",
+                    "title": "Completed - device inspection helper failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the device inspection helper failure outputs are populated.",
+                      "display_name": "Completed - device inspection helper failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "device inspection failed technically"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L70AC6tzKIAgxLIu6a9STcndNSc",
+                "name": "Condition Branch",
+                "title": "device inspection result is invalid",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Stops when the helper deliberately reports invalid input, cardinality, identity, relationship, or response data.",
+                  "display_name": "device inspection result is invalid",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L708S5LzH9STOWadoSLWW6Fjpuk.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L708S5LzH9STOWadoSLWW6Fjpuk.output.script_queries.deviceStatus$",
+                      "operator": "eq",
+                      "right_operand": "invalid"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L70AA7PJeoQzOrz0Qz3aIwMwCfu",
+                    "name": "Set Variables",
+                    "title": "Set device inspection validation failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the device inspection validation failure terminal path.",
+                      "display_name": "Set device inspection validation failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708S5LzH9STOWadoSLWW6Fjpuk.output.script_queries.deviceStatusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708S5LzH9STOWadoSLWW6Fjpuk.output.script_queries.deviceResultJson$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy$",
+                          "variable_value_new": "device inspection validation failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708S5LzH9STOWadoSLWW6Fjpuk.output.script_queries.deviceMessage$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L70AB69V69w3LW9ZBDZVLsrydfc",
+                    "name": "Completed",
+                    "title": "Completed - device inspection validation failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the device inspection validation failure outputs are populated.",
+                      "display_name": "Completed - device inspection validation failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "device inspection validation failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L70AV0BPRCrZruj2IzO2oFDFUTc",
+        "name": "Group",
+        "title": "Merge and update device assignments",
+        "type": "logic.group",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Revalidates and merges the complete Devices array, returns idempotent success when possible, and otherwise stops with 422 before the unsafe unguarded replacement write.",
+          "display_as_suggestion": false,
+          "display_name": "Merge and update device assignments",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4",
+            "name": "Execute Python Script",
+            "title": "Revalidate and merge complete Devices array",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Revalidates the raw exact-rule response and every existing relationship, preserves all entries, rejects duplicate or conflicting identities, returns idempotent success, or proves that a complete-array replacement would be required and must be blocked.",
+              "display_name": "Revalidate and merge complete Devices array",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport re\nimport sys\n\nmergeStatus = \"helper-failure\"\nmergeStatusCode = \"500\"\nmergeMessage = \"Devices merge did not complete.\"\nmergeResultJson = json.dumps({\"error\":mergeMessage}, separators=(\",\", \":\"))\npatchBody = \"\"\nexpectedDevicesJson = \"\"\nsuccessResultJson = \"\"\n\ndef safe_moid(value):\n    return isinstance(value, str) and re.fullmatch(r\"[A-Za-z0-9][A-Za-z0-9._~-]{0,127}\", value) is not None\n\ndef normalize(items):\n    if items is None:\n        items = []\n    if not isinstance(items, list):\n        raise ValueError(\"Devices is not an array or null.\")\n    result = []\n    pairs = set()\n    by_moid = {}\n    for index, value in enumerate(items):\n        if not isinstance(value, dict):\n            raise ValueError(\"Devices entry \" + str(index) + \" is not a relationship object.\")\n        moid = value.get(\"Moid\")\n        objectType = value.get(\"ObjectType\")\n        classId = value.get(\"ClassId\")\n        if not safe_moid(moid) or not isinstance(objectType,str) or not re.fullmatch(r\"[A-Za-z][A-Za-z0-9]*\\.[A-Za-z][A-Za-z0-9]*\", objectType):\n            raise ValueError(\"Devices entry \" + str(index) + \" has an invalid identity.\")\n        if classId not in (None,\"mo.MoRef\",objectType):\n            raise ValueError(\"Devices entry \" + str(index) + \" has an unexpected ClassId.\")\n        pair = (moid,objectType)\n        if pair in pairs:\n            raise ValueError(\"Devices contains a duplicate relationship identity.\")\n        if moid in by_moid and by_moid[moid] != objectType:\n            raise ValueError(\"One Devices Moid appears with multiple ObjectTypes.\")\n        pairs.add(pair)\n        by_moid[moid] = objectType\n        result.append({\"ClassId\":\"mo.MoRef\",\"ObjectType\":objectType,\"Moid\":moid})\n    return result\n\ntry:\n    envelope = json.loads(sys.argv[1])\n    expectedRuleMoid = sys.argv[2]\n    expectedRuleName = sys.argv[3]\n    relation = json.loads(sys.argv[4])\n    deviceType = sys.argv[5]\n    values = envelope.get(\"Results\") if isinstance(envelope, dict) else None\n    if not isinstance(values,list) or len(values) != 1 or not isinstance(values[0],dict):\n        raise ValueError(\"The alarm-rule response no longer contains exactly one object.\")\n    item = values[0]\n    if item.get(\"Moid\") != expectedRuleMoid or item.get(\"Name\") != expectedRuleName or item.get(\"ObjectType\") != \"cond.AlarmRule\" or item.get(\"ClassId\") not in (None,\"cond.AlarmRule\"):\n        raise ValueError(\"Alarm-rule identity changed between lookup and merge.\")\n    if \"Devices\" not in item:\n        raise ValueError(\"The alarm-rule response omitted Devices.\")\n    current = normalize(item.get(\"Devices\"))\n    new = normalize([relation])[0]\n    if any(value[\"Moid\"] == new[\"Moid\"] and value[\"ObjectType\"] != new[\"ObjectType\"] for value in current):\n        raise ValueError(\"The new device Moid already exists with a different ObjectType.\")\n    exact = [value for value in current if value[\"Moid\"] == new[\"Moid\"] and value[\"ObjectType\"] == new[\"ObjectType\"]]\n    merged = list(current)\n    if exact:\n        mergeStatus = \"already\"\n        mergeStatusCode = \"200\"\n        mergeMessage = \"The exact device relationship is already assigned; no PATCH is required.\"\n    else:\n        merged.append(new)\n        mergeStatus = \"ready\"\n        mergeStatusCode = \"200\"\n        mergeMessage = \"The complete Devices array is ready with the new relationship appended.\"\n        patchBody = json.dumps({\"Devices\":merged}, separators=(\",\", \":\"))\n    expectedDevicesJson = json.dumps([{\"Moid\":value[\"Moid\"],\"ObjectType\":value[\"ObjectType\"]} for value in merged], separators=(\",\", \":\"))\n    mergeResultJson = json.dumps({\"status\":mergeStatus,\"ruleMoid\":expectedRuleMoid,\"deviceType\":deviceType,\"priorDeviceCount\":len(current),\"resultingDeviceCount\":len(merged),\"fullArrayReplacementBlocked\":mergeStatus == \"ready\",\"mutationAttempted\":False}, separators=(\",\", \":\"))\n    successResultJson = json.dumps({\"updated\":False,\"idempotent\":True,\"ruleMoid\":expectedRuleMoid,\"ruleName\":expectedRuleName,\"deviceRelationship\":new,\"deviceCount\":len(merged)}, separators=(\",\", \":\"))\nexcept Exception as exc:\n    mergeStatus = \"invalid\"\n    mergeStatusCode = \"502\"\n    mergeMessage = \"Devices merge validation failed: \" + str(exc)\n    mergeResultJson = json.dumps({\"error\":\"Devices merge validation failed\",\"detail\":mergeMessage}, separators=(\",\", \":\"))\n",
+              "script_arguments": [
+                "$activity.definition_activity_02XOKCY8L708P4L9Cer9aO9KFsdYkOYluK2.output.response_body$",
+                "$activity.definition_activity_02XOKCY8L708Q6VT7npduKJl9OdRvXwBvpx.output.script_queries.ruleMoid$",
+                "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.input.variable_workflow_02XOKCY8L72BG042QC7U5oivlkkzvwqOy9S$",
+                "$activity.definition_activity_02XOKCY8L708S5LzH9STOWadoSLWW6Fjpuk.output.script_queries.deviceRelationJson$",
+                "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.input.variable_workflow_02XOKCY8L72BH1iL32eVXEpC3xKY18rUKjY$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "mergeStatus",
+                  "script_query_name": "mergeStatus",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "mergeStatusCode",
+                  "script_query_name": "mergeStatusCode",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "mergeMessage",
+                  "script_query_name": "mergeMessage",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "mergeResultJson",
+                  "script_query_name": "mergeResultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "patchBody",
+                  "script_query_name": "patchBody",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "expectedDevicesJson",
+                  "script_query_name": "expectedDevicesJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "successResultJson",
+                  "script_query_name": "successResultJson",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L70902gXEq6Wy4gwVJCDrNYWUVp",
+            "name": "Condition Block",
+            "title": "Validate complete Devices merge",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Only an explicitly usable complete Devices merge result can continue.",
+              "display_name": "Validate complete Devices merge",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L708W4aBHCZZ8IWVPkQTNJiKMzk",
+                "name": "Condition Branch",
+                "title": "complete Devices merge helper failed",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Stops on execution failure, caught helper failure, an unexpected status, or missing mandatory outputs.",
+                  "display_name": "complete Devices merge helper failed",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": {
+                              "left_operand": {
+                                "left_operand": {
+                                  "left_operand": {
+                                    "left_operand": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.succeeded$",
+                                    "operator": "ne",
+                                    "right_operand": true
+                                  },
+                                  "operator": "or",
+                                  "right_operand": {
+                                    "left_operand": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.mergeStatus$",
+                                    "operator": "eq",
+                                    "right_operand": "helper-failure"
+                                  }
+                                },
+                                "operator": "or",
+                                "right_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.mergeStatus$",
+                                  "operator": "mregex",
+                                  "right_operand": "^(?!(?:helper\\-failure|invalid|already|ready)$).*$"
+                                }
+                              },
+                              "operator": "or",
+                              "right_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.mergeStatusCode$",
+                                "operator": "mregex",
+                                "right_operand": "^\\s*$"
+                              }
+                            },
+                            "operator": "or",
+                            "right_operand": {
+                              "left_operand": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.mergeMessage$",
+                              "operator": "mregex",
+                              "right_operand": "^\\s*$"
+                            }
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.mergeResultJson$",
+                            "operator": "mregex",
+                            "right_operand": "^\\s*$"
+                          }
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.mergeStatus$",
+                            "operator": "eq",
+                            "right_operand": "ready"
+                          },
+                          "operator": "and",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.patchBody$",
+                            "operator": "mregex",
+                            "right_operand": "^\\s*$"
+                          }
+                        }
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.mergeStatus$",
+                          "operator": "eq",
+                          "right_operand": "ready"
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.expectedDevicesJson$",
+                          "operator": "mregex",
+                          "right_operand": "^\\s*$"
+                        }
+                      }
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.mergeStatus$",
+                        "operator": "eq",
+                        "right_operand": "already"
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.successResultJson$",
+                        "operator": "mregex",
+                        "right_operand": "^\\s*$"
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L708U6uuTW4rp72OqAKleHq05lj",
+                    "name": "Set Variables",
+                    "title": "Set complete Devices merge helper failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the complete Devices merge helper failure terminal path.",
+                      "display_name": "Set complete Devices merge helper failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq$",
+                          "variable_value_new": "{\"error\":\"complete Devices merge helper failed or returned unusable output\",\"updateMayHaveBeenAccepted\":false}"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy$",
+                          "variable_value_new": "complete Devices merge failed technically"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs$",
+                          "variable_value_new": "The complete Devices merge helper failed or returned incomplete output. No alarm-rule update was attempted."
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L708V5HQP6ssiNagQNUkdQChYui",
+                    "name": "Completed",
+                    "title": "Completed - complete Devices merge helper failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the complete Devices merge helper failure outputs are populated.",
+                      "display_name": "Completed - complete Devices merge helper failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "complete Devices merge failed technically"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L708Z6bslJCfI6TDztQTkxwfvCo",
+                "name": "Condition Branch",
+                "title": "complete Devices merge result is invalid",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Stops when the helper deliberately reports invalid input, cardinality, identity, relationship, or response data.",
+                  "display_name": "complete Devices merge result is invalid",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.mergeStatus$",
+                      "operator": "eq",
+                      "right_operand": "invalid"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L708X3pawan8VDTu5VnVUv5fvo8",
+                    "name": "Set Variables",
+                    "title": "Set complete Devices merge validation failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the complete Devices merge validation failure terminal path.",
+                      "display_name": "Set complete Devices merge validation failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.mergeStatusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.mergeResultJson$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy$",
+                          "variable_value_new": "complete Devices merge validation failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.mergeMessage$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L708Y1pieefMObbxi9PuxxYR04o",
+                    "name": "Completed",
+                    "title": "Completed - complete Devices merge validation failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the complete Devices merge validation failure outputs are populated.",
+                      "display_name": "Completed - complete Devices merge validation failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "complete Devices merge validation failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L70941EO82t2QRxZwgxCInoFsna",
+            "name": "Condition Block",
+            "title": "Return idempotent assignment result",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Ends successfully without PATCH when the exact device relationship already exists.",
+              "display_name": "Return idempotent assignment result",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L70933ISOyHdi3hJPU5nM4d2Unx",
+                "name": "Condition Branch",
+                "title": "Device relationship is already assigned",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Treats the exact existing relationship as idempotent success.",
+                  "display_name": "Device relationship is already assigned",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.mergeStatus$",
+                      "operator": "eq",
+                      "right_operand": "already"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L70910rYEWjjNQRq7N3flMB5m1e",
+                    "name": "Set Variables",
+                    "title": "Set device relationship already assigned outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the device relationship already assigned terminal path.",
+                      "display_name": "Set device relationship already assigned outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.mergeStatusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.successResultJson$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.mergeMessage$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs$",
+                          "variable_value_new": ""
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L70922NcuUJ3QC7Mg9bqGbclWyb",
+                    "name": "Completed",
+                    "title": "Completed - device relationship already assigned",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the device relationship already assigned outputs are populated.",
+                      "display_name": "Completed - device relationship already assigned",
+                      "skip_execution": false,
+                      "completion_type": "succeeded",
+                      "result_message": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.mergeMessage$"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L70AT63u0PMYaTXLaBhic6Vak6o",
+            "name": "Set Variables",
+            "title": "Set unsafe Devices replacement gate outputs",
+            "type": "core.set_multiple_variables",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Populates all four standard outputs for the explicit pre-mutation 422 full-array replacement gate.",
+              "display_name": "Set unsafe Devices replacement gate outputs",
+              "skip_execution": false,
+              "variables_to_update": [
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BK3gIs2lT8bgDkvBB2Q7NJBG$",
+                  "variable_value_new": "422"
+                },
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BL0frDuYrsHbZDp8uGZuuOtq$",
+                  "variable_value_new": "$activity.definition_activity_02XOKCY8L708T5v4KXgRrnMVvT3qDZ1p8n4.output.script_queries.mergeResultJson$"
+                },
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BM0OenPnoOzORUoHa2xiUdTy$",
+                  "variable_value_new": "Alarm-rule Devices replacement is blocked"
+                },
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727D4LO2pOGEw4DgS1tuHD1g9w.output.variable_workflow_02XOKCY8L72BN37HhsUYhty2tq7coBLcSxs$",
+                  "variable_value_new": "No mutation was attempted. Updating this assignment requires replacing the complete Devices array, but the current generic API activity has no proven conditional-header binding. Use a supported purpose-built assignment operation when available."
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L70AU0unuBUcFPS4sy0oY19qKQI",
+            "name": "Completed",
+            "title": "Completed - Unsafe Devices replacement blocked",
+            "type": "logic.completed",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Ends with handled failure after all four outputs prove that no unsafe full-array mutation was attempted.",
+              "display_name": "Completed - Unsafe Devices replacement blocked",
+              "skip_execution": false,
+              "completion_type": "failed-completed",
+              "result_message": "Unsafe Devices replacement blocked"
+            },
+            "object_type": "definition_activity"
+          }
+        ]
+      }
+    ],
+    "categories": [
+      "category_02XOKCY8L6Z5K2jm4aWXC4lwTD27TeF9NGI"
+    ]
+  },
+  "categories": {
+    "category_02XOKCY8L6Z5K2jm4aWXC4lwTD27TeF9NGI": {
+      "unique_name": "category_02XOKCY8L6Z5K2jm4aWXC4lwTD27TeF9NGI",
+      "name": "Cisco Intersight - Alarm Management",
+      "title": "Cisco Intersight - Alarm Management",
+      "type": "basic.category",
+      "base_type": "category",
+      "category_type": "custom",
+      "object_type": "category"
+    }
+  }
+}

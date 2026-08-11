@@ -1,0 +1,2631 @@
+{
+  "categories": {
+    "category_02XOMFAGO64RD1QJmJ4HllBZCBt4SqRXGUs": {
+      "unique_name": "category_02XOMFAGO64RD1QJmJ4HllBZCBt4SqRXGUs",
+      "name": "Cisco Intersight - Workload Deployment Management",
+      "title": "Cisco Intersight - Workload Deployment Management",
+      "type": "basic.category",
+      "base_type": "category",
+      "category_type": "custom",
+      "object_type": "category"
+    }
+  },
+  "workflow": {
+    "unique_name": "definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD",
+    "name": "Cisco Intersight - Get workload deployment details",
+    "title": "Cisco Intersight - Get workload deployment details",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "{\"error\":\"Workflow ended before a terminal output path completed\"}",
+          "scope": "output",
+          "name": "Result",
+          "type": "datatype.string",
+          "description": "Structured final result populated on every terminal path.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "json"
+        },
+        "unique_name": "variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "500",
+          "scope": "output",
+          "name": "Status Code",
+          "type": "datatype.string",
+          "description": "HTTP-style final status populated on every terminal path.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "Workflow execution did not reach a terminal output path",
+          "scope": "output",
+          "name": "Status Message",
+          "type": "datatype.string",
+          "description": "Human-readable final outcome populated on every terminal path.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "The workflow ended before a terminal path populated all outputs.",
+          "scope": "output",
+          "name": "Error Message",
+          "type": "datatype.string",
+          "description": "Empty on success; actionable failure detail on every failure path.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "default",
+          "scope": "input",
+          "name": "Workload Organization",
+          "type": "datatype.string",
+          "description": "Exact Cisco Intersight organization name. Apostrophes are escaped before OData lookup.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOMXWLY4V4516LMNpIe6rnqsMoxMzg5gD",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "Workload Deployment Name",
+          "type": "datatype.string",
+          "description": "Exact organization-scoped deployment name; 1-32 supported characters beginning alphanumerically.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOMXWLY4YZ21IFsNDuAjGHb1hsNUJpRfE",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.boolean",
+        "properties": {
+          "value": true,
+          "scope": "input",
+          "name": "Include Definition Details",
+          "type": "datatype.boolean",
+          "description": "When true, retrieve and validate the single related workload definition item.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false
+        },
+        "unique_name": "variable_workflow_02XOMXWLY56OV5OHf5JXZhpHVKUbydyWBaM",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.boolean",
+        "properties": {
+          "value": true,
+          "scope": "input",
+          "name": "Include Current Deployment Input",
+          "type": "datatype.boolean",
+          "description": "When true and a current DeploymentInput relationship exists, retrieve only that immutable snapshot.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false
+        },
+        "unique_name": "variable_workflow_02XOMXWLY5AJS1nkFB58OzPA3Z210XENHJK",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "null",
+          "scope": "local",
+          "name": "Definition Details",
+          "type": "datatype.string",
+          "description": "Validated related definition JSON used only for final assembly.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "json"
+        },
+        "unique_name": "variable_workflow_02XOMXWLY5DMX7NvdcOFCzTeqmh7ZgfeZHn",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "null",
+          "scope": "local",
+          "name": "Current Deployment Input",
+          "type": "datatype.string",
+          "description": "Validated current deployment-input JSON used only for final assembly.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "json"
+        },
+        "unique_name": "variable_workflow_02XOMXWLY5HHU0cKUfFet4qJZHmU752f0bL",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "atomic_group": "Cisco Intersight",
+        "is_atomic": true
+      },
+      "delete_workflow_instance": false,
+      "description": "Returns exactly one organization-scoped workload deployment with its immutable current deployment input, definition, status, conformance, validation, and instance summaries when requested. Select an intersight.endpoint target whose default runtime user can read organizations and workload resources. Every OData value is escaped; cardinality, identity, discriminators, and relationships are validated. The workflow does not browse deployments, enumerate workload instances, or return deployment-input history. The checked-in February OpenAPI lacks later workload fields, so production import and current-tenant response compatibility must be verified against the July 2026 SDK contract.",
+      "display_name": "Cisco Intersight - Get workload deployment details",
+      "runtime_user": {
+        "override_target_runtime_user": false,
+        "specify_on_workflow_start": false,
+        "target_default": true
+      },
+      "target": {
+        "target_type": "intersight.endpoint",
+        "specify_on_workflow_start": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_02XOMXWLYEN0A7V7ksMepTOjvootqCvAZsJ",
+        "name": "Group",
+        "title": "Resolve exact deployment",
+        "type": "logic.group",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Validates inputs, resolves one organization and one exact deployment, and reads the current item with relationship checks.",
+          "display_name": "Resolve exact deployment",
+          "skip_execution": false,
+          "display_as_suggestion": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_02XOMXWLY5MWB7aez21Xu8Ilv2riThOhmtx",
+            "name": "Execute Python Script",
+            "title": "Validate and escape inputs",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Validates required workflow inputs and escapes every user-controlled OData string before any API request.",
+              "display_name": "Validate and escape inputs",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport re\nimport sys\n\nstatus = \"invalid\"\nfailureCode = \"400\"\nfailureMessage = \"Input validation failed\"\nfailureError = \"One or more inputs are invalid.\"\nfailureResult = \"{}\"\norganizationName = sys.argv[1].strip()\ndeploymentName = sys.argv[2].strip()\nerrors = []\nnamePattern = re.compile(r\"^[a-zA-Z0-9][a-zA-Z0-9\\- _]{0,31}$\")\nif not organizationName:\n    errors.append(\"Workload Organization must not be blank.\")\nif not namePattern.fullmatch(deploymentName):\n    errors.append(\"Workload Deployment Name must be 1-32 supported characters and start alphanumerically.\")\nescapedOrganizationName = organizationName.replace(\"'\", \"''\")\nescapedDeploymentName = deploymentName.replace(\"'\", \"''\")\nif errors:\n    failureError = \" \".join(errors)\n    failureResult = json.dumps({\"error\":failureMessage,\"details\":failureError}, separators=(\",\",\":\"))\nelse:\n    status = \"ready\"\n    failureCode = \"\"\n    failureMessage = \"\"\n    failureError = \"\"\n    failureResult = \"{}\"\n",
+              "script_arguments": [
+                "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.input.variable_workflow_02XOMXWLY4V4516LMNpIe6rnqsMoxMzg5gD$",
+                "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.input.variable_workflow_02XOMXWLY4YZ21IFsNDuAjGHb1hsNUJpRfE$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "status",
+                  "script_query_name": "status",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "failureCode",
+                  "script_query_name": "failureCode",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "failureMessage",
+                  "script_query_name": "failureMessage",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "failureError",
+                  "script_query_name": "failureError",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "failureResult",
+                  "script_query_name": "failureResult",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "organizationName",
+                  "script_query_name": "organizationName",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "deploymentName",
+                  "script_query_name": "deploymentName",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "escapedOrganizationName",
+                  "script_query_name": "escapedOrganizationName",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "escapedDeploymentName",
+                  "script_query_name": "escapedDeploymentName",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOMXWLY6WFE6osWCEgPVJPa0lXR4TETaa",
+            "name": "Condition Block",
+            "title": "Validate input preparation",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately validates execution and semantic output from Validate and escape inputs before dependent work continues.",
+              "display_name": "Validate input preparation",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOMXWLY6OPK0CO0NZfI5T0UsAQ6LKvuR0",
+                "name": "Condition Branch",
+                "title": "input preparation helper failed",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles a technical helper failure.",
+                  "display_name": "input preparation helper failed",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": "$activity.definition_activity_02XOMXWLY5MWB7aez21Xu8Ilv2riThOhmtx.output.succeeded$",
+                    "operator": "ne",
+                    "right_operand": true
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOMXWLY64N85auq6Uxp4iDhAd6Liwetaw",
+                    "name": "Set Variables",
+                    "title": "Set input preparation helper failed outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the input preparation helper failed terminal path.",
+                      "display_name": "Set input preparation helper failed outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                          "variable_value_new": "{\"error\":\"input preparation helper failed\",\"activity\":\"Validate and escape inputs\"}"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                          "variable_value_new": "input preparation helper failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                          "variable_value_new": "The 'Validate and escape inputs' activity failed before returning validated output."
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLY6A1P6w5DM7bRMKCGGhQr4Og0DW",
+                    "name": "Completed",
+                    "title": "Completed - input preparation helper failed",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the input preparation helper failed outputs are populated.",
+                      "display_name": "Completed - input preparation helper failed",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "The 'Validate and escape inputs' activity failed before returning validated output."
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XOMXWLY6SKH58tlOSclnc4DWuPurvwB5z",
+                "name": "Condition Branch",
+                "title": "input preparation rejected",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles invalid, ambiguous, missing, or unsupported data.",
+                  "display_name": "input preparation rejected",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOMXWLY5MWB7aez21Xu8Ilv2riThOhmtx.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOMXWLY5MWB7aez21Xu8Ilv2riThOhmtx.output.script_queries.status$",
+                      "operator": "ne",
+                      "right_operand": "ready"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOMXWLY6G7Y0OxMDOCW2EnVetzr5JguWa",
+                    "name": "Set Variables",
+                    "title": "Set input preparation rejected outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the input preparation rejected terminal path.",
+                      "display_name": "Set input preparation rejected outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                          "variable_value_new": "$activity.definition_activity_02XOMXWLY5MWB7aez21Xu8Ilv2riThOhmtx.output.script_queries.failureResult$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                          "variable_value_new": "$activity.definition_activity_02XOMXWLY5MWB7aez21Xu8Ilv2riThOhmtx.output.script_queries.failureCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                          "variable_value_new": "$activity.definition_activity_02XOMXWLY5MWB7aez21Xu8Ilv2riThOhmtx.output.script_queries.failureMessage$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                          "variable_value_new": "$activity.definition_activity_02XOMXWLY5MWB7aez21Xu8Ilv2riThOhmtx.output.script_queries.failureError$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLY6K2V1UbmMbt8ngxu3PgkREGzrt",
+                    "name": "Completed",
+                    "title": "Completed - input preparation rejected",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the input preparation rejected outputs are populated.",
+                      "display_name": "Completed - input preparation rejected",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "$activity.definition_activity_02XOMXWLY5MWB7aez21Xu8Ilv2riThOhmtx.output.script_queries.failureError$"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOMXWLY70AB3YK1VHC4XaydPNmrSnIUOS",
+            "name": "Generic Cisco Intersight API Request",
+            "title": "Get workload organization",
+            "type": "intersight.api_request",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Resolves the exact organization with an escaped OData filter. A generic request is used because no purpose-built organization lookup atomic is present; replace it if supported.",
+              "display_name": "Get workload organization",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "api_method": "GET",
+              "api_url": "/api/v1/organization/Organizations?$filter=Name eq '$activity.definition_activity_02XOMXWLY5MWB7aez21Xu8Ilv2riThOhmtx.output.script_queries.escapedOrganizationName$'&$top=2&$select=Moid,Name,ClassId,ObjectType",
+              "content_type": "application/json",
+              "endpoint": "primary",
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOMXWLY7KCN2vSR3l88QxeX3xxcw0oDzN",
+            "name": "Condition Block",
+            "title": "Validate organization lookup response",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Requires Get workload organization to succeed with a numeric HTTP status from 200 through 299.",
+              "display_name": "Validate organization lookup response",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOMXWLY7H9I1Dqtxr60ukuc9k7kvGTEaL",
+                "name": "Condition Branch",
+                "title": "organization lookup returned failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Stops on activity failure or any non-2xx HTTP status.",
+                  "display_name": "organization lookup returned failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOMXWLY70AB3YK1VHC4XaydPNmrSnIUOS.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOMXWLY70AB3YK1VHC4XaydPNmrSnIUOS.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XOMXWLY70AB3YK1VHC4XaydPNmrSnIUOS.output.status_code$",
+                          "operator": "lt",
+                          "right_operand": 200
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XOMXWLY70AB3YK1VHC4XaydPNmrSnIUOS.output.status_code$",
+                          "operator": "gte",
+                          "right_operand": 300
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOMXWLY778C283nv4SGcrigLC3T47mffY",
+                    "name": "Set Variables",
+                    "title": "Set organization lookup HTTP failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the organization lookup http failure terminal path.",
+                      "display_name": "Set organization lookup HTTP failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                          "variable_value_new": "{\"error\":\"API activity failed or returned non-2xx\",\"activity\":\"Get workload organization\",\"statusCode\":\"$activity.definition_activity_02XOMXWLY70AB3YK1VHC4XaydPNmrSnIUOS.output.status_code$\"}"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                          "variable_value_new": "organization lookup failed or returned non-2xx"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                          "variable_value_new": "organization lookup failed or returned a non-2xx response. Review the activity status and response body."
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLY7BV11sOKYsFykYyx8ckgOsNBaC",
+                    "name": "Completed",
+                    "title": "Completed - organization lookup HTTP failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the organization lookup http failure outputs are populated.",
+                      "display_name": "Completed - organization lookup HTTP failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "organization lookup failed or returned a non-2xx response. Review the activity status and response body."
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOMXWLY7OZC5pHgMph4LPSjHAErrTAzdh",
+            "name": "Execute Python Script",
+            "title": "Validate organization identity",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Requires exactly one organization and validates its Name, Moid, ClassId, and ObjectType before the identifier is reused.",
+              "display_name": "Validate organization identity",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport re\nimport sys\n\nstatus = \"invalid\"\nfailureCode = \"502\"\nfailureMessage = \"Organization response was invalid\"\nfailureError = \"The organization lookup response could not be validated.\"\nfailureResult = \"{}\"\norganizationMoid = \"\"\nexpectedName = sys.argv[1]\nmoidPattern = re.compile(r\"^[A-Za-z0-9][A-Za-z0-9._~-]{0,127}$\")\ntry:\n    envelope = json.loads(sys.argv[2])\n    results = envelope.get(\"Results\") if isinstance(envelope, dict) else None\n    if not isinstance(results, list):\n        raise ValueError(\"Results is not an array.\")\n    if len(results) == 0:\n        failureCode = \"404\"\n        failureMessage = \"Workload organization was not found\"\n        failureError = \"The exact organization lookup returned zero matches.\"\n        failureResult = json.dumps({\"error\":failureMessage,\"matchCount\":0,\"Organization\":expectedName}, separators=(\",\",\":\"))\n    elif len(results) != 1:\n        failureCode = \"409\"\n        failureMessage = \"Organization lookup was ambiguous\"\n        failureError = \"The exact organization lookup returned \" + str(len(results)) + \" matches; exactly one is required.\"\n        failureResult = json.dumps({\"error\":failureMessage,\"matchCount\":len(results),\"Organization\":expectedName}, separators=(\",\",\":\"))\n    else:\n        item = results[0]\n        if not isinstance(item, dict):\n            raise ValueError(\"The single result is not an object.\")\n        organizationMoid = str(item.get(\"Moid\",\"\")).strip()\n        if not moidPattern.fullmatch(organizationMoid):\n            raise ValueError(\"The organization Moid is missing or unsafe.\")\n        if str(item.get(\"Name\",\"\")).strip() != expectedName:\n            raise ValueError(\"The returned organization Name does not match exactly.\")\n        if item.get(\"ClassId\") != \"organization.Organization\" or item.get(\"ObjectType\") != \"organization.Organization\":\n            raise ValueError(\"The organization discriminators are inconsistent.\")\n        status = \"ready\"\n        failureCode = failureMessage = failureError = \"\"\n        failureResult = \"{}\"\nexcept Exception as exc:\n    failureError = \"The organization response failed validation: \" + str(exc)\n    failureResult = json.dumps({\"error\":failureMessage,\"details\":failureError}, separators=(\",\",\":\"))\n",
+              "script_arguments": [
+                "$activity.definition_activity_02XOMXWLY5MWB7aez21Xu8Ilv2riThOhmtx.output.script_queries.organizationName$",
+                "$activity.definition_activity_02XOMXWLY70AB3YK1VHC4XaydPNmrSnIUOS.output.response_body$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "status",
+                  "script_query_name": "status",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "failureCode",
+                  "script_query_name": "failureCode",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "failureMessage",
+                  "script_query_name": "failureMessage",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "failureError",
+                  "script_query_name": "failureError",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "failureResult",
+                  "script_query_name": "failureResult",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "organizationMoid",
+                  "script_query_name": "organizationMoid",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOMXWLY8P936tqHmPZOMSP2HJplPF2SOi",
+            "name": "Condition Block",
+            "title": "Validate organization identity",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately validates execution and semantic output from Validate organization identity before dependent work continues.",
+              "display_name": "Validate organization identity",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOMXWLY8IB12h20Lv3Ep4uSk213AnCuGI",
+                "name": "Condition Branch",
+                "title": "organization identity helper failed",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles a technical helper failure.",
+                  "display_name": "organization identity helper failed",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": "$activity.definition_activity_02XOMXWLY7OZC5pHgMph4LPSjHAErrTAzdh.output.succeeded$",
+                    "operator": "ne",
+                    "right_operand": true
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOMXWLY7ZS93Q92jxbo4a7OyP8heBwgC3",
+                    "name": "Set Variables",
+                    "title": "Set organization identity helper failed outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the organization identity helper failed terminal path.",
+                      "display_name": "Set organization identity helper failed outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                          "variable_value_new": "{\"error\":\"organization identity helper failed\",\"activity\":\"Validate organization identity\"}"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                          "variable_value_new": "organization identity helper failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                          "variable_value_new": "The 'Validate organization identity' activity failed before returning validated output."
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLY856Q7GooXMHUp9QlsYGcw8amAS",
+                    "name": "Completed",
+                    "title": "Completed - organization identity helper failed",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the organization identity helper failed outputs are populated.",
+                      "display_name": "Completed - organization identity helper failed",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "The 'Validate organization identity' activity failed before returning validated output."
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XOMXWLY8LE65McmrKM8Xq86AFLMwLUZjI",
+                "name": "Condition Branch",
+                "title": "organization identity rejected",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles invalid, ambiguous, missing, or unsupported data.",
+                  "display_name": "organization identity rejected",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOMXWLY7OZC5pHgMph4LPSjHAErrTAzdh.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOMXWLY7OZC5pHgMph4LPSjHAErrTAzdh.output.script_queries.status$",
+                      "operator": "ne",
+                      "right_operand": "ready"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOMXWLY8AL71QkYjKAxebjQ7FsQYDe5Hs",
+                    "name": "Set Variables",
+                    "title": "Set organization identity rejected outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the organization identity rejected terminal path.",
+                      "display_name": "Set organization identity rejected outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                          "variable_value_new": "$activity.definition_activity_02XOMXWLY7OZC5pHgMph4LPSjHAErrTAzdh.output.script_queries.failureResult$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                          "variable_value_new": "$activity.definition_activity_02XOMXWLY7OZC5pHgMph4LPSjHAErrTAzdh.output.script_queries.failureCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                          "variable_value_new": "$activity.definition_activity_02XOMXWLY7OZC5pHgMph4LPSjHAErrTAzdh.output.script_queries.failureMessage$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                          "variable_value_new": "$activity.definition_activity_02XOMXWLY7OZC5pHgMph4LPSjHAErrTAzdh.output.script_queries.failureError$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLY8EG40QfnvR9pgglTqgeJVEY8K5",
+                    "name": "Completed",
+                    "title": "Completed - organization identity rejected",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the organization identity rejected outputs are populated.",
+                      "display_name": "Completed - organization identity rejected",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "$activity.definition_activity_02XOMXWLY7OZC5pHgMph4LPSjHAErrTAzdh.output.script_queries.failureError$"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOMXWLY8T407ITnwcwiOgvJe1uDKm2iwQ",
+            "name": "Generic Cisco Intersight API Request",
+            "title": "Get deployment by exact name",
+            "type": "intersight.api_request",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Resolves one organization-scoped workload deployment with escaped OData literals and top 2 for ambiguity detection. A generic request is used because no deployment lookup atomic is present; replace it if supported.",
+              "display_name": "Get deployment by exact name",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "api_method": "GET",
+              "api_url": "/api/v1/workload/WorkloadDeployments?$filter=Name eq '$activity.definition_activity_02XOMXWLY5MWB7aez21Xu8Ilv2riThOhmtx.output.script_queries.escapedDeploymentName$' and Organization.Moid eq '$activity.definition_activity_02XOMXWLY7OZC5pHgMph4LPSjHAErrTAzdh.output.script_queries.organizationMoid$'&$top=2",
+              "content_type": "application/json",
+              "endpoint": "primary",
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOMXWLYBWZW5eauRwiKDW6D7PeYlnMlT8",
+            "name": "Condition Block",
+            "title": "Validate deployment lookup response",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Requires Get deployment by exact name to succeed with a numeric HTTP status from 200 through 299.",
+              "display_name": "Validate deployment lookup response",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOMXWLYBT4Z0p3Fw4rINH0dfNKLrnMw81",
+                "name": "Condition Branch",
+                "title": "deployment lookup returned failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Stops on activity failure or any non-2xx HTTP status.",
+                  "display_name": "deployment lookup returned failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOMXWLY8T407ITnwcwiOgvJe1uDKm2iwQ.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOMXWLY8T407ITnwcwiOgvJe1uDKm2iwQ.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XOMXWLY8T407ITnwcwiOgvJe1uDKm2iwQ.output.status_code$",
+                          "operator": "lt",
+                          "right_operand": 200
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XOMXWLY8T407ITnwcwiOgvJe1uDKm2iwQ.output.status_code$",
+                          "operator": "gte",
+                          "right_operand": 300
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYBJVL7Ii6qgoIIHZdvA4Yg9YOsZ",
+                    "name": "Set Variables",
+                    "title": "Set deployment lookup HTTP failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the deployment lookup http failure terminal path.",
+                      "display_name": "Set deployment lookup HTTP failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                          "variable_value_new": "{\"error\":\"API activity failed or returned non-2xx\",\"activity\":\"Get deployment by exact name\",\"statusCode\":\"$activity.definition_activity_02XOMXWLY8T407ITnwcwiOgvJe1uDKm2iwQ.output.status_code$\"}"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                          "variable_value_new": "deployment lookup failed or returned non-2xx"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                          "variable_value_new": "deployment lookup failed or returned a non-2xx response. Review the activity status and response body."
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYBPA226a3NY0ZtP9wexmM2AAGVA",
+                    "name": "Completed",
+                    "title": "Completed - deployment lookup HTTP failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the deployment lookup http failure outputs are populated.",
+                      "display_name": "Completed - deployment lookup HTTP failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "deployment lookup failed or returned a non-2xx response. Review the activity status and response body."
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOMXWLYC0UT0Ti7y29B4KTem0DQvXegOK",
+            "name": "Execute Python Script",
+            "title": "Validate deployment cardinality",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Requires exactly one deployment and validates its identity, concrete type, and Organization relationship before item retrieval.",
+              "display_name": "Validate deployment cardinality",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport re\nimport sys\n\nstatus = \"invalid\"\nfailureCode = \"502\"\nfailureMessage = \"Deployment response was invalid\"\nfailureError = \"The deployment lookup response could not be validated.\"\nfailureResult = \"{}\"\ndeploymentMoid = \"\"\nexpectedName = sys.argv[1]\norganizationMoid = sys.argv[2]\nmoidPattern = re.compile(r\"^[A-Za-z0-9][A-Za-z0-9._~-]{0,127}$\")\ntry:\n    envelope = json.loads(sys.argv[3])\n    results = envelope.get(\"Results\") if isinstance(envelope, dict) else None\n    if not isinstance(results, list):\n        raise ValueError(\"Results is not an array.\")\n    if len(results) == 0:\n        failureCode = \"404\"\n        failureMessage = \"Workload deployment was not found\"\n        failureError = \"The exact organization-scoped deployment lookup returned zero matches.\"\n        failureResult = json.dumps({\"error\":failureMessage,\"matchCount\":0,\"Deployment\":expectedName}, separators=(\",\",\":\"))\n    elif len(results) != 1:\n        failureCode = \"409\"\n        failureMessage = \"Deployment lookup was ambiguous\"\n        failureError = \"The exact deployment lookup returned \" + str(len(results)) + \" matches; exactly one is required.\"\n        failureResult = json.dumps({\"error\":failureMessage,\"matchCount\":len(results),\"Deployment\":expectedName}, separators=(\",\",\":\"))\n    else:\n        item = results[0]\n        if not isinstance(item, dict):\n            raise ValueError(\"The single result is not an object.\")\n        deploymentMoid = str(item.get(\"Moid\",\"\")).strip()\n        if not moidPattern.fullmatch(deploymentMoid):\n            raise ValueError(\"The deployment Moid is missing or unsafe.\")\n        if str(item.get(\"Name\",\"\")).strip() != expectedName:\n            raise ValueError(\"The returned deployment Name does not match exactly.\")\n        if item.get(\"ClassId\") != \"workload.WorkloadDeployment\" or item.get(\"ObjectType\") != \"workload.WorkloadDeployment\":\n            raise ValueError(\"The deployment discriminators are inconsistent.\")\n        organization = item.get(\"Organization\")\n        if not isinstance(organization, dict) or str(organization.get(\"Moid\",\"\")).strip() != organizationMoid:\n            raise ValueError(\"The deployment Organization relationship does not match.\")\n        if str(organization.get(\"ObjectType\",\"\")).strip() != \"organization.Organization\":\n            raise ValueError(\"The deployment Organization relationship has the wrong ObjectType.\")\n        status = \"ready\"\n        failureCode = failureMessage = failureError = \"\"\n        failureResult = \"{}\"\nexcept Exception as exc:\n    deploymentMoid = \"\"\n    failureError = \"The deployment response failed validation: \" + str(exc)\n    failureResult = json.dumps({\"error\":failureMessage,\"details\":failureError}, separators=(\",\",\":\"))\n",
+              "script_arguments": [
+                "$activity.definition_activity_02XOMXWLY5MWB7aez21Xu8Ilv2riThOhmtx.output.script_queries.deploymentName$",
+                "$activity.definition_activity_02XOMXWLY7OZC5pHgMph4LPSjHAErrTAzdh.output.script_queries.organizationMoid$",
+                "$activity.definition_activity_02XOMXWLY8T407ITnwcwiOgvJe1uDKm2iwQ.output.response_body$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "status",
+                  "script_query_name": "status",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "failureCode",
+                  "script_query_name": "failureCode",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "failureMessage",
+                  "script_query_name": "failureMessage",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "failureError",
+                  "script_query_name": "failureError",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "failureResult",
+                  "script_query_name": "failureResult",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "deploymentMoid",
+                  "script_query_name": "deploymentMoid",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOMXWLYCX9O42ZnqE4PKfoon0ZfTLDDjV",
+            "name": "Condition Block",
+            "title": "Validate deployment cardinality",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately validates execution and semantic output from Validate deployment cardinality before dependent work continues.",
+              "display_name": "Validate deployment cardinality",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOMXWLYCQBM6Oli0bcnVxXKEgJDRaAmlP",
+                "name": "Condition Branch",
+                "title": "deployment cardinality helper failed",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles a technical helper failure.",
+                  "display_name": "deployment cardinality helper failed",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": "$activity.definition_activity_02XOMXWLYC0UT0Ti7y29B4KTem0DQvXegOK.output.succeeded$",
+                    "operator": "ne",
+                    "right_operand": true
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYCA467AT1EwZiu3owGX4wUtCdsF",
+                    "name": "Set Variables",
+                    "title": "Set deployment cardinality helper failed outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the deployment cardinality helper failed terminal path.",
+                      "display_name": "Set deployment cardinality helper failed outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                          "variable_value_new": "{\"error\":\"deployment cardinality helper failed\",\"activity\":\"Validate deployment cardinality\"}"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                          "variable_value_new": "deployment cardinality helper failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                          "variable_value_new": "The 'Validate deployment cardinality' activity failed before returning validated output."
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYCDZ37F7kxbsWhSI15WMSYDb4HF",
+                    "name": "Completed",
+                    "title": "Completed - deployment cardinality helper failed",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the deployment cardinality helper failed outputs are populated.",
+                      "display_name": "Completed - deployment cardinality helper failed",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "The 'Validate deployment cardinality' activity failed before returning validated output."
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XOMXWLYCTER4tiYYp7Dk9Pzlfn5ryguEk",
+                "name": "Condition Branch",
+                "title": "deployment cardinality rejected",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles invalid, ambiguous, missing, or unsupported data.",
+                  "display_name": "deployment cardinality rejected",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOMXWLYC0UT0Ti7y29B4KTem0DQvXegOK.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOMXWLYC0UT0Ti7y29B4KTem0DQvXegOK.output.script_queries.status$",
+                      "operator": "ne",
+                      "right_operand": "ready"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYCILS7LtUxBAiM6xKSfvt6HXTkY",
+                    "name": "Set Variables",
+                    "title": "Set deployment cardinality rejected outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the deployment cardinality rejected terminal path.",
+                      "display_name": "Set deployment cardinality rejected outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                          "variable_value_new": "$activity.definition_activity_02XOMXWLYC0UT0Ti7y29B4KTem0DQvXegOK.output.script_queries.failureResult$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                          "variable_value_new": "$activity.definition_activity_02XOMXWLYC0UT0Ti7y29B4KTem0DQvXegOK.output.script_queries.failureCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                          "variable_value_new": "$activity.definition_activity_02XOMXWLYC0UT0Ti7y29B4KTem0DQvXegOK.output.script_queries.failureMessage$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                          "variable_value_new": "$activity.definition_activity_02XOMXWLYC0UT0Ti7y29B4KTem0DQvXegOK.output.script_queries.failureError$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYCMGP5dbuI4CGTR35D6LzUy42wv",
+                    "name": "Completed",
+                    "title": "Completed - deployment cardinality rejected",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the deployment cardinality rejected outputs are populated.",
+                      "display_name": "Completed - deployment cardinality rejected",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "$activity.definition_activity_02XOMXWLYC0UT0Ti7y29B4KTem0DQvXegOK.output.script_queries.failureError$"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOMXWLYD0CT4GfWGLo6Stnf3AF08gyoIz",
+            "name": "Generic Cisco Intersight API Request",
+            "title": "Get exact deployment item",
+            "type": "intersight.api_request",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Reads the exact deployment item for current ModTime, writable state, relationships, summaries, validation, and lifecycle fields. A generic request is used because no deployment-detail atomic is present; replace it if supported.",
+              "display_name": "Get exact deployment item",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "api_method": "GET",
+              "api_url": "/api/v1/workload/WorkloadDeployments/$activity.definition_activity_02XOMXWLYC0UT0Ti7y29B4KTem0DQvXegOK.output.script_queries.deploymentMoid$",
+              "content_type": "application/json",
+              "endpoint": "primary",
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOMXWLYDHC12zRGXDnlZVvQJXnBbz1EHY",
+            "name": "Condition Block",
+            "title": "Validate deployment item lookup response",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Requires Get exact deployment item to succeed with a numeric HTTP status from 200 through 299.",
+              "display_name": "Validate deployment item lookup response",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOMXWLYDE8W2qtrd62QDjfcPi0silVlO3",
+                "name": "Condition Branch",
+                "title": "deployment item lookup returned failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Stops on activity failure or any non-2xx HTTP status.",
+                  "display_name": "deployment item lookup returned failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOMXWLYD0CT4GfWGLo6Stnf3AF08gyoIz.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOMXWLYD0CT4GfWGLo6Stnf3AF08gyoIz.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XOMXWLYD0CT4GfWGLo6Stnf3AF08gyoIz.output.status_code$",
+                          "operator": "lt",
+                          "right_operand": 200
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XOMXWLYD0CT4GfWGLo6Stnf3AF08gyoIz.output.status_code$",
+                          "operator": "gte",
+                          "right_operand": 300
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYD6J256eQNs2eJRdpz7LoV6Yp4C",
+                    "name": "Set Variables",
+                    "title": "Set deployment item lookup HTTP failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the deployment item lookup http failure terminal path.",
+                      "display_name": "Set deployment item lookup HTTP failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                          "variable_value_new": "{\"error\":\"API activity failed or returned non-2xx\",\"activity\":\"Get exact deployment item\",\"statusCode\":\"$activity.definition_activity_02XOMXWLYD0CT4GfWGLo6Stnf3AF08gyoIz.output.status_code$\"}"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                          "variable_value_new": "deployment item lookup failed or returned non-2xx"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                          "variable_value_new": "deployment item lookup failed or returned a non-2xx response. Review the activity status and response body."
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYDADZ3KOlS92StM4gBnIwRowQix",
+                    "name": "Completed",
+                    "title": "Completed - deployment item lookup HTTP failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the deployment item lookup http failure outputs are populated.",
+                      "display_name": "Completed - deployment item lookup HTTP failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "deployment item lookup failed or returned a non-2xx response. Review the activity status and response body."
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOMXWLYDL6Y4OQJfXe8LoBEGKUuBzvTIp",
+            "name": "Execute Python Script",
+            "title": "Validate deployment item",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Validates returned identity, organization, ModTime, documented status/action enums, definition relationship, and optional current input relationship.",
+              "display_name": "Validate deployment item",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import datetime\nimport json\nimport re\nimport sys\n\nstatus = \"invalid\"\nfailureCode = \"502\"\nfailureMessage = \"Deployment item response was invalid\"\nfailureError = \"The exact deployment item could not be validated.\"\nfailureResult = \"{}\"\ndeploymentJson = \"\"\ndeploymentMoid = sys.argv[1]\nexpectedName = sys.argv[2]\norganizationMoid = sys.argv[3]\nmodTime = \"\"\ndeploymentStatus = \"\"\nlastAction = \"\"\nactionValue = \"\"\ndefinitionMoid = \"\"\ndeploymentInputMoid = \"\"\nhasDeploymentInput = \"false\"\nmoidPattern = re.compile(r\"^[A-Za-z0-9][A-Za-z0-9._~-]{0,127}$\")\ntry:\n    item = json.loads(sys.argv[4])\n    if not isinstance(item, dict):\n        raise ValueError(\"The item response is not an object.\")\n    if str(item.get(\"Moid\",\"\")).strip() != deploymentMoid or not moidPattern.fullmatch(deploymentMoid):\n        raise ValueError(\"The item Moid does not match the resolved deployment.\")\n    if str(item.get(\"Name\",\"\")).strip() != expectedName:\n        raise ValueError(\"The item Name does not match exactly.\")\n    if item.get(\"ClassId\") != \"workload.WorkloadDeployment\" or item.get(\"ObjectType\") != \"workload.WorkloadDeployment\":\n        raise ValueError(\"The item discriminators are inconsistent.\")\n    organization = item.get(\"Organization\")\n    if not isinstance(organization, dict) or str(organization.get(\"Moid\",\"\")).strip() != organizationMoid:\n        raise ValueError(\"The item Organization relationship does not match.\")\n    if str(organization.get(\"ObjectType\",\"\")).strip() != \"organization.Organization\":\n        raise ValueError(\"The Organization relationship has the wrong ObjectType.\")\n    modTime = str(item.get(\"ModTime\",\"\")).strip()\n    if not modTime:\n        raise ValueError(\"ModTime is missing.\")\n    datetime.datetime.fromisoformat(modTime.replace(\"Z\", \"+00:00\"))\n    deploymentStatus = str(item.get(\"Status\",\"\")).strip()\n    allowedStatuses = {\"Draft\",\"ReadyToDeploy\",\"InProgress\",\"Ok\",\"Failed\",\"ChangesScheduled\",\"Suspended\"}\n    if deploymentStatus not in allowedStatuses:\n        raise ValueError(\"Status is missing or outside the documented enum.\")\n    lastAction = str(item.get(\"LastAction\",\"None\")).strip()\n    actionValue = str(item.get(\"Action\",\"None\")).strip()\n    allowedActions = {\"None\",\"PrepareToDeploy\",\"Deploy\",\"Suspend\",\"Retry\",\"Resume\",\"Undeploy\",\"ReEvaluateQualifiers\"}\n    if lastAction not in allowedActions or actionValue not in allowedActions:\n        raise ValueError(\"Action or LastAction is outside the documented enum.\")\n    definition = item.get(\"WorkloadDefinition\")\n    if not isinstance(definition, dict):\n        raise ValueError(\"WorkloadDefinition relationship is missing.\")\n    definitionMoid = str(definition.get(\"Moid\",\"\")).strip()\n    if not moidPattern.fullmatch(definitionMoid) or str(definition.get(\"ObjectType\",\"\")).strip() != \"workload.WorkloadDefinition\":\n        raise ValueError(\"WorkloadDefinition relationship is incomplete.\")\n    currentInput = item.get(\"DeploymentInput\")\n    if currentInput not in (None, {}):\n        if not isinstance(currentInput, dict):\n            raise ValueError(\"DeploymentInput is not a relationship object.\")\n        deploymentInputMoid = str(currentInput.get(\"Moid\",\"\")).strip()\n        if not moidPattern.fullmatch(deploymentInputMoid) or str(currentInput.get(\"ObjectType\",\"\")).strip() != \"workload.DeploymentInput\":\n            raise ValueError(\"DeploymentInput relationship is incomplete.\")\n        hasDeploymentInput = \"true\"\n    deploymentJson = json.dumps(item, separators=(\",\",\":\"), ensure_ascii=False, allow_nan=False)\n    status = \"ready\"\n    failureCode = failureMessage = failureError = \"\"\n    failureResult = \"{}\"\nexcept Exception as exc:\n    deploymentJson = \"\"\n    modTime = deploymentStatus = lastAction = actionValue = definitionMoid = deploymentInputMoid = \"\"\n    hasDeploymentInput = \"false\"\n    failureError = \"The deployment item failed validation: \" + str(exc)\n    failureResult = json.dumps({\"error\":failureMessage,\"details\":failureError}, separators=(\",\",\":\"))\n",
+              "script_arguments": [
+                "$activity.definition_activity_02XOMXWLYC0UT0Ti7y29B4KTem0DQvXegOK.output.script_queries.deploymentMoid$",
+                "$activity.definition_activity_02XOMXWLY5MWB7aez21Xu8Ilv2riThOhmtx.output.script_queries.deploymentName$",
+                "$activity.definition_activity_02XOMXWLY7OZC5pHgMph4LPSjHAErrTAzdh.output.script_queries.organizationMoid$",
+                "$activity.definition_activity_02XOMXWLYD0CT4GfWGLo6Stnf3AF08gyoIz.output.response_body$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "status",
+                  "script_query_name": "status",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "failureCode",
+                  "script_query_name": "failureCode",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "failureMessage",
+                  "script_query_name": "failureMessage",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "failureError",
+                  "script_query_name": "failureError",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "failureResult",
+                  "script_query_name": "failureResult",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "deploymentJson",
+                  "script_query_name": "deploymentJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "definitionMoid",
+                  "script_query_name": "definitionMoid",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "deploymentInputMoid",
+                  "script_query_name": "deploymentInputMoid",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "hasDeploymentInput",
+                  "script_query_name": "hasDeploymentInput",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOMXWLYEIDL0EDT7meFkqqynwvBWeaMZo",
+            "name": "Condition Block",
+            "title": "Validate deployment item",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately validates execution and semantic output from Validate deployment item before dependent work continues.",
+              "display_name": "Validate deployment item",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOMXWLYE9VZ6qpWHwvDcQjeWs56HlytEb",
+                "name": "Condition Branch",
+                "title": "deployment item helper failed",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles a technical helper failure.",
+                  "display_name": "deployment item helper failed",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": "$activity.definition_activity_02XOMXWLYDL6Y4OQJfXe8LoBEGKUuBzvTIp.output.succeeded$",
+                    "operator": "ne",
+                    "right_operand": true
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYDSWR0qZ1I9OEcN1HjK8uruHvkv",
+                    "name": "Set Variables",
+                    "title": "Set deployment item helper failed outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the deployment item helper failed terminal path.",
+                      "display_name": "Set deployment item helper failed outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                          "variable_value_new": "{\"error\":\"deployment item helper failed\",\"activity\":\"Validate deployment item\"}"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                          "variable_value_new": "deployment item helper failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                          "variable_value_new": "The 'Validate deployment item' activity failed before returning validated output."
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYDYB86CQTr7ARESGOdhcVZ6QTDO",
+                    "name": "Completed",
+                    "title": "Completed - deployment item helper failed",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the deployment item helper failed outputs are populated.",
+                      "display_name": "Completed - deployment item helper failed",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "The 'Validate deployment item' activity failed before returning validated output."
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XOMXWLYEEIO6SjC1BDl5UdlcN2iS7sEkq",
+                "name": "Condition Branch",
+                "title": "deployment item rejected",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles invalid, ambiguous, missing, or unsupported data.",
+                  "display_name": "deployment item rejected",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOMXWLYDL6Y4OQJfXe8LoBEGKUuBzvTIp.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOMXWLYDL6Y4OQJfXe8LoBEGKUuBzvTIp.output.script_queries.status$",
+                      "operator": "ne",
+                      "right_operand": "ready"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYE2XX5YCMv3YUd41AZxDQPjCSQd",
+                    "name": "Set Variables",
+                    "title": "Set deployment item rejected outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for the deployment item rejected terminal path.",
+                      "display_name": "Set deployment item rejected outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                          "variable_value_new": "$activity.definition_activity_02XOMXWLYDL6Y4OQJfXe8LoBEGKUuBzvTIp.output.script_queries.failureResult$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                          "variable_value_new": "$activity.definition_activity_02XOMXWLYDL6Y4OQJfXe8LoBEGKUuBzvTIp.output.script_queries.failureCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                          "variable_value_new": "$activity.definition_activity_02XOMXWLYDL6Y4OQJfXe8LoBEGKUuBzvTIp.output.script_queries.failureMessage$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                          "variable_value_new": "$activity.definition_activity_02XOMXWLYDL6Y4OQJfXe8LoBEGKUuBzvTIp.output.script_queries.failureError$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYE6SU2I810d9c7S0AEf2HiskxZb",
+                    "name": "Completed",
+                    "title": "Completed - deployment item rejected",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after the deployment item rejected outputs are populated.",
+                      "display_name": "Completed - deployment item rejected",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "$activity.definition_activity_02XOMXWLYDL6Y4OQJfXe8LoBEGKUuBzvTIp.output.script_queries.failureError$"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOMXWLYIH5F1K5qmt6i6e6TL5SHs1CpM5",
+        "name": "Group",
+        "title": "Read requested relationships",
+        "type": "logic.group",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Optionally reads only the single definition and current deployment input related to the selected deployment.",
+          "display_name": "Read requested relationships",
+          "skip_execution": false,
+          "display_as_suggestion": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_02XOMXWLYGGLU4yjCMNexG2NSiMWmWKZSlb",
+            "name": "Condition Block",
+            "title": "Route optional definition detail",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Calls the related definition item endpoint only when Include Definition Details is true.",
+              "display_name": "Route optional definition detail",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOMXWLYGDIP3KtxcxRak2gj0pUkmFSUPN",
+                "name": "Condition Branch",
+                "title": "Definition detail was requested",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Retrieves exactly the deployment's related definition.",
+                  "display_name": "Definition detail was requested",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.input.variable_workflow_02XOMXWLY56OV5OHf5JXZhpHVKUbydyWBaM$",
+                    "operator": "eq",
+                    "right_operand": true
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYEQV73zlTHre4bGQ3JDmuV8NNDG",
+                    "name": "Generic Cisco Intersight API Request",
+                    "title": "Get related workload definition",
+                    "type": "intersight.api_request",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": true,
+                      "description": "Retrieves the single WorkloadDefinition relationship requested by the caller. A generic request is used because no purpose-built workload-definition detail atomic is present; replace it if supported.",
+                      "display_name": "Get related workload definition",
+                      "skip_execution": false,
+                      "action_timeout": 180,
+                      "api_method": "GET",
+                      "api_url": "/api/v1/workload/WorkloadDefinitions/$activity.definition_activity_02XOMXWLYDL6Y4OQJfXe8LoBEGKUuBzvTIp.output.script_queries.definitionMoid$",
+                      "content_type": "application/json",
+                      "endpoint": "primary",
+                      "runtime_user": {
+                        "target_default": true
+                      },
+                      "target": {
+                        "use_workflow_target": true
+                      }
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYFBPC0ZC5i8OlWgDVI7fzuZqq6H",
+                    "name": "Condition Block",
+                    "title": "Validate definition detail lookup response",
+                    "type": "logic.if_else",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Requires Get related workload definition to succeed with a numeric HTTP status from 200 through 299.",
+                      "display_name": "Validate definition detail lookup response",
+                      "skip_execution": false,
+                      "conditions": []
+                    },
+                    "object_type": "definition_activity",
+                    "blocks": [
+                      {
+                        "unique_name": "definition_activity_02XOMXWLYF8M71shsJTH5PdsxZPqKdWiPdJ",
+                        "name": "Condition Branch",
+                        "title": "definition detail lookup returned failure",
+                        "type": "logic.condition_block",
+                        "base_type": "activity",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "description": "Stops on activity failure or any non-2xx HTTP status.",
+                          "display_name": "definition detail lookup returned failure",
+                          "skip_execution": false,
+                          "condition": {
+                            "left_operand": {
+                              "left_operand": "$activity.definition_activity_02XOMXWLYEQV73zlTHre4bGQ3JDmuV8NNDG.output.succeeded$",
+                              "operator": "ne",
+                              "right_operand": true
+                            },
+                            "operator": "or",
+                            "right_operand": {
+                              "left_operand": {
+                                "left_operand": "$activity.definition_activity_02XOMXWLYEQV73zlTHre4bGQ3JDmuV8NNDG.output.succeeded$",
+                                "operator": "eq",
+                                "right_operand": true
+                              },
+                              "operator": "and",
+                              "right_operand": {
+                                "left_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOMXWLYEQV73zlTHre4bGQ3JDmuV8NNDG.output.status_code$",
+                                  "operator": "lt",
+                                  "right_operand": 200
+                                },
+                                "operator": "or",
+                                "right_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOMXWLYEQV73zlTHre4bGQ3JDmuV8NNDG.output.status_code$",
+                                  "operator": "gte",
+                                  "right_operand": 300
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "object_type": "definition_activity",
+                        "actions": [
+                          {
+                            "unique_name": "definition_activity_02XOMXWLYF0WD4KhbFH4XDFacq5zcJ5iTyc",
+                            "name": "Set Variables",
+                            "title": "Set definition detail lookup HTTP failure outputs",
+                            "type": "core.set_multiple_variables",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Populates all four standard outputs for the definition detail lookup http failure terminal path.",
+                              "display_name": "Set definition detail lookup HTTP failure outputs",
+                              "skip_execution": false,
+                              "variables_to_update": [
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                                  "variable_value_new": "{\"error\":\"API activity failed or returned non-2xx\",\"activity\":\"Get related workload definition\",\"statusCode\":\"$activity.definition_activity_02XOMXWLYEQV73zlTHre4bGQ3JDmuV8NNDG.output.status_code$\"}"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                                  "variable_value_new": "502"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                                  "variable_value_new": "definition detail lookup failed or returned non-2xx"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                                  "variable_value_new": "definition detail lookup failed or returned a non-2xx response. Review the activity status and response body."
+                                }
+                              ]
+                            },
+                            "object_type": "definition_activity"
+                          },
+                          {
+                            "unique_name": "definition_activity_02XOMXWLYF4RA0MyAbHKocS0roHpzR14Z0K",
+                            "name": "Completed",
+                            "title": "Completed - definition detail lookup HTTP failure",
+                            "type": "logic.completed",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Ends the workflow after the definition detail lookup http failure outputs are populated.",
+                              "display_name": "Completed - definition detail lookup HTTP failure",
+                              "skip_execution": false,
+                              "completion_type": "failed-completed",
+                              "result_message": "definition detail lookup failed or returned a non-2xx response. Review the activity status and response body."
+                            },
+                            "object_type": "definition_activity"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYEUQ479B9cTXiWpXllAwtmtJJOa",
+                    "name": "Execute Python Script",
+                    "title": "Validate related definition",
+                    "type": "python3.script",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": true,
+                      "description": "Requires the item Moid and concrete type to match the deployment's single WorkloadDefinition relationship.",
+                      "display_name": "Validate related definition",
+                      "skip_execution": false,
+                      "action_timeout": 180,
+                      "script": "import json\nimport re\nimport sys\n\nstatus = \"invalid\"\nfailureCode = \"502\"\nfailureMessage = \"Related resource response was invalid\"\nfailureError = \"The related item response could not be validated.\"\nfailureResult = \"{}\"\ndetailJson = \"null\"\nexpectedMoid = sys.argv[1]\nexpectedType = sys.argv[2]\nlabel = sys.argv[3]\nmoidPattern = re.compile(r\"^[A-Za-z0-9][A-Za-z0-9._~-]{0,127}$\")\ntry:\n    item = json.loads(sys.argv[4])\n    if not isinstance(item, dict):\n        raise ValueError(label + \" response is not an object.\")\n    if not moidPattern.fullmatch(expectedMoid) or str(item.get(\"Moid\",\"\")).strip() != expectedMoid:\n        raise ValueError(label + \" Moid does not match its relationship.\")\n    if item.get(\"ClassId\") != expectedType or item.get(\"ObjectType\") != expectedType:\n        raise ValueError(label + \" discriminators do not match \" + expectedType + \".\")\n    detailJson = json.dumps(item, separators=(\",\",\":\"), ensure_ascii=False, allow_nan=False)\n    status = \"ready\"\n    failureCode = failureMessage = failureError = \"\"\n    failureResult = \"{}\"\nexcept Exception as exc:\n    failureMessage = label + \" response was invalid\"\n    failureError = \"The related item failed identity validation: \" + str(exc)\n    failureResult = json.dumps({\"error\":failureMessage,\"details\":failureError}, separators=(\",\",\":\"))\n",
+                      "script_arguments": [
+                        "$activity.definition_activity_02XOMXWLYDL6Y4OQJfXe8LoBEGKUuBzvTIp.output.script_queries.definitionMoid$",
+                        "workload.WorkloadDefinition",
+                        "Workload definition",
+                        "$activity.definition_activity_02XOMXWLYEQV73zlTHre4bGQ3JDmuV8NNDG.output.response_body$"
+                      ],
+                      "script_queries": [
+                        {
+                          "script_query": "status",
+                          "script_query_name": "status",
+                          "script_query_type": "string"
+                        },
+                        {
+                          "script_query": "failureCode",
+                          "script_query_name": "failureCode",
+                          "script_query_type": "string"
+                        },
+                        {
+                          "script_query": "failureMessage",
+                          "script_query_name": "failureMessage",
+                          "script_query_type": "string"
+                        },
+                        {
+                          "script_query": "failureError",
+                          "script_query_name": "failureError",
+                          "script_query_type": "string"
+                        },
+                        {
+                          "script_query": "failureResult",
+                          "script_query_name": "failureResult",
+                          "script_query_type": "string"
+                        },
+                        {
+                          "script_query": "detailJson",
+                          "script_query_name": "detailJson",
+                          "script_query_type": "string"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYG5SV1dlgxkoC3qiLvKXCDrC8SM",
+                    "name": "Condition Block",
+                    "title": "Validate definition detail",
+                    "type": "logic.if_else",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Immediately validates execution and semantic output from Validate related definition before dependent work continues.",
+                      "display_name": "Validate definition detail",
+                      "skip_execution": false,
+                      "conditions": []
+                    },
+                    "object_type": "definition_activity",
+                    "blocks": [
+                      {
+                        "unique_name": "definition_activity_02XOMXWLYFYUT2ufHQLuLRmYCZvFjBpM3F9",
+                        "name": "Condition Branch",
+                        "title": "definition detail helper failed",
+                        "type": "logic.condition_block",
+                        "base_type": "activity",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "description": "Handles a technical helper failure.",
+                          "display_name": "definition detail helper failed",
+                          "skip_execution": false,
+                          "condition": {
+                            "left_operand": "$activity.definition_activity_02XOMXWLYEUQ479B9cTXiWpXllAwtmtJJOa.output.succeeded$",
+                            "operator": "ne",
+                            "right_operand": true
+                          }
+                        },
+                        "object_type": "definition_activity",
+                        "actions": [
+                          {
+                            "unique_name": "definition_activity_02XOMXWLYFIND2WQe7VN3SjN3W4WBB75ihQ",
+                            "name": "Set Variables",
+                            "title": "Set definition detail helper failed outputs",
+                            "type": "core.set_multiple_variables",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Populates all four standard outputs for the definition detail helper failed terminal path.",
+                              "display_name": "Set definition detail helper failed outputs",
+                              "skip_execution": false,
+                              "variables_to_update": [
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                                  "variable_value_new": "{\"error\":\"definition detail helper failed\",\"activity\":\"Validate related definition\"}"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                                  "variable_value_new": "500"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                                  "variable_value_new": "definition detail helper failed"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                                  "variable_value_new": "The 'Validate related definition' activity failed before returning validated output."
+                                }
+                              ]
+                            },
+                            "object_type": "definition_activity"
+                          },
+                          {
+                            "unique_name": "definition_activity_02XOMXWLYFMIA5rGehgopAybQfZ6NCeXE5c",
+                            "name": "Completed",
+                            "title": "Completed - definition detail helper failed",
+                            "type": "logic.completed",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Ends the workflow after the definition detail helper failed outputs are populated.",
+                              "display_name": "Completed - definition detail helper failed",
+                              "skip_execution": false,
+                              "completion_type": "failed-completed",
+                              "result_message": "The 'Validate related definition' activity failed before returning validated output."
+                            },
+                            "object_type": "definition_activity"
+                          }
+                        ]
+                      },
+                      {
+                        "unique_name": "definition_activity_02XOMXWLYG1XY2v2TCHd5UvtYgKIgfvUAK3",
+                        "name": "Condition Branch",
+                        "title": "definition detail rejected",
+                        "type": "logic.condition_block",
+                        "base_type": "activity",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "description": "Handles invalid, ambiguous, missing, or unsupported data.",
+                          "display_name": "definition detail rejected",
+                          "skip_execution": false,
+                          "condition": {
+                            "left_operand": {
+                              "left_operand": "$activity.definition_activity_02XOMXWLYEUQ479B9cTXiWpXllAwtmtJJOa.output.succeeded$",
+                              "operator": "eq",
+                              "right_operand": true
+                            },
+                            "operator": "and",
+                            "right_operand": {
+                              "left_operand": "$activity.definition_activity_02XOMXWLYEUQ479B9cTXiWpXllAwtmtJJOa.output.script_queries.status$",
+                              "operator": "ne",
+                              "right_operand": "ready"
+                            }
+                          }
+                        },
+                        "object_type": "definition_activity",
+                        "actions": [
+                          {
+                            "unique_name": "definition_activity_02XOMXWLYFR4Z1slDqmLOgvaynYjqsYr1mj",
+                            "name": "Set Variables",
+                            "title": "Set definition detail rejected outputs",
+                            "type": "core.set_multiple_variables",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Populates all four standard outputs for the definition detail rejected terminal path.",
+                              "display_name": "Set definition detail rejected outputs",
+                              "skip_execution": false,
+                              "variables_to_update": [
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                                  "variable_value_new": "$activity.definition_activity_02XOMXWLYEUQ479B9cTXiWpXllAwtmtJJOa.output.script_queries.failureResult$"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                                  "variable_value_new": "$activity.definition_activity_02XOMXWLYEUQ479B9cTXiWpXllAwtmtJJOa.output.script_queries.failureCode$"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                                  "variable_value_new": "$activity.definition_activity_02XOMXWLYEUQ479B9cTXiWpXllAwtmtJJOa.output.script_queries.failureMessage$"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                                  "variable_value_new": "$activity.definition_activity_02XOMXWLYEUQ479B9cTXiWpXllAwtmtJJOa.output.script_queries.failureError$"
+                                }
+                              ]
+                            },
+                            "object_type": "definition_activity"
+                          },
+                          {
+                            "unique_name": "definition_activity_02XOMXWLYFUZW019SK58nBBfrvytCjQMxOb",
+                            "name": "Completed",
+                            "title": "Completed - definition detail rejected",
+                            "type": "logic.completed",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Ends the workflow after the definition detail rejected outputs are populated.",
+                              "display_name": "Completed - definition detail rejected",
+                              "skip_execution": false,
+                              "completion_type": "failed-completed",
+                              "result_message": "$activity.definition_activity_02XOMXWLYEUQ479B9cTXiWpXllAwtmtJJOa.output.script_queries.failureError$"
+                            },
+                            "object_type": "definition_activity"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYG8W06ezPtRLhklhuB9l9CIN74H",
+                    "name": "Set Variables",
+                    "title": "Store definition details",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Stores the validated definition item for the one final response object.",
+                      "display_name": "Store definition details",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.local.variable_workflow_02XOMXWLY5DMX7NvdcOFCzTeqmh7ZgfeZHn$",
+                          "variable_value_new": "$activity.definition_activity_02XOMXWLYEUQ479B9cTXiWpXllAwtmtJJOa.output.script_queries.detailJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOMXWLYIDAI5PFM3Y4GfNOzaV2eRFIJW9",
+            "name": "Condition Block",
+            "title": "Route optional current input detail",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Calls the current DeploymentInput item only when requested and the validated relationship is present.",
+              "display_name": "Route optional current input detail",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOMXWLYI9FL2uFUGmMDIQcqckewBTJ08C",
+                "name": "Condition Branch",
+                "title": "Current input detail was requested",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Retrieves exactly the current immutable deployment-input snapshot.",
+                  "display_name": "Current input detail was requested",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.input.variable_workflow_02XOMXWLY5AJS1nkFB58OzPA3Z210XENHJK$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOMXWLYDL6Y4OQJfXe8LoBEGKUuBzvTIp.output.script_queries.hasDeploymentInput$",
+                      "operator": "eq",
+                      "right_operand": "true"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYGKGR0FuNiUijI5R0pkVnmnEQFl",
+                    "name": "Generic Cisco Intersight API Request",
+                    "title": "Get current deployment input",
+                    "type": "intersight.api_request",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": true,
+                      "description": "Retrieves only the deployment's current immutable DeploymentInput relationship; history is never enumerated. A generic request is used because no purpose-built deployment-input detail atomic is present; replace it if supported.",
+                      "display_name": "Get current deployment input",
+                      "skip_execution": false,
+                      "action_timeout": 180,
+                      "api_method": "GET",
+                      "api_url": "/api/v1/workload/DeploymentInputs/$activity.definition_activity_02XOMXWLYDL6Y4OQJfXe8LoBEGKUuBzvTIp.output.script_queries.deploymentInputMoid$",
+                      "content_type": "application/json",
+                      "endpoint": "primary",
+                      "runtime_user": {
+                        "target_default": true
+                      },
+                      "target": {
+                        "use_workflow_target": true
+                      }
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYH62O1EqdhfMzj4EVuzaCNgDDz6",
+                    "name": "Condition Block",
+                    "title": "Validate deployment input lookup response",
+                    "type": "logic.if_else",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Requires Get current deployment input to succeed with a numeric HTTP status from 200 through 299.",
+                      "display_name": "Validate deployment input lookup response",
+                      "skip_execution": false,
+                      "conditions": []
+                    },
+                    "object_type": "definition_activity",
+                    "blocks": [
+                      {
+                        "unique_name": "definition_activity_02XOMXWLYH2ZJ6FBWTyYnyAReETlwnsbPTK",
+                        "name": "Condition Branch",
+                        "title": "deployment input lookup returned failure",
+                        "type": "logic.condition_block",
+                        "base_type": "activity",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "description": "Stops on activity failure or any non-2xx HTTP status.",
+                          "display_name": "deployment input lookup returned failure",
+                          "skip_execution": false,
+                          "condition": {
+                            "left_operand": {
+                              "left_operand": "$activity.definition_activity_02XOMXWLYGKGR0FuNiUijI5R0pkVnmnEQFl.output.succeeded$",
+                              "operator": "ne",
+                              "right_operand": true
+                            },
+                            "operator": "or",
+                            "right_operand": {
+                              "left_operand": {
+                                "left_operand": "$activity.definition_activity_02XOMXWLYGKGR0FuNiUijI5R0pkVnmnEQFl.output.succeeded$",
+                                "operator": "eq",
+                                "right_operand": true
+                              },
+                              "operator": "and",
+                              "right_operand": {
+                                "left_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOMXWLYGKGR0FuNiUijI5R0pkVnmnEQFl.output.status_code$",
+                                  "operator": "lt",
+                                  "right_operand": 200
+                                },
+                                "operator": "or",
+                                "right_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOMXWLYGKGR0FuNiUijI5R0pkVnmnEQFl.output.status_code$",
+                                  "operator": "gte",
+                                  "right_operand": 300
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "object_type": "definition_activity",
+                        "actions": [
+                          {
+                            "unique_name": "definition_activity_02XOMXWLYGV9P0JbP26jd7oBcIgo5hR8Pv2",
+                            "name": "Set Variables",
+                            "title": "Set deployment input lookup HTTP failure outputs",
+                            "type": "core.set_multiple_variables",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Populates all four standard outputs for the deployment input lookup http failure terminal path.",
+                              "display_name": "Set deployment input lookup HTTP failure outputs",
+                              "skip_execution": false,
+                              "variables_to_update": [
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                                  "variable_value_new": "{\"error\":\"API activity failed or returned non-2xx\",\"activity\":\"Get current deployment input\",\"statusCode\":\"$activity.definition_activity_02XOMXWLYGKGR0FuNiUijI5R0pkVnmnEQFl.output.status_code$\"}"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                                  "variable_value_new": "502"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                                  "variable_value_new": "deployment input lookup failed or returned non-2xx"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                                  "variable_value_new": "deployment input lookup failed or returned a non-2xx response. Review the activity status and response body."
+                                }
+                              ]
+                            },
+                            "object_type": "definition_activity"
+                          },
+                          {
+                            "unique_name": "definition_activity_02XOMXWLYGZ4M4nPFS0uunXckFI51hQ1MBm",
+                            "name": "Completed",
+                            "title": "Completed - deployment input lookup HTTP failure",
+                            "type": "logic.completed",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Ends the workflow after the deployment input lookup http failure outputs are populated.",
+                              "display_name": "Completed - deployment input lookup HTTP failure",
+                              "skip_execution": false,
+                              "completion_type": "failed-completed",
+                              "result_message": "deployment input lookup failed or returned a non-2xx response. Review the activity status and response body."
+                            },
+                            "object_type": "definition_activity"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYGP3G300JLvsmZmJprleAi69TiF",
+                    "name": "Execute Python Script",
+                    "title": "Validate current deployment input",
+                    "type": "python3.script",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": true,
+                      "description": "Requires the item Moid and concrete type to match the deployment's current DeploymentInput relationship.",
+                      "display_name": "Validate current deployment input",
+                      "skip_execution": false,
+                      "action_timeout": 180,
+                      "script": "import json\nimport re\nimport sys\n\nstatus = \"invalid\"\nfailureCode = \"502\"\nfailureMessage = \"Related resource response was invalid\"\nfailureError = \"The related item response could not be validated.\"\nfailureResult = \"{}\"\ndetailJson = \"null\"\nexpectedMoid = sys.argv[1]\nexpectedType = sys.argv[2]\nlabel = sys.argv[3]\nmoidPattern = re.compile(r\"^[A-Za-z0-9][A-Za-z0-9._~-]{0,127}$\")\ntry:\n    item = json.loads(sys.argv[4])\n    if not isinstance(item, dict):\n        raise ValueError(label + \" response is not an object.\")\n    if not moidPattern.fullmatch(expectedMoid) or str(item.get(\"Moid\",\"\")).strip() != expectedMoid:\n        raise ValueError(label + \" Moid does not match its relationship.\")\n    if item.get(\"ClassId\") != expectedType or item.get(\"ObjectType\") != expectedType:\n        raise ValueError(label + \" discriminators do not match \" + expectedType + \".\")\n    detailJson = json.dumps(item, separators=(\",\",\":\"), ensure_ascii=False, allow_nan=False)\n    status = \"ready\"\n    failureCode = failureMessage = failureError = \"\"\n    failureResult = \"{}\"\nexcept Exception as exc:\n    failureMessage = label + \" response was invalid\"\n    failureError = \"The related item failed identity validation: \" + str(exc)\n    failureResult = json.dumps({\"error\":failureMessage,\"details\":failureError}, separators=(\",\",\":\"))\n",
+                      "script_arguments": [
+                        "$activity.definition_activity_02XOMXWLYDL6Y4OQJfXe8LoBEGKUuBzvTIp.output.script_queries.deploymentInputMoid$",
+                        "workload.DeploymentInput",
+                        "Current deployment input",
+                        "$activity.definition_activity_02XOMXWLYGKGR0FuNiUijI5R0pkVnmnEQFl.output.response_body$"
+                      ],
+                      "script_queries": [
+                        {
+                          "script_query": "status",
+                          "script_query_name": "status",
+                          "script_query_type": "string"
+                        },
+                        {
+                          "script_query": "failureCode",
+                          "script_query_name": "failureCode",
+                          "script_query_type": "string"
+                        },
+                        {
+                          "script_query": "failureMessage",
+                          "script_query_name": "failureMessage",
+                          "script_query_type": "string"
+                        },
+                        {
+                          "script_query": "failureError",
+                          "script_query_name": "failureError",
+                          "script_query_type": "string"
+                        },
+                        {
+                          "script_query": "failureResult",
+                          "script_query_name": "failureResult",
+                          "script_query_type": "string"
+                        },
+                        {
+                          "script_query": "detailJson",
+                          "script_query_name": "detailJson",
+                          "script_query_type": "string"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYI1PR00aOlvl5QUDQX5apaJMCvl",
+                    "name": "Condition Block",
+                    "title": "Validate deployment input detail",
+                    "type": "logic.if_else",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Immediately validates execution and semantic output from Validate current deployment input before dependent work continues.",
+                      "display_name": "Validate deployment input detail",
+                      "skip_execution": false,
+                      "conditions": []
+                    },
+                    "object_type": "definition_activity",
+                    "blocks": [
+                      {
+                        "unique_name": "definition_activity_02XOMXWLYHTZX4jHAsPENGPeuzMkLkCM5hg",
+                        "name": "Condition Branch",
+                        "title": "deployment input detail helper failed",
+                        "type": "logic.condition_block",
+                        "base_type": "activity",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "description": "Handles a technical helper failure.",
+                          "display_name": "deployment input detail helper failed",
+                          "skip_execution": false,
+                          "condition": {
+                            "left_operand": "$activity.definition_activity_02XOMXWLYGP3G300JLvsmZmJprleAi69TiF.output.succeeded$",
+                            "operator": "ne",
+                            "right_operand": true
+                          }
+                        },
+                        "object_type": "definition_activity",
+                        "actions": [
+                          {
+                            "unique_name": "definition_activity_02XOMXWLYHDSH5hfB89JfQeTXcLkeHnnP0Y",
+                            "name": "Set Variables",
+                            "title": "Set deployment input detail helper failed outputs",
+                            "type": "core.set_multiple_variables",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Populates all four standard outputs for the deployment input detail helper failed terminal path.",
+                              "display_name": "Set deployment input detail helper failed outputs",
+                              "skip_execution": false,
+                              "variables_to_update": [
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                                  "variable_value_new": "{\"error\":\"deployment input detail helper failed\",\"activity\":\"Validate current deployment input\"}"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                                  "variable_value_new": "500"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                                  "variable_value_new": "deployment input detail helper failed"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                                  "variable_value_new": "The 'Validate current deployment input' activity failed before returning validated output."
+                                }
+                              ]
+                            },
+                            "object_type": "definition_activity"
+                          },
+                          {
+                            "unique_name": "definition_activity_02XOMXWLYHHNE4dpnV4bDytcxkHATWXtyn3",
+                            "name": "Completed",
+                            "title": "Completed - deployment input detail helper failed",
+                            "type": "logic.completed",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Ends the workflow after the deployment input detail helper failed outputs are populated.",
+                              "display_name": "Completed - deployment input detail helper failed",
+                              "skip_execution": false,
+                              "completion_type": "failed-completed",
+                              "result_message": "The 'Validate current deployment input' activity failed before returning validated output."
+                            },
+                            "object_type": "definition_activity"
+                          }
+                        ]
+                      },
+                      {
+                        "unique_name": "definition_activity_02XOMXWLYHXUU4gHzGW0eLGXWkI5zYIySj0",
+                        "name": "Condition Branch",
+                        "title": "deployment input detail rejected",
+                        "type": "logic.condition_block",
+                        "base_type": "activity",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "description": "Handles invalid, ambiguous, missing, or unsupported data.",
+                          "display_name": "deployment input detail rejected",
+                          "skip_execution": false,
+                          "condition": {
+                            "left_operand": {
+                              "left_operand": "$activity.definition_activity_02XOMXWLYGP3G300JLvsmZmJprleAi69TiF.output.succeeded$",
+                              "operator": "eq",
+                              "right_operand": true
+                            },
+                            "operator": "and",
+                            "right_operand": {
+                              "left_operand": "$activity.definition_activity_02XOMXWLYGP3G300JLvsmZmJprleAi69TiF.output.script_queries.status$",
+                              "operator": "ne",
+                              "right_operand": "ready"
+                            }
+                          }
+                        },
+                        "object_type": "definition_activity",
+                        "actions": [
+                          {
+                            "unique_name": "definition_activity_02XOMXWLYHMA35MeqIOBtSieaYAN6Dv8YOz",
+                            "name": "Set Variables",
+                            "title": "Set deployment input detail rejected outputs",
+                            "type": "core.set_multiple_variables",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Populates all four standard outputs for the deployment input detail rejected terminal path.",
+                              "display_name": "Set deployment input detail rejected outputs",
+                              "skip_execution": false,
+                              "variables_to_update": [
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                                  "variable_value_new": "$activity.definition_activity_02XOMXWLYGP3G300JLvsmZmJprleAi69TiF.output.script_queries.failureResult$"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                                  "variable_value_new": "$activity.definition_activity_02XOMXWLYGP3G300JLvsmZmJprleAi69TiF.output.script_queries.failureCode$"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                                  "variable_value_new": "$activity.definition_activity_02XOMXWLYGP3G300JLvsmZmJprleAi69TiF.output.script_queries.failureMessage$"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                                  "variable_value_new": "$activity.definition_activity_02XOMXWLYGP3G300JLvsmZmJprleAi69TiF.output.script_queries.failureError$"
+                                }
+                              ]
+                            },
+                            "object_type": "definition_activity"
+                          },
+                          {
+                            "unique_name": "definition_activity_02XOMXWLYHQ507dYMtTufRPZ9g1nhPtGt2S",
+                            "name": "Completed",
+                            "title": "Completed - deployment input detail rejected",
+                            "type": "logic.completed",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Ends the workflow after the deployment input detail rejected outputs are populated.",
+                              "display_name": "Completed - deployment input detail rejected",
+                              "skip_execution": false,
+                              "completion_type": "failed-completed",
+                              "result_message": "$activity.definition_activity_02XOMXWLYGP3G300JLvsmZmJprleAi69TiF.output.script_queries.failureError$"
+                            },
+                            "object_type": "definition_activity"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOMXWLYI5KO6WlwSiZj1MSDf9TTyP8ETj",
+                    "name": "Set Variables",
+                    "title": "Store current deployment input",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Stores the validated current snapshot without reading input history.",
+                      "display_name": "Store current deployment input",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.local.variable_workflow_02XOMXWLY5HHU0cKUfFet4qJZHmU752f0bL$",
+                          "variable_value_new": "$activity.definition_activity_02XOMXWLYGP3G300JLvsmZmJprleAi69TiF.output.script_queries.detailJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOMXWLYILS43bUm56cu2lKjQh3vl2GC2e",
+        "name": "Execute Python Script",
+        "title": "Assemble one deployment result",
+        "type": "python3.script",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": true,
+          "description": "Builds one primary deployment result with optional related items and explicit non-enumeration scope metadata.",
+          "display_name": "Assemble one deployment result",
+          "skip_execution": false,
+          "action_timeout": 180,
+          "script": "import json\nimport sys\n\nstatus = \"invalid\"\nfailureCode = \"500\"\nfailureMessage = \"Deployment result assembly failed\"\nfailureError = \"The validated deployment details could not be assembled.\"\nfailureResult = \"{}\"\nresultJson = \"{}\"\ntry:\n    deployment = json.loads(sys.argv[1])\n    definition = json.loads(sys.argv[2])\n    currentInput = json.loads(sys.argv[3])\n    includeDefinition = sys.argv[4].strip().lower() == \"true\"\n    includeInput = sys.argv[5].strip().lower() == \"true\"\n    hasInput = sys.argv[6].strip().lower() == \"true\"\n    if not isinstance(deployment, dict) or deployment.get(\"ObjectType\") != \"workload.WorkloadDeployment\":\n        raise ValueError(\"The primary deployment object is invalid.\")\n    result = {\n        \"Deployment\": deployment,\n        \"Definition\": definition if includeDefinition else None,\n        \"CurrentDeploymentInput\": currentInput if includeInput and hasInput else None,\n        \"CurrentDeploymentInputReason\": \"\" if not includeInput or hasInput else \"The deployment has no current DeploymentInput relationship.\",\n        \"Scope\": {\"PrimaryResourceCount\":1,\"InstancesEnumerated\":False,\"DeploymentInputHistoryEnumerated\":False}\n    }\n    resultJson = json.dumps(result, separators=(\",\",\":\"), ensure_ascii=False, allow_nan=False)\n    status = \"ready\"\n    failureCode = failureMessage = failureError = \"\"\n    failureResult = \"{}\"\nexcept Exception as exc:\n    failureError = \"Result assembly failed: \" + str(exc)\n    failureResult = json.dumps({\"error\":failureMessage,\"details\":failureError}, separators=(\",\",\":\"))\n",
+          "script_arguments": [
+            "$activity.definition_activity_02XOMXWLYDL6Y4OQJfXe8LoBEGKUuBzvTIp.output.script_queries.deploymentJson$",
+            "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.local.variable_workflow_02XOMXWLY5DMX7NvdcOFCzTeqmh7ZgfeZHn$",
+            "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.local.variable_workflow_02XOMXWLY5HHU0cKUfFet4qJZHmU752f0bL$",
+            "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.input.variable_workflow_02XOMXWLY56OV5OHf5JXZhpHVKUbydyWBaM$",
+            "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.input.variable_workflow_02XOMXWLY5AJS1nkFB58OzPA3Z210XENHJK$",
+            "$activity.definition_activity_02XOMXWLYDL6Y4OQJfXe8LoBEGKUuBzvTIp.output.script_queries.hasDeploymentInput$"
+          ],
+          "script_queries": [
+            {
+              "script_query": "status",
+              "script_query_name": "status",
+              "script_query_type": "string"
+            },
+            {
+              "script_query": "failureCode",
+              "script_query_name": "failureCode",
+              "script_query_type": "string"
+            },
+            {
+              "script_query": "failureMessage",
+              "script_query_name": "failureMessage",
+              "script_query_type": "string"
+            },
+            {
+              "script_query": "failureError",
+              "script_query_name": "failureError",
+              "script_query_type": "string"
+            },
+            {
+              "script_query": "failureResult",
+              "script_query_name": "failureResult",
+              "script_query_type": "string"
+            },
+            {
+              "script_query": "resultJson",
+              "script_query_name": "resultJson",
+              "script_query_type": "string"
+            }
+          ]
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_02XOMXWLYJGNF2GK4nZV2vz7NPNfv4GQZGB",
+        "name": "Condition Block",
+        "title": "Validate deployment result assembly",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Immediately validates execution and semantic output from Assemble one deployment result before dependent work continues.",
+          "display_name": "Validate deployment result assembly",
+          "skip_execution": false,
+          "conditions": []
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_02XOMXWLYJ9PD59RMz2dYxZR60HUUAW1jSI",
+            "name": "Condition Branch",
+            "title": "deployment result assembly helper failed",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Handles a technical helper failure.",
+              "display_name": "deployment result assembly helper failed",
+              "skip_execution": false,
+              "condition": {
+                "left_operand": "$activity.definition_activity_02XOMXWLYILS43bUm56cu2lKjQh3vl2GC2e.output.succeeded$",
+                "operator": "ne",
+                "right_operand": true
+              }
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOMXWLYITHX4qtQZvJWQKHeYzrRSz3hbb",
+                "name": "Set Variables",
+                "title": "Set deployment result assembly helper fail outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all four standard outputs for the deployment result assembly helper failed terminal path.",
+                  "display_name": "Set deployment result assembly helper fail outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                      "variable_value_new": "{\"error\":\"deployment result assembly helper failed\",\"activity\":\"Assemble one deployment result\"}"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                      "variable_value_new": "500"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                      "variable_value_new": "deployment result assembly helper failed"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                      "variable_value_new": "The 'Assemble one deployment result' activity failed before returning validated output."
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOMXWLYIY4M3IlmNHNv1OiM0F5HBj0lqX",
+                "name": "Completed",
+                "title": "Completed - deployment result assembly helper fail",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow after the deployment result assembly helper failed outputs are populated.",
+                  "display_name": "Completed - deployment result assembly helper fail",
+                  "skip_execution": false,
+                  "completion_type": "failed-completed",
+                  "result_message": "The 'Assemble one deployment result' activity failed before returning validated output."
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOMXWLYJCSI6qkuId0w3JbOl8jvvjLtd7",
+            "name": "Condition Branch",
+            "title": "deployment result assembly rejected",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Handles invalid, ambiguous, missing, or unsupported data.",
+              "display_name": "deployment result assembly rejected",
+              "skip_execution": false,
+              "condition": {
+                "left_operand": {
+                  "left_operand": "$activity.definition_activity_02XOMXWLYILS43bUm56cu2lKjQh3vl2GC2e.output.succeeded$",
+                  "operator": "eq",
+                  "right_operand": true
+                },
+                "operator": "and",
+                "right_operand": {
+                  "left_operand": "$activity.definition_activity_02XOMXWLYILS43bUm56cu2lKjQh3vl2GC2e.output.script_queries.status$",
+                  "operator": "ne",
+                  "right_operand": "ready"
+                }
+              }
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOMXWLYJ1ZJ7CtVibGYRJXiYOkOYU3njQ",
+                "name": "Set Variables",
+                "title": "Set deployment result assembly rejected outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all four standard outputs for the deployment result assembly rejected terminal path.",
+                  "display_name": "Set deployment result assembly rejected outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+                      "variable_value_new": "$activity.definition_activity_02XOMXWLYILS43bUm56cu2lKjQh3vl2GC2e.output.script_queries.failureResult$"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+                      "variable_value_new": "$activity.definition_activity_02XOMXWLYILS43bUm56cu2lKjQh3vl2GC2e.output.script_queries.failureCode$"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+                      "variable_value_new": "$activity.definition_activity_02XOMXWLYILS43bUm56cu2lKjQh3vl2GC2e.output.script_queries.failureMessage$"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+                      "variable_value_new": "$activity.definition_activity_02XOMXWLYILS43bUm56cu2lKjQh3vl2GC2e.output.script_queries.failureError$"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOMXWLYJ5UG1Afgj7DtEqar9gAvkyASBl",
+                "name": "Completed",
+                "title": "Completed - deployment result assembly rejected",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow after the deployment result assembly rejected outputs are populated.",
+                  "display_name": "Completed - deployment result assembly rejected",
+                  "skip_execution": false,
+                  "completion_type": "failed-completed",
+                  "result_message": "$activity.definition_activity_02XOMXWLYILS43bUm56cu2lKjQh3vl2GC2e.output.script_queries.failureError$"
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOMXWLYJKIC2GyE2fagZFQeFH3TnU3hi9",
+        "name": "Set Variables",
+        "title": "Set deployment details returned outputs",
+        "type": "core.set_multiple_variables",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Populates all four standard outputs for the deployment details returned terminal path.",
+          "display_name": "Set deployment details returned outputs",
+          "skip_execution": false,
+          "variables_to_update": [
+            {
+              "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4AA17QEDVHbc0A3bSxKtzosbBB$",
+              "variable_value_new": "$activity.definition_activity_02XOMXWLYILS43bUm56cu2lKjQh3vl2GC2e.output.script_queries.resultJson$"
+            },
+            {
+              "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4HZU6qF0rSkRHwTU1lB34nt0pL$",
+              "variable_value_new": "200"
+            },
+            {
+              "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4MMJ4rzB7dcGGM0CXtcOR5lUep$",
+              "variable_value_new": "Workload deployment details returned"
+            },
+            {
+              "variable_to_update": "$workflow.definition_workflow_02XOMXWLY3SJ44CmQpoLiiYaYejwNv0kYlD.output.variable_workflow_02XOMXWLY4R980Ll1bGcvZGlVAFYbhrprxb$",
+              "variable_value_new": ""
+            }
+          ]
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_02XOMXWLYJOD96rOqVWpfT7Nj9blmUtjkEf",
+        "name": "Completed",
+        "title": "Completed - deployment details returned",
+        "type": "logic.completed",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Ends the workflow after the deployment details returned outputs are populated.",
+          "display_name": "Completed - deployment details returned",
+          "skip_execution": false,
+          "completion_type": "succeeded",
+          "result_message": "Workload deployment details returned"
+        },
+        "object_type": "definition_activity"
+      }
+    ],
+    "categories": [
+      "category_02XOMFAGO64RD1QJmJ4HllBZCBt4SqRXGUs"
+    ]
+  }
+}

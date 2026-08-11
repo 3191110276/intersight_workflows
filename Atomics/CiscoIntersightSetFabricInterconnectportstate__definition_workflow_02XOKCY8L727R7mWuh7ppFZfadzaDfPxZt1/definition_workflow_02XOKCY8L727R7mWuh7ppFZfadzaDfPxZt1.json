@@ -1,0 +1,1734 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1",
+    "name": "Cisco Intersight - Set Fabric Interconnect port state",
+    "title": "Cisco Intersight - Set Fabric Interconnect port state",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "default",
+          "scope": "input",
+          "name": "Device Organization",
+          "type": "datatype.string",
+          "description": "Enter the Cisco Intersight organization that contains the Fabric Interconnect. Use \"default\" when it belongs to the default organization.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72FO2ca1rdGi8g2hh2BkGKf4sa",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "Fabric Interconnect Name",
+          "type": "datatype.string",
+          "description": "Enter the Fabric Interconnect name exactly as it appears in Cisco Intersight. The lookup is scoped to Device Organization.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72G64sMmo9w9qwPK7SETQ5oZVn",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.integer",
+        "properties": {
+          "value": 0,
+          "scope": "input",
+          "name": "Slot ID",
+          "type": "datatype.integer",
+          "description": "Physical slot identifier for the direct Fabric Interconnect port. Enter a positive integer.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": ""
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72FJ5s3THut2t8wyKGrhNJbxlZ",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.integer",
+        "properties": {
+          "value": 0,
+          "scope": "input",
+          "name": "Port ID",
+          "type": "datatype.integer",
+          "description": "Physical port identifier on the specified slot. Enter a positive integer.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": ""
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72FY3ZAIeZBYJOhJez2lVLyByX",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.integer",
+        "properties": {
+          "value": 0,
+          "scope": "input",
+          "name": "Aggregate Port ID",
+          "type": "datatype.integer",
+          "description": "Use 0 for a non-breakout port. For a breakout child, enter the parent port identifier.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": ""
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72FG0OBXNAo8uHscPMJl1k3wt0",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "New State",
+          "type": "datatype.string",
+          "description": "Requested administrative state. Valid values are \"Enabled\" and \"Disabled\".",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72G50y1PgAKFqehXhCDv0tvvIR",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "500",
+          "scope": "output",
+          "name": "Status Code",
+          "type": "datatype.string",
+          "description": "HTTP-style status code for the final workflow outcome. Accepted update requests return their HTTP 2xx status; validation and lookup-cardinality failures use an appropriate 4xx value; handled helper failures use 500 and handled API failures use 502.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72EF0DUPXiVllaJce84PihjNgl",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "Workflow execution did not reach a terminal output path",
+          "scope": "output",
+          "name": "Status Message",
+          "type": "datatype.string",
+          "description": "Human-readable summary of the final workflow outcome.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72DN25CxSWNnQCkKLbGuLuKwv0",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "The workflow ended before a terminal path populated the final output values. Review the workflow instance for the underlying activity error.",
+          "scope": "output",
+          "name": "Error Message",
+          "type": "datatype.string",
+          "description": "Detailed failure information. This value is empty when the workflow completes successfully.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72EE6K3w4h7TS7bHsoPYZk9tte",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "{\"error\":\"Workflow ended before a terminal output path completed\"}",
+          "scope": "output",
+          "name": "Result",
+          "type": "datatype.string",
+          "description": "Response data or structured validation details associated with the final workflow outcome.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "json"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72FX5iUi4H0gZJbKxN5dyhfSR6",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "atomic_group": "Cisco Intersight",
+        "is_atomic": true
+      },
+      "delete_workflow_instance": false,
+      "description": "Enables or disables one exact direct Fabric Interconnect physical port, including a breakout child. Prerequisites: select an Intersight endpoint target whose runtime user can read organizations and fabric port operations and can update the matched port operation. The workflow escapes OData string inputs, requires exactly one organization and one port match, fixes FexId at 0 to exclude FEX and IOM host ports, and verifies that the expanded network element has SwitchType FabricInterconnect before sending the update. A successful run confirms that Cisco Intersight accepted the PATCH request; it does not poll or verify device-side application of the new administrative state.",
+      "display_name": "Cisco Intersight - Set Fabric Interconnect port state",
+      "runtime_user": {
+        "override_target_runtime_user": false,
+        "specify_on_workflow_start": false,
+        "target_default": true
+      },
+      "target": {
+        "target_type": "intersight.endpoint",
+        "specify_on_workflow_start": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_02XOKCY8L71X96KS9C8fxoRKgYba1a2WhXq",
+        "name": "Condition Block",
+        "title": "Input validation",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "conditions": [],
+          "continue_on_failure": false,
+          "description": "Validates the requested state, required names, and physical port identifiers before making any API requests.",
+          "display_name": "Input validation",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L724L4XzeGmVMUbDpfZMaTa0mAT",
+            "name": "Condition Branch",
+            "title": "Invalid input values",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": {
+                  "left_operand": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": {
+                          "left_operand": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.input.variable_workflow_02XOKCY8L72G50y1PgAKFqehXhCDv0tvvIR$",
+                          "operator": "mregex",
+                          "right_operand": "^(?!(?:Enabled|Disabled)$).*$"
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.input.variable_workflow_02XOKCY8L72FO2ca1rdGi8g2hh2BkGKf4sa$",
+                          "operator": "mregex",
+                          "right_operand": "^\\s*$"
+                        }
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.input.variable_workflow_02XOKCY8L72G64sMmo9w9qwPK7SETQ5oZVn$",
+                        "operator": "mregex",
+                        "right_operand": "^\\s*$"
+                      }
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.input.variable_workflow_02XOKCY8L72FJ5s3THut2t8wyKGrhNJbxlZ$",
+                      "operator": "lt",
+                      "right_operand": 1
+                    }
+                  },
+                  "operator": "or",
+                  "right_operand": {
+                    "left_operand": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.input.variable_workflow_02XOKCY8L72FY3ZAIeZBYJOhJez2lVLyByX$",
+                    "operator": "lt",
+                    "right_operand": 1
+                  }
+                },
+                "operator": "or",
+                "right_operand": {
+                  "left_operand": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.input.variable_workflow_02XOKCY8L72FG0OBXNAo8uHscPMJl1k3wt0$",
+                  "operator": "lt",
+                  "right_operand": 0
+                }
+              },
+              "continue_on_failure": false,
+              "description": "Handles invalid input values, populates all standard failure outputs, and ends the workflow.",
+              "display_name": "Invalid input values",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L71UV0YbUS01mkQH2DFiCGgse9k",
+                "name": "Set Variables",
+                "title": "Set input validation failure outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all standard outputs when input validation fails.",
+                  "display_name": "Set input validation failure outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EF0DUPXiVllaJce84PihjNgl$",
+                      "variable_value_new": "400"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72DN25CxSWNnQCkKLbGuLuKwv0$",
+                      "variable_value_new": "Input validation failed"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EE6K3w4h7TS7bHsoPYZk9tte$",
+                      "variable_value_new": "Device Organization and Fabric Interconnect Name must not be blank. Slot ID and Port ID must be positive integers, Aggregate Port ID must be zero or greater, and New State must be \"Enabled\" or \"Disabled\"."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72FX5iUi4H0gZJbKxN5dyhfSR6$",
+                      "variable_value_new": "{\"error\":\"Invalid input values\",\"validStates\":[\"Enabled\",\"Disabled\"],\"portScope\":\"Direct Fabric Interconnect ports only; FexId must be 0\"}"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L712H6qHG03d9jVDPSBdKXulGIc",
+                "name": "Completed",
+                "title": "Completed - Input validation failed",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow as failed because one or more inputs do not meet the documented requirements.",
+                  "display_name": "Completed - Input validation failed",
+                  "result_message": "The provided input values do not meet the workflow requirements.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L72144CTED7CkjQh2S8AIKaMxaI",
+        "name": "Execute Python Script",
+        "title": "Escape OData filter values",
+        "type": "python3.script",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": true,
+          "description": "Escapes apostrophes in the organization and Fabric Interconnect names by doubling them, as required for OData string literals used by the Intersight lookup filters.",
+          "display_name": "Escape OData filter values",
+          "script": "import sys\n\nescapedOrganizationName = sys.argv[1].replace(\"'\", \"''\")\nescapedFabricInterconnectName = sys.argv[2].replace(\"'\", \"''\")",
+          "script_arguments": [
+            "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.input.variable_workflow_02XOKCY8L72FO2ca1rdGi8g2hh2BkGKf4sa$",
+            "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.input.variable_workflow_02XOKCY8L72G64sMmo9w9qwPK7SETQ5oZVn$"
+          ],
+          "script_queries": [
+            {
+              "script_query": "escapedOrganizationName",
+              "script_query_name": "escapedOrganizationName",
+              "script_query_type": "string"
+            },
+            {
+              "script_query": "escapedFabricInterconnectName",
+              "script_query_name": "escapedFabricInterconnectName",
+              "script_query_type": "string"
+            }
+          ],
+          "skip_execution": false
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L71V53IeMEuPUzKjVOidtrQyUQB",
+        "name": "Condition Block",
+        "title": "Validate OData filter preparation",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "conditions": [],
+          "continue_on_failure": false,
+          "description": "Requires the OData filter preparation activity to succeed and return both required values.",
+          "display_name": "Validate OData filter preparation",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L71TP78mS3dtqnrYaUbaXfWXlJt",
+            "name": "Condition Branch",
+            "title": "OData filter preparation failure",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L72144CTED7CkjQh2S8AIKaMxaI.output.succeeded$",
+                  "operator": "ne",
+                  "right_operand": true
+                },
+                "operator": "or",
+                "right_operand": {
+                  "left_operand": {
+                    "left_operand": "$activity.definition_activity_02XOKCY8L72144CTED7CkjQh2S8AIKaMxaI.output.succeeded$",
+                    "operator": "eq",
+                    "right_operand": true
+                  },
+                  "operator": "and",
+                  "right_operand": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L72144CTED7CkjQh2S8AIKaMxaI.output.script_queries.escapedOrganizationName$",
+                      "operator": "mregex",
+                      "right_operand": "^\\s*$"
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L72144CTED7CkjQh2S8AIKaMxaI.output.script_queries.escapedFabricInterconnectName$",
+                      "operator": "mregex",
+                      "right_operand": "^\\s*$"
+                    }
+                  }
+                }
+              },
+              "continue_on_failure": false,
+              "description": "Handles a technical OData filter preparation failure or missing required output data.",
+              "display_name": "OData filter preparation failure",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L71XI21AavK0yXWgIsTBRvZoYVh",
+                "name": "Set Variables",
+                "title": "Set OData filter preparation failure outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all standard outputs when OData filter preparation fails or returns unusable data.",
+                  "display_name": "Set OData filter preparation failure outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EF0DUPXiVllaJce84PihjNgl$",
+                      "variable_value_new": "500"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72DN25CxSWNnQCkKLbGuLuKwv0$",
+                      "variable_value_new": "OData filter preparation failed or returned unusable data"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EE6K3w4h7TS7bHsoPYZk9tte$",
+                      "variable_value_new": "The 'Escape OData filter values' activity failed or did not return non-empty escaped organization and Fabric Interconnect names. Review the activity execution details."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72FX5iUi4H0gZJbKxN5dyhfSR6$",
+                      "variable_value_new": "{\"error\":\"OData filter preparation failed or returned unusable data\",\"activity\":\"Escape OData filter values\"}"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L72517ehNkehbeQbB6I38os26nA",
+                "name": "Completed",
+                "title": "Completed - OData filter preparation failed",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow after the OData filter preparation failure outputs are populated.",
+                  "display_name": "Completed - OData filter preparation failed",
+                  "result_message": "The OData filter preparation activity failed or returned unusable data.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L71WN5KM2UA7e55afVDaj4W6viA",
+        "name": "Generic Cisco Intersight API Request",
+        "title": "Get organization",
+        "type": "intersight.api_request",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "api_method": "GET",
+          "api_url": "/api/v1/organization/Organizations?$filter=Name eq '$activity.definition_activity_02XOKCY8L72144CTED7CkjQh2S8AIKaMxaI.output.script_queries.escapedOrganizationName$'&$select=Moid,Name",
+          "content_type": "application/json",
+          "continue_on_failure": true,
+          "description": "Retrieves the requested Cisco Intersight organization. A generic API request is used because no purpose-built atomic for this lookup is present in the export; replace it with a supported atomic if one becomes available.",
+          "display_name": "Get organization",
+          "endpoint": "primary",
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "use_workflow_target": true
+          }
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L726Q3hXoEKbvQ62VoBERIotkbr",
+        "name": "Condition Block",
+        "title": "Validate organization lookup response",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "conditions": [],
+          "continue_on_failure": false,
+          "description": "Requires the organization lookup activity to succeed with an HTTP 2xx response; every other outcome follows one compact failure path that populates all standard outputs.",
+          "display_name": "Validate organization lookup response",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L725U6dNt6lIwM3biUfO7adNwVJ",
+            "name": "Condition Branch",
+            "title": "Organization lookup failure",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L71WN5KM2UA7e55afVDaj4W6viA.output.succeeded$",
+                  "operator": "ne",
+                  "right_operand": true
+                },
+                "operator": "or",
+                "right_operand": {
+                  "left_operand": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L71WN5KM2UA7e55afVDaj4W6viA.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L71WN5KM2UA7e55afVDaj4W6viA.output.status_code$",
+                      "operator": "lt",
+                      "right_operand": 1
+                    }
+                  },
+                  "operator": "or",
+                  "right_operand": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L71WN5KM2UA7e55afVDaj4W6viA.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L71WN5KM2UA7e55afVDaj4W6viA.output.status_code$",
+                        "operator": "gt",
+                        "right_operand": 0
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L71WN5KM2UA7e55afVDaj4W6viA.output.status_code$",
+                          "operator": "lt",
+                          "right_operand": 200
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L71WN5KM2UA7e55afVDaj4W6viA.output.status_code$",
+                          "operator": "gte",
+                          "right_operand": 300
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "continue_on_failure": false,
+              "description": "Handles a failed organization lookup activity, a missing or zero status, or a non-2xx HTTP response.",
+              "display_name": "Organization lookup failure",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L71Z66dXp0HgHb2vY8wcRm9SmSG",
+                "name": "Set Variables",
+                "title": "Set organization lookup failure outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all standard outputs when the organization lookup activity fails or does not return HTTP 2xx.",
+                  "display_name": "Set organization lookup failure outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EF0DUPXiVllaJce84PihjNgl$",
+                      "variable_value_new": "502"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72DN25CxSWNnQCkKLbGuLuKwv0$",
+                      "variable_value_new": "Organization lookup failed or returned a non-2xx response"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EE6K3w4h7TS7bHsoPYZk9tte$",
+                      "variable_value_new": "The 'Get organization' activity failed or returned a non-2xx HTTP response. Review the activity execution details for the underlying status and response body."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72FX5iUi4H0gZJbKxN5dyhfSR6$",
+                      "variable_value_new": "{\"error\":\"API activity failed or returned non-2xx\",\"activity\":\"Get organization\",\"operation\":\"organization lookup\"}"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L71Y92NJtujViBj5lPDTLgL0Dqs",
+                "name": "Completed",
+                "title": "Completed - Organization lookup failed",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow after the organization lookup failure outputs are populated.",
+                  "display_name": "Completed - Organization lookup failed",
+                  "result_message": "The organization lookup activity failed or did not return HTTP 2xx.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L712Z1f4el1IuVmdcKnZitTKCPm",
+        "name": "JSONPath Query",
+        "title": "Count organization results",
+        "type": "corejava.jsonpathquery",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": true,
+          "description": "Counts matching organization records so an empty or ambiguous successful response is handled before Moid extraction.",
+          "display_name": "Count organization results",
+          "input_json": "$activity.definition_activity_02XOKCY8L71WN5KM2UA7e55afVDaj4W6viA.output.response_body$",
+          "jsonpath_queries": [
+            {
+              "jsonpath_query": "$.Results.length()",
+              "jsonpath_query_name": "organizationResultsCount",
+              "jsonpath_query_type": "integer",
+              "set_default_value": false,
+              "zdate_type_format": "yyyy-MM-dd'T'HH:mm:ssZ"
+            }
+          ],
+          "skip_execution": false
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L723I4DYcnjO04hXDVoKLaeL52V",
+        "name": "Condition Block",
+        "title": "Check organization lookup results",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "conditions": [],
+          "continue_on_failure": false,
+          "description": "Requires the organization result-count activity to succeed and report exactly one match before extracting the organization Moid.",
+          "display_name": "Check organization lookup results",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L72401Pxh2ItMxQWO57kVrvkteS",
+            "name": "Condition Branch",
+            "title": "Organization result-count evaluation failed",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$activity.definition_activity_02XOKCY8L712Z1f4el1IuVmdcKnZitTKCPm.output.succeeded$",
+                "operator": "ne",
+                "right_operand": true
+              },
+              "continue_on_failure": false,
+              "description": "Handles a technical failure while counting organization lookup results.",
+              "display_name": "Organization result-count evaluation failed",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L72046Su2gMV7rkYkLTdWFdWmje",
+                "name": "Set Variables",
+                "title": "Set organization result-count failure outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all standard outputs when organization result-count evaluation fails.",
+                  "display_name": "Set organization result-count failure outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EF0DUPXiVllaJce84PihjNgl$",
+                      "variable_value_new": "500"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72DN25CxSWNnQCkKLbGuLuKwv0$",
+                      "variable_value_new": "Organization result-count evaluation failed"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EE6K3w4h7TS7bHsoPYZk9tte$",
+                      "variable_value_new": "Activity 'Count organization results' failed while evaluating a successful Intersight response. Expected a valid JSON object containing a Results array."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72FX5iUi4H0gZJbKxN5dyhfSR6$",
+                      "variable_value_new": "{\"error\":\"Result-count evaluation failed\",\"activity\":\"Count organization results\",\"expectedPath\":\"$.Results.length()\"}"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L721605e72p1n7kH1noWuiElYJY",
+                "name": "Completed",
+                "title": "Completed - Organization result-count evaluation failed",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow after organization result-count evaluation fails and all standard outputs are populated.",
+                  "display_name": "Completed - Organization result-count evaluation failed",
+                  "result_message": "The workflow could not evaluate the organization lookup response.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L71VC5CirSkEG6GEB7FZERg5GW0",
+            "name": "Condition Branch",
+            "title": "Organization lookup cardinality failure",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L712Z1f4el1IuVmdcKnZitTKCPm.output.succeeded$",
+                  "operator": "eq",
+                  "right_operand": true
+                },
+                "operator": "and",
+                "right_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L712Z1f4el1IuVmdcKnZitTKCPm.output.jsonpath_queries.organizationResultsCount$",
+                  "operator": "ne",
+                  "right_operand": 1
+                }
+              },
+              "continue_on_failure": false,
+              "description": "Handles an organization lookup that did not return exactly one match.",
+              "display_name": "Organization lookup cardinality failure",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L725A0srr5qVsNQS1sVmZbqDiLg",
+                "name": "Set Variables",
+                "title": "Set organization cardinality failure outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all standard outputs when the organization lookup does not return exactly one object.",
+                  "display_name": "Set organization cardinality failure outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EF0DUPXiVllaJce84PihjNgl$",
+                      "variable_value_new": "409"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72DN25CxSWNnQCkKLbGuLuKwv0$",
+                      "variable_value_new": "Organization lookup did not return exactly one match"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EE6K3w4h7TS7bHsoPYZk9tte$",
+                      "variable_value_new": "Organization '$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.input.variable_workflow_02XOKCY8L72FO2ca1rdGi8g2hh2BkGKf4sa$' returned $activity.definition_activity_02XOKCY8L712Z1f4el1IuVmdcKnZitTKCPm.output.jsonpath_queries.organizationResultsCount$ matches; exactly one is required."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72FX5iUi4H0gZJbKxN5dyhfSR6$",
+                      "variable_value_new": "$activity.definition_activity_02XOKCY8L71WN5KM2UA7e55afVDaj4W6viA.output.response_body$"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L720L0GhBgwsWbB5JsD4EPMJ6Rz",
+                "name": "Completed",
+                "title": "Completed - Organization cardinality failure",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow as failed after the organization lookup did not return exactly one matching object.",
+                  "display_name": "Completed - Organization cardinality failure",
+                  "result_message": "The workflow requires exactly one matching Cisco Intersight organization.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L71YA2oCUzKeGY6QE2iNH5BotxG",
+        "name": "JSONPath Query",
+        "title": "Extract organization Moid",
+        "type": "corejava.jsonpathquery",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": true,
+          "description": "Extracts the unique identifier of the exactly matched organization.",
+          "display_name": "Extract organization Moid",
+          "input_json": "$activity.definition_activity_02XOKCY8L71WN5KM2UA7e55afVDaj4W6viA.output.response_body$",
+          "jsonpath_queries": [
+            {
+              "jsonpath_query": "$.Results[0].Moid",
+              "jsonpath_query_name": "organizationMoid",
+              "jsonpath_query_type": "string",
+              "set_default_value": true,
+              "zdate_type_format": "yyyy-MM-dd'T'HH:mm:ssZ",
+              "default_value": ""
+            }
+          ],
+          "skip_execution": false
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L726E44Pz4GRSZDtUMrTXvhMw1j",
+        "name": "Condition Block",
+        "title": "Validate organization identifier extraction",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "conditions": [],
+          "continue_on_failure": false,
+          "description": "Requires organization identifier extraction to succeed and return a usable Moid.",
+          "display_name": "Validate organization identifier extraction",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L71US0ZUDSiBcqzDZrNS8vppJl5",
+            "name": "Condition Branch",
+            "title": "Organization identifier extraction failure",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L71YA2oCUzKeGY6QE2iNH5BotxG.output.succeeded$",
+                  "operator": "ne",
+                  "right_operand": true
+                },
+                "operator": "or",
+                "right_operand": {
+                  "left_operand": {
+                    "left_operand": "$activity.definition_activity_02XOKCY8L71YA2oCUzKeGY6QE2iNH5BotxG.output.succeeded$",
+                    "operator": "eq",
+                    "right_operand": true
+                  },
+                  "operator": "and",
+                  "right_operand": {
+                    "left_operand": "$activity.definition_activity_02XOKCY8L71YA2oCUzKeGY6QE2iNH5BotxG.output.jsonpath_queries.organizationMoid$",
+                    "operator": "mregex",
+                    "right_operand": "^\\s*$"
+                  }
+                }
+              },
+              "continue_on_failure": false,
+              "description": "Handles a technical extraction failure or a missing organization identifier.",
+              "display_name": "Organization identifier extraction failure",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L720764OVEXrCnKc4xJpuPQ23fD",
+                "name": "Set Variables",
+                "title": "Set organization identifier extraction failure outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all standard outputs when organization identifier extraction fails or returns unusable data.",
+                  "display_name": "Set organization identifier extraction failure outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EF0DUPXiVllaJce84PihjNgl$",
+                      "variable_value_new": "500"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72DN25CxSWNnQCkKLbGuLuKwv0$",
+                      "variable_value_new": "Organization identifier extraction failed or returned unusable data"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EE6K3w4h7TS7bHsoPYZk9tte$",
+                      "variable_value_new": "The 'Extract organization Moid' activity failed or did not return a usable organization identifier. Review the activity execution details."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72FX5iUi4H0gZJbKxN5dyhfSR6$",
+                      "variable_value_new": "{\"error\":\"Organization identifier extraction failed or returned unusable data\",\"activity\":\"Extract organization Moid\"}"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L71UW5ErgtPTdk5w3pEUBwj2ufA",
+                "name": "Completed",
+                "title": "Completed - Organization identifier extraction failed",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow after the organization identifier extraction failure outputs are populated.",
+                  "display_name": "Completed - Organization identifier extraction failed",
+                  "result_message": "The organization identifier extraction activity failed or returned unusable data.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L6Z5S4zLgne2raGgdAMQWCRGkX8",
+        "name": "Generic Cisco Intersight API Request",
+        "title": "Get Fabric Interconnect port operation",
+        "type": "intersight.api_request",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "api_method": "GET",
+          "api_url": "/api/v1/fabric/PortOperations?$filter=SwitchName eq '$activity.definition_activity_02XOKCY8L72144CTED7CkjQh2S8AIKaMxaI.output.script_queries.escapedFabricInterconnectName$' and SlotId eq $workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.input.variable_workflow_02XOKCY8L72FJ5s3THut2t8wyKGrhNJbxlZ$ and PortId eq $workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.input.variable_workflow_02XOKCY8L72FY3ZAIeZBYJOhJez2lVLyByX$ and AggregatePortId eq $workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.input.variable_workflow_02XOKCY8L72FG0OBXNAo8uHscPMJl1k3wt0$ and FexId eq 0 and PermissionResources.Moid eq '$activity.definition_activity_02XOKCY8L71YA2oCUzKeGY6QE2iNH5BotxG.output.jsonpath_queries.organizationMoid$'&$select=Moid,SwitchName,SlotId,PortId,AggregatePortId,FexId,NetworkElement&$expand=NetworkElement($select=Moid,SwitchType)",
+          "content_type": "application/json",
+          "continue_on_failure": true,
+          "description": "Retrieves the exact direct Fabric Interconnect physical port operation, including a breakout child when Aggregate Port ID is nonzero. The lookup fixes FexId at 0 to exclude FEX and IOM host ports, expands the related network element for subtype validation, and uses a generic request because no purpose-built atomic is present; replace it with a supported atomic if one becomes available.",
+          "display_name": "Get Fabric Interconnect port operation",
+          "endpoint": "primary",
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "use_workflow_target": true
+          }
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L71L66BDDgvjzXu9z1ppH6vcB3o",
+        "name": "Condition Block",
+        "title": "Validate port lookup response",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "conditions": [],
+          "continue_on_failure": false,
+          "description": "Requires the Fabric Interconnect port lookup activity to succeed with an HTTP 2xx response; every other outcome follows one compact failure path that populates all standard outputs.",
+          "display_name": "Validate port lookup response",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L720Y2PVb8JT26OEzavWlCrBo2Y",
+            "name": "Condition Branch",
+            "title": "Fabric Interconnect port lookup failure",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L6Z5S4zLgne2raGgdAMQWCRGkX8.output.succeeded$",
+                  "operator": "ne",
+                  "right_operand": true
+                },
+                "operator": "or",
+                "right_operand": {
+                  "left_operand": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L6Z5S4zLgne2raGgdAMQWCRGkX8.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L6Z5S4zLgne2raGgdAMQWCRGkX8.output.status_code$",
+                      "operator": "lt",
+                      "right_operand": 1
+                    }
+                  },
+                  "operator": "or",
+                  "right_operand": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L6Z5S4zLgne2raGgdAMQWCRGkX8.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L6Z5S4zLgne2raGgdAMQWCRGkX8.output.status_code$",
+                        "operator": "gt",
+                        "right_operand": 0
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L6Z5S4zLgne2raGgdAMQWCRGkX8.output.status_code$",
+                          "operator": "lt",
+                          "right_operand": 200
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L6Z5S4zLgne2raGgdAMQWCRGkX8.output.status_code$",
+                          "operator": "gte",
+                          "right_operand": 300
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "continue_on_failure": false,
+              "description": "Handles a failed Fabric Interconnect port lookup activity, a missing or zero status, or a non-2xx HTTP response.",
+              "display_name": "Fabric Interconnect port lookup failure",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L71X61u3iy4u3kCF3bh7iec9exu",
+                "name": "Set Variables",
+                "title": "Set Fabric Interconnect port lookup failure outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all standard outputs when the Fabric Interconnect port lookup activity fails or does not return HTTP 2xx.",
+                  "display_name": "Set Fabric Interconnect port lookup failure outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EF0DUPXiVllaJce84PihjNgl$",
+                      "variable_value_new": "502"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72DN25CxSWNnQCkKLbGuLuKwv0$",
+                      "variable_value_new": "Fabric Interconnect port lookup failed or returned a non-2xx response"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EE6K3w4h7TS7bHsoPYZk9tte$",
+                      "variable_value_new": "The 'Get Fabric Interconnect port operation' activity failed or returned a non-2xx HTTP response. Review the activity execution details for the underlying status and response body."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72FX5iUi4H0gZJbKxN5dyhfSR6$",
+                      "variable_value_new": "{\"error\":\"API activity failed or returned non-2xx\",\"activity\":\"Get Fabric Interconnect port operation\",\"operation\":\"Fabric Interconnect port lookup\"}"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L721N2CYCBFZatnDCKxpOZz1zNo",
+                "name": "Completed",
+                "title": "Completed - Fabric Interconnect port lookup failed",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow after the Fabric Interconnect port lookup failure outputs are populated.",
+                  "display_name": "Completed - Fabric Interconnect port lookup failed",
+                  "result_message": "The Fabric Interconnect port lookup activity failed or did not return HTTP 2xx.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L71UH5p1VQazoq5hneClXAwAjJ4",
+        "name": "JSONPath Query",
+        "title": "Count Fabric Interconnect port results",
+        "type": "corejava.jsonpathquery",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": true,
+          "description": "Counts matching port operation records so an empty or ambiguous successful response is handled before identifier extraction.",
+          "display_name": "Count Fabric Interconnect port results",
+          "input_json": "$activity.definition_activity_02XOKCY8L6Z5S4zLgne2raGgdAMQWCRGkX8.output.response_body$",
+          "jsonpath_queries": [
+            {
+              "jsonpath_query": "$.Results.length()",
+              "jsonpath_query_name": "portResultsCount",
+              "jsonpath_query_type": "integer",
+              "set_default_value": false,
+              "zdate_type_format": "yyyy-MM-dd'T'HH:mm:ssZ"
+            }
+          ],
+          "skip_execution": false
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L71W45Osd2eq8qylxDZd8IQU6cJ",
+        "name": "Condition Block",
+        "title": "Check Fabric Interconnect port lookup results",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "conditions": [],
+          "continue_on_failure": false,
+          "description": "Requires the port result-count activity to succeed and report exactly one match before extracting the port operation Moid and network element subtype.",
+          "display_name": "Check Fabric Interconnect port lookup results",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L71AH7kNhFomR3JlPWQymhLp7eG",
+            "name": "Condition Branch",
+            "title": "Port result-count evaluation failed",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$activity.definition_activity_02XOKCY8L71UH5p1VQazoq5hneClXAwAjJ4.output.succeeded$",
+                "operator": "ne",
+                "right_operand": true
+              },
+              "continue_on_failure": false,
+              "description": "Handles a technical failure while counting port lookup results.",
+              "display_name": "Port result-count evaluation failed",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L720I1PkdL3JvoCjlmlq6iEUokl",
+                "name": "Set Variables",
+                "title": "Set port result-count failure outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all standard outputs when port result-count evaluation fails.",
+                  "display_name": "Set port result-count failure outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EF0DUPXiVllaJce84PihjNgl$",
+                      "variable_value_new": "500"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72DN25CxSWNnQCkKLbGuLuKwv0$",
+                      "variable_value_new": "Port result-count evaluation failed"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EE6K3w4h7TS7bHsoPYZk9tte$",
+                      "variable_value_new": "Activity 'Count Fabric Interconnect port results' failed while evaluating a successful Intersight response. Expected a valid JSON object containing a Results array."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72FX5iUi4H0gZJbKxN5dyhfSR6$",
+                      "variable_value_new": "{\"error\":\"Result-count evaluation failed\",\"activity\":\"Count Fabric Interconnect port results\",\"expectedPath\":\"$.Results.length()\"}"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L722R7h5VDmKD7Gok9Dhysz0RBU",
+                "name": "Completed",
+                "title": "Completed - Port result-count evaluation failed",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow after port result-count evaluation fails and all standard outputs are populated.",
+                  "display_name": "Completed - Port result-count evaluation failed",
+                  "result_message": "The workflow could not evaluate the Fabric Interconnect port lookup response.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L71U61diuJtza562HNxLgoafnwB",
+            "name": "Condition Branch",
+            "title": "Port lookup cardinality failure",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L71UH5p1VQazoq5hneClXAwAjJ4.output.succeeded$",
+                  "operator": "eq",
+                  "right_operand": true
+                },
+                "operator": "and",
+                "right_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L71UH5p1VQazoq5hneClXAwAjJ4.output.jsonpath_queries.portResultsCount$",
+                  "operator": "ne",
+                  "right_operand": 1
+                }
+              },
+              "continue_on_failure": false,
+              "description": "Handles a direct port lookup that did not return exactly one match.",
+              "display_name": "Port lookup cardinality failure",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L725B6kEvrmhhsZJDQMJJgCvSIe",
+                "name": "Set Variables",
+                "title": "Set port cardinality failure outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all standard outputs when the exact direct port lookup does not return one object.",
+                  "display_name": "Set port cardinality failure outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EF0DUPXiVllaJce84PihjNgl$",
+                      "variable_value_new": "409"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72DN25CxSWNnQCkKLbGuLuKwv0$",
+                      "variable_value_new": "Fabric Interconnect port lookup did not return exactly one match"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EE6K3w4h7TS7bHsoPYZk9tte$",
+                      "variable_value_new": "Port lookup for Fabric Interconnect '$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.input.variable_workflow_02XOKCY8L72G64sMmo9w9qwPK7SETQ5oZVn$', slot $workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.input.variable_workflow_02XOKCY8L72FJ5s3THut2t8wyKGrhNJbxlZ$, port $workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.input.variable_workflow_02XOKCY8L72FY3ZAIeZBYJOhJez2lVLyByX$, aggregate port $workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.input.variable_workflow_02XOKCY8L72FG0OBXNAo8uHscPMJl1k3wt0$, and FexId 0 returned $activity.definition_activity_02XOKCY8L71UH5p1VQazoq5hneClXAwAjJ4.output.jsonpath_queries.portResultsCount$ matches; exactly one is required."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72FX5iUi4H0gZJbKxN5dyhfSR6$",
+                      "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z5S4zLgne2raGgdAMQWCRGkX8.output.response_body$"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L71XC2Ek9Rs4dxa3Qk2MbEiXjHy",
+                "name": "Completed",
+                "title": "Completed - Port cardinality failure",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow as failed after the direct Fabric Interconnect port lookup did not return exactly one object.",
+                  "display_name": "Completed - Port cardinality failure",
+                  "result_message": "The workflow requires exactly one matching direct Fabric Interconnect physical port.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L71XZ5BFX0lUc3fZAuNgJQWt2f8",
+        "name": "JSONPath Query",
+        "title": "Extract port operation and network element identity",
+        "type": "corejava.jsonpathquery",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": true,
+          "description": "Extracts the exactly matched port operation Moid and the related network element subtype.",
+          "display_name": "Extract port operation and network element identity",
+          "input_json": "$activity.definition_activity_02XOKCY8L6Z5S4zLgne2raGgdAMQWCRGkX8.output.response_body$",
+          "jsonpath_queries": [
+            {
+              "jsonpath_query": "$.Results[0].Moid",
+              "jsonpath_query_name": "portOperationMoid",
+              "jsonpath_query_type": "string",
+              "set_default_value": true,
+              "zdate_type_format": "yyyy-MM-dd'T'HH:mm:ssZ",
+              "default_value": ""
+            },
+            {
+              "jsonpath_query": "$.Results[0].NetworkElement.SwitchType",
+              "jsonpath_query_name": "networkElementSwitchType",
+              "jsonpath_query_type": "string",
+              "set_default_value": true,
+              "zdate_type_format": "yyyy-MM-dd'T'HH:mm:ssZ",
+              "default_value": ""
+            }
+          ],
+          "skip_execution": false
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L712V4QAjWf4uEk7JDgpSSpcsoU",
+        "name": "Condition Block",
+        "title": "Validate port identity extraction",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "conditions": [],
+          "continue_on_failure": false,
+          "description": "Requires port identity extraction to succeed and return a port operation Moid and network element subtype.",
+          "display_name": "Validate port identity extraction",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L71YU5zVdyUX4KmpwjTvIrCu7jj",
+            "name": "Condition Branch",
+            "title": "Port identity extraction failure",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L71XZ5BFX0lUc3fZAuNgJQWt2f8.output.succeeded$",
+                  "operator": "ne",
+                  "right_operand": true
+                },
+                "operator": "or",
+                "right_operand": {
+                  "left_operand": {
+                    "left_operand": "$activity.definition_activity_02XOKCY8L71XZ5BFX0lUc3fZAuNgJQWt2f8.output.succeeded$",
+                    "operator": "eq",
+                    "right_operand": true
+                  },
+                  "operator": "and",
+                  "right_operand": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L71XZ5BFX0lUc3fZAuNgJQWt2f8.output.jsonpath_queries.portOperationMoid$",
+                      "operator": "mregex",
+                      "right_operand": "^\\s*$"
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L71XZ5BFX0lUc3fZAuNgJQWt2f8.output.jsonpath_queries.networkElementSwitchType$",
+                      "operator": "mregex",
+                      "right_operand": "^\\s*$"
+                    }
+                  }
+                }
+              },
+              "continue_on_failure": false,
+              "description": "Handles a technical extraction failure or missing required identity data.",
+              "display_name": "Port identity extraction failure",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L723L50zrVQhBuotntBlE3qAlZ6",
+                "name": "Set Variables",
+                "title": "Set port identity extraction failure outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all standard outputs when port identity extraction fails or returns unusable data.",
+                  "display_name": "Set port identity extraction failure outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EF0DUPXiVllaJce84PihjNgl$",
+                      "variable_value_new": "500"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72DN25CxSWNnQCkKLbGuLuKwv0$",
+                      "variable_value_new": "Port identity extraction failed or returned unusable data"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EE6K3w4h7TS7bHsoPYZk9tte$",
+                      "variable_value_new": "The 'Extract port operation and network element identity' activity failed or did not return a usable port operation Moid and network element subtype. Review the activity execution details."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72FX5iUi4H0gZJbKxN5dyhfSR6$",
+                      "variable_value_new": "{\"error\":\"Port identity extraction failed or returned unusable data\",\"activity\":\"Extract port operation and network element identity\"}"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L71334SEWWVY0YHcBarwHZOuDH4",
+                "name": "Completed",
+                "title": "Completed - Port identity extraction failed",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow after the port identity extraction failure outputs are populated.",
+                  "display_name": "Completed - Port identity extraction failed",
+                  "result_message": "The port identity extraction activity failed or returned unusable data.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L71AD38ZegKP1rTeqtSkmeAfRE4",
+        "name": "Condition Block",
+        "title": "Validate Fabric Interconnect subtype",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "conditions": [],
+          "continue_on_failure": false,
+          "description": "Requires the port's related network element to have the exact SwitchType value FabricInterconnect before submitting the state change.",
+          "display_name": "Validate Fabric Interconnect subtype",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L721J2k4zIBuuQXdeRfprrV5sa0",
+            "name": "Condition Branch",
+            "title": "Network element is not a Fabric Interconnect",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$activity.definition_activity_02XOKCY8L71XZ5BFX0lUc3fZAuNgJQWt2f8.output.jsonpath_queries.networkElementSwitchType$",
+                "operator": "ne",
+                "right_operand": "FabricInterconnect"
+              },
+              "continue_on_failure": false,
+              "description": "Stops the workflow when the returned network element subtype is outside the direct Fabric Interconnect scope.",
+              "display_name": "Network element is not a Fabric Interconnect",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L71XV7EGoYXmATXZK8Kzf6cd1ck",
+                "name": "Set Variables",
+                "title": "Set Fabric Interconnect subtype mismatch outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all standard outputs when the matched port is not related to a Fabric Interconnect network element.",
+                  "display_name": "Set Fabric Interconnect subtype mismatch outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EF0DUPXiVllaJce84PihjNgl$",
+                      "variable_value_new": "409"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72DN25CxSWNnQCkKLbGuLuKwv0$",
+                      "variable_value_new": "Matched port is not a Fabric Interconnect port"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EE6K3w4h7TS7bHsoPYZk9tte$",
+                      "variable_value_new": "The matched port's related network element has SwitchType '$activity.definition_activity_02XOKCY8L71XZ5BFX0lUc3fZAuNgJQWt2f8.output.jsonpath_queries.networkElementSwitchType$'; the required value is 'FabricInterconnect'."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72FX5iUi4H0gZJbKxN5dyhfSR6$",
+                      "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z5S4zLgne2raGgdAMQWCRGkX8.output.response_body$"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L71VZ2JlaytHGBqwQtFfs9TcxRA",
+                "name": "Completed",
+                "title": "Completed - Fabric Interconnect subtype mismatch",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow after detecting that the matched port is not related to a Fabric Interconnect.",
+                  "display_name": "Completed - Fabric Interconnect subtype mismatch",
+                  "result_message": "The matched port is outside the Fabric Interconnect scope.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L712G0TpZiAN3BOOIOFZSfN7NUo",
+        "name": "Generic Cisco Intersight API Request",
+        "title": "Request Fabric Interconnect port state change",
+        "type": "intersight.api_request",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "api_method": "PATCH",
+          "api_url": "/api/v1/fabric/PortOperations/$activity.definition_activity_02XOKCY8L71XZ5BFX0lUc3fZAuNgJQWt2f8.output.jsonpath_queries.portOperationMoid$",
+          "content_type": "application/json",
+          "continue_on_failure": true,
+          "description": "Submits the requested administrative state for the exactly matched direct Fabric Interconnect port. A generic API request is used because no purpose-built atomic for this update is present in the export; replace it with a supported atomic if one becomes available. A successful response confirms request acceptance only; completion polling is a later enhancement.",
+          "display_name": "Request Fabric Interconnect port state change",
+          "endpoint": "primary",
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "use_workflow_target": true
+          },
+          "api_body": "{\"AdminState\":\"$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.input.variable_workflow_02XOKCY8L72G50y1PgAKFqehXhCDv0tvvIR$\"}"
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L72191yE5MIyFfgwEEB5AiMAfGo",
+        "name": "Condition Block",
+        "title": "Validate port state change response",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "conditions": [],
+          "continue_on_failure": false,
+          "description": "Requires the Fabric Interconnect port state change request activity to succeed with an HTTP 2xx response; every other outcome follows one compact failure path that populates all standard outputs.",
+          "display_name": "Validate port state change response",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L723U1k02yC99LoNsqndxFHJzu2",
+            "name": "Condition Branch",
+            "title": "Fabric Interconnect port state change request failure",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L712G0TpZiAN3BOOIOFZSfN7NUo.output.succeeded$",
+                  "operator": "ne",
+                  "right_operand": true
+                },
+                "operator": "or",
+                "right_operand": {
+                  "left_operand": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L712G0TpZiAN3BOOIOFZSfN7NUo.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L712G0TpZiAN3BOOIOFZSfN7NUo.output.status_code$",
+                      "operator": "lt",
+                      "right_operand": 1
+                    }
+                  },
+                  "operator": "or",
+                  "right_operand": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L712G0TpZiAN3BOOIOFZSfN7NUo.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L712G0TpZiAN3BOOIOFZSfN7NUo.output.status_code$",
+                        "operator": "gt",
+                        "right_operand": 0
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L712G0TpZiAN3BOOIOFZSfN7NUo.output.status_code$",
+                          "operator": "lt",
+                          "right_operand": 200
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L712G0TpZiAN3BOOIOFZSfN7NUo.output.status_code$",
+                          "operator": "gte",
+                          "right_operand": 300
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "continue_on_failure": false,
+              "description": "Handles a failed Fabric Interconnect port state change request activity, a missing or zero status, or a non-2xx HTTP response.",
+              "display_name": "Fabric Interconnect port state change request failure",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L723M6dKTZuGVgBRS3oYrmZbeuM",
+                "name": "Set Variables",
+                "title": "Set FI port-state change request failure outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all standard outputs when the Fabric Interconnect port state change request activity fails or does not return HTTP 2xx.",
+                  "display_name": "Set FI port-state change request failure outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EF0DUPXiVllaJce84PihjNgl$",
+                      "variable_value_new": "502"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72DN25CxSWNnQCkKLbGuLuKwv0$",
+                      "variable_value_new": "Fabric Interconnect port state change request failed or returned a non-2xx response"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EE6K3w4h7TS7bHsoPYZk9tte$",
+                      "variable_value_new": "The 'Request Fabric Interconnect port state change' activity failed or returned a non-2xx HTTP response. Review the activity execution details for the underlying status and response body."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72FX5iUi4H0gZJbKxN5dyhfSR6$",
+                      "variable_value_new": "{\"error\":\"API activity failed or returned non-2xx\",\"activity\":\"Request Fabric Interconnect port state change\",\"operation\":\"Fabric Interconnect port state change request\"}"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L720A3D1EYSkdsgSpWlr3PH2HOV",
+                "name": "Completed",
+                "title": "Completed - Fabric Interconnect port state change request failed",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow after the Fabric Interconnect port state change request failure outputs are populated.",
+                  "display_name": "Completed - Fabric Interconnect port state change request failed",
+                  "result_message": "The Fabric Interconnect port state change request activity failed or did not return HTTP 2xx.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L71WF3L1ZvrVW67K4mpmT1RyjES",
+        "name": "Set Variables",
+        "title": "Set port state change request accepted outputs",
+        "type": "core.set_multiple_variables",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Populates all standard outputs after Cisco Intersight accepts the direct Fabric Interconnect port update request; device-side application is not polled or verified.",
+          "display_name": "Set port state change request accepted outputs",
+          "skip_execution": false,
+          "variables_to_update": [
+            {
+              "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EF0DUPXiVllaJce84PihjNgl$",
+              "variable_value_new": "$activity.definition_activity_02XOKCY8L712G0TpZiAN3BOOIOFZSfN7NUo.output.status_code$"
+            },
+            {
+              "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72DN25CxSWNnQCkKLbGuLuKwv0$",
+              "variable_value_new": "Fabric Interconnect port state change request accepted; application not verified"
+            },
+            {
+              "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72EE6K3w4h7TS7bHsoPYZk9tte$",
+              "variable_value_new": ""
+            },
+            {
+              "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727R7mWuh7ppFZfadzaDfPxZt1.output.variable_workflow_02XOKCY8L72FX5iUi4H0gZJbKxN5dyhfSR6$",
+              "variable_value_new": "$activity.definition_activity_02XOKCY8L712G0TpZiAN3BOOIOFZSfN7NUo.output.response_body$"
+            }
+          ]
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L721C6ieQqiPFZcYLZBWmiPyemJ",
+        "name": "Completed",
+        "title": "Completed - Port state change request accepted",
+        "type": "logic.completed",
+        "base_type": "activity",
+        "properties": {
+          "completion_type": "succeeded",
+          "continue_on_failure": false,
+          "description": "Ends the workflow successfully after Cisco Intersight accepts the direct Fabric Interconnect port state change request and all standard outputs are populated.",
+          "display_name": "Completed - Port state change request accepted",
+          "result_message": "Cisco Intersight accepted the Fabric Interconnect port state change request; completion was not polled.",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity"
+      }
+    ],
+    "categories": [
+      "category_02WXYT3NCCPFL7eQW3PLJcPF5NEiRc5PmKV"
+    ]
+  },
+  "categories": {
+    "category_02WXYT3NCCPFL7eQW3PLJcPF5NEiRc5PmKV": {
+      "unique_name": "category_02WXYT3NCCPFL7eQW3PLJcPF5NEiRc5PmKV",
+      "name": "Cisco Intersight - Compute Hardware",
+      "title": "Cisco Intersight - Compute Hardware",
+      "type": "basic.category",
+      "base_type": "category",
+      "category_type": "custom",
+      "object_type": "category"
+    }
+  }
+}

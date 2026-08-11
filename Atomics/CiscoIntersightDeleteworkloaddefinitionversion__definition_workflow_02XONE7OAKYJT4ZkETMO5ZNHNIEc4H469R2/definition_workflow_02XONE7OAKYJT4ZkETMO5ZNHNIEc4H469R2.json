@@ -1,0 +1,3128 @@
+{
+  "categories": {
+    "category_02XOMFAGO64RC6dYBT2G3od2WlgF1ROecIm": {
+      "unique_name": "category_02XOMFAGO64RC6dYBT2G3od2WlgF1ROecIm",
+      "name": "Cisco Intersight - Workload Definition Management",
+      "title": "Cisco Intersight - Workload Definition Management",
+      "type": "basic.category",
+      "base_type": "category",
+      "category_type": "custom",
+      "object_type": "category"
+    }
+  },
+  "workflow": {
+    "unique_name": "definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2",
+    "name": "Cisco Intersight - Delete workload definition version",
+    "title": "Cisco Intersight - Delete workload definition version",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "default",
+          "scope": "input",
+          "name": "Workload Organization",
+          "type": "datatype.string",
+          "description": "Exact organization containing the definition version.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XONE7OAKYJY3ckAhF2GsyzpsFhRoi4blD",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "Workload Definition Name",
+          "type": "datatype.string",
+          "description": "Exact definition family name.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XONE7OAKYJZ5NVsgNCKHIS3ouTcWtSVtZ",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.integer",
+        "properties": {
+          "value": 1,
+          "scope": "input",
+          "name": "Workload Definition Version",
+          "type": "datatype.integer",
+          "description": "Exact definition version at least 1.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": ""
+        },
+        "unique_name": "variable_workflow_02XONE7OAKYK01CDujUku6GFHY8XjM5Ga61",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.boolean",
+        "properties": {
+          "value": false,
+          "scope": "input",
+          "name": "Confirm Deletion",
+          "type": "datatype.boolean",
+          "description": "Must be true before the irreversible DELETE request is submitted.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": ""
+        },
+        "unique_name": "variable_workflow_02XONE7OAKYK156uS44qusRMx5QQUE34bW8",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "{\"error\":\"Workflow ended before a terminal output path completed\"}",
+          "scope": "output",
+          "name": "Result",
+          "type": "datatype.string",
+          "description": "Response data or structured validation details associated with the final outcome.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "json"
+        },
+        "unique_name": "variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "500",
+          "scope": "output",
+          "name": "Status Code",
+          "type": "datatype.string",
+          "description": "HTTP-style status code for the final workflow outcome.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "Workflow execution did not reach a terminal output path",
+          "scope": "output",
+          "name": "Status Message",
+          "type": "datatype.string",
+          "description": "Human-readable summary of the final workflow outcome.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "The workflow ended before a terminal path populated the final output values.",
+          "scope": "output",
+          "name": "Error Message",
+          "type": "datatype.string",
+          "description": "Detailed failure information; empty when the workflow succeeds.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "actions": [
+      {
+        "unique_name": "definition_activity_02XONE7OAKYKA2X8YT3ayMuqxCNfmm3WFAV",
+        "name": "Group",
+        "title": "Validate inactive definition deletion",
+        "type": "logic.group",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Fails closed before reads or mutation unless identity fields and explicit confirmation are valid.",
+          "display_name": "Validate inactive definition deletion",
+          "skip_execution": false,
+          "display_as_suggestion": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_02XONE7OAKYK237kCWZMxP2IBeU7KsGvjpb",
+            "name": "Execute Python Script",
+            "title": "Validate inactive definition deletion request",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Validates the exact public identity and affirmative deletion confirmation, then escapes OData string literals before any lookup.",
+              "display_name": "Validate inactive definition deletion request",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport re\nimport sys\n\norganization = sys.argv[1].strip()\ndefinitionName = sys.argv[2].strip()\ntry: definitionVersion = int(sys.argv[3])\nexcept Exception: definitionVersion = 0\nconfirmed = sys.argv[4].strip().lower() == \"true\"\nerrors = []\nif not organization: errors.append(\"Workload Organization must not be blank.\")\nif not re.fullmatch(r\"[A-Za-z0-9][A-Za-z0-9 _-]{0,31}\", definitionName): errors.append(\"Workload Definition Name is invalid.\")\nif definitionVersion < 1: errors.append(\"Workload Definition Version must be at least 1.\")\nif not confirmed: errors.append(\"Confirm Deletion must be true.\")\nstatus, statusCode = (\"invalid\", 400) if errors else (\"ok\", 200)\nmessage = \" \".join(errors) if errors else \"Deletion request is valid.\"\nresultJson = json.dumps({\"error\":message,\"mutationSubmitted\":False}, separators=(\",\",\":\")) if errors else \"{}\"\norganizationUrl = \"/api/v1/organization/Organizations?$filter=Name eq '%s'&$select=Moid,Name\" % organization.replace(\"'\", \"''\")\nready = True\n",
+              "script_arguments": [
+                "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.input.variable_workflow_02XONE7OAKYJY3ckAhF2GsyzpsFhRoi4blD$",
+                "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.input.variable_workflow_02XONE7OAKYJZ5NVsgNCKHIS3ouTcWtSVtZ$",
+                "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.input.variable_workflow_02XONE7OAKYK01CDujUku6GFHY8XjM5Ga61$",
+                "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.input.variable_workflow_02XONE7OAKYK156uS44qusRMx5QQUE34bW8$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "status",
+                  "script_query_name": "status",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "statusCode",
+                  "script_query_name": "statusCode",
+                  "script_query_type": "integer"
+                },
+                {
+                  "script_query": "message",
+                  "script_query_name": "message",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "resultJson",
+                  "script_query_name": "resultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "ready",
+                  "script_query_name": "ready",
+                  "script_query_type": "boolean"
+                },
+                {
+                  "script_query": "organizationUrl",
+                  "script_query_name": "organizationUrl",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "definitionName",
+                  "script_query_name": "definitionName",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "definitionVersion",
+                  "script_query_name": "definitionVersion",
+                  "script_query_type": "integer"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYK96jFlonCTd2cykxQzeRCfsX",
+            "name": "Condition Block",
+            "title": "Validate deletion request preparation",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately distinguishes expected validation or cardinality failures from helper execution and output-quality failures.",
+              "display_name": "Validate deletion request preparation",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYK57b9JMvl0tbE5AL9l38n82R",
+                "name": "Condition Branch",
+                "title": "deletion request preparation rejected",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Returns the helper's actionable fail-closed result without running subsequent operations.",
+                  "display_name": "deletion request preparation rejected",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYK237kCWZMxP2IBeU7KsGvjpb.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYK237kCWZMxP2IBeU7KsGvjpb.output.script_queries.ready$",
+                        "operator": "eq",
+                        "right_operand": true
+                      }
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYK237kCWZMxP2IBeU7KsGvjpb.output.script_queries.status$",
+                      "operator": "ne",
+                      "right_operand": "ok"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYK31zcNTnOEkkX3aBXiq3jORE",
+                    "name": "Set Variables",
+                    "title": "Set deletion request preparation rejected outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set deletion request preparation rejected outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYK237kCWZMxP2IBeU7KsGvjpb.output.script_queries.statusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYK237kCWZMxP2IBeU7KsGvjpb.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYK237kCWZMxP2IBeU7KsGvjpb.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYK237kCWZMxP2IBeU7KsGvjpb.output.script_queries.resultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYK43SQt1Nv9cpoF1NpO9SOzOb",
+                    "name": "Completed",
+                    "title": "Completed - deletion request preparation rejected",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - deletion request preparation rejected",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "$activity.definition_activity_02XONE7OAKYK237kCWZMxP2IBeU7KsGvjpb.output.script_queries.message$"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XONE7OAKYK85tXc1AhTDIBtY8CI54lo5k",
+                "name": "Condition Branch",
+                "title": "deletion request preparation helper failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles script failure or missing readiness output before any dependent activity runs.",
+                  "display_name": "deletion request preparation helper failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYK237kCWZMxP2IBeU7KsGvjpb.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYK237kCWZMxP2IBeU7KsGvjpb.output.script_queries.ready$",
+                      "operator": "ne",
+                      "right_operand": true
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYK601ZU9GZaQpQurxMxANuUcU",
+                    "name": "Set Variables",
+                    "title": "Set deletion request preparation helper failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set deletion request preparation helper failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "deletion request preparation helper failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "The deletion request preparation helper failed or returned incomplete output."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "{\"error\":\"helper failure\",\"helper\":\"deletion request preparation\"}"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYK763cpZOMldFvBtZ2xodox8U",
+                    "name": "Completed",
+                    "title": "Completed - deletion request preparation helper failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - deletion request preparation helper failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "deletion request preparation helper failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XONE7OAKYLM4spE6ytnxllyh10L7nEVd0",
+        "name": "Group",
+        "title": "Resolve exact inactive definition version",
+        "type": "logic.group",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Uses collection and item reads to preserve exact identity and requires Status Inactive before mutation preflight.",
+          "display_name": "Resolve exact inactive definition version",
+          "skip_execution": false,
+          "display_as_suggestion": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_02XONE7OAKYKB7ZpDUDynJbyn0ciDoTnJAx",
+            "name": "Generic Cisco Intersight API Request",
+            "title": "Get workload organization",
+            "type": "intersight.api_request",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Reads the exact Cisco Intersight organization by its OData-escaped name. A generic request is used because no purpose-built atomic for this operation is included in the export. Replace this generic request with a supported purpose-built atomic when one becomes available.",
+              "display_name": "Get workload organization",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "api_method": "GET",
+              "api_url": "$activity.definition_activity_02XONE7OAKYK237kCWZMxP2IBeU7KsGvjpb.output.script_queries.organizationUrl$",
+              "content_type": "application/json",
+              "endpoint": "primary",
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYKF51ssoueVghbUILZRAJjz8T",
+            "name": "Condition Block",
+            "title": "Validate organization lookup response",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately requires an activity success with a numeric HTTP 2xx status, except for explicitly documented response codes.",
+              "display_name": "Validate organization lookup response",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYKE1z43K2esodZfEybjC4jfTb",
+                "name": "Condition Branch",
+                "title": "organization lookup API failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles activity failure, a missing status, or a non-2xx response with one standard-output path.",
+                  "display_name": "organization lookup API failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYKB7ZpDUDynJbyn0ciDoTnJAx.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XONE7OAKYKB7ZpDUDynJbyn0ciDoTnJAx.output.succeeded$",
+                          "operator": "eq",
+                          "right_operand": true
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XONE7OAKYKB7ZpDUDynJbyn0ciDoTnJAx.output.status_code$",
+                          "operator": "lt",
+                          "right_operand": 1
+                        }
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYKB7ZpDUDynJbyn0ciDoTnJAx.output.succeeded$",
+                            "operator": "eq",
+                            "right_operand": true
+                          },
+                          "operator": "and",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYKB7ZpDUDynJbyn0ciDoTnJAx.output.status_code$",
+                            "operator": "gt",
+                            "right_operand": 0
+                          }
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYKB7ZpDUDynJbyn0ciDoTnJAx.output.status_code$",
+                            "operator": "lt",
+                            "right_operand": 200
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYKB7ZpDUDynJbyn0ciDoTnJAx.output.status_code$",
+                            "operator": "gte",
+                            "right_operand": 300
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYKC2A7YSRatq4L3KBQd2qkHdD",
+                    "name": "Set Variables",
+                    "title": "Set organization lookup API failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set organization lookup API failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "organization lookup failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "The organization lookup request failed or returned an unexpected HTTP status. Review the response body."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYKB7ZpDUDynJbyn0ciDoTnJAx.output.response_body$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYKD5EqbtgDmbHkomcOVJ9gU33",
+                    "name": "Completed",
+                    "title": "Completed - organization lookup API failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - organization lookup API failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "organization lookup failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYKG19wyQqjMaIC5QCq84HJRhZ",
+            "name": "Execute Python Script",
+            "title": "Inspect exact organization match",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Parses the organization response, enforces exact-one cardinality, and returns the selected Moid.",
+              "display_name": "Inspect exact organization match",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport sys\n\nstatus = \"ok\"\nstatusCode = 200\nmessage = \"Organization resolved\"\nresultJson = \"{}\"\nready = False\norganizationMoid = \"\"\ntry:\n    body = json.loads(sys.argv[1])\n    rows = body.get(\"Results\") if isinstance(body, dict) else None\n    if not isinstance(rows, list):\n        raise ValueError(\"Organization response does not contain a Results array.\")\n    expectedName = sys.argv[2].strip()\n    if len(rows) != 1:\n        status = \"not-found\" if len(rows) == 0 else \"conflict\"\n        statusCode = 404 if len(rows) == 0 else 409\n        message = \"Organization lookup must return exactly one result; received %d.\" % len(rows)\n        resultJson = json.dumps({\"error\": message, \"resultCount\": len(rows)}, separators=(\",\", \":\"))\n    elif rows[0].get(\"Name\") != expectedName:\n        status = \"identity-mismatch\"\n        statusCode = 409\n        message = \"Organization response does not preserve the exact requested Name.\"\n        resultJson = json.dumps({\"error\": message}, separators=(\",\", \":\"))\n    else:\n        organizationMoid = str(rows[0].get(\"Moid\") or \"\")\n        if not organizationMoid:\n            raise ValueError(\"The exact organization result has no Moid.\")\n        resultJson = json.dumps({\"organization\": rows[0]}, separators=(\",\", \":\"))\n    ready = True\nexcept Exception as exc:\n    status = \"malformed\"\n    statusCode = 502\n    message = str(exc)\n    resultJson = json.dumps({\"error\": message}, separators=(\",\", \":\"))\n    ready = True\n",
+              "script_arguments": [
+                "$activity.definition_activity_02XONE7OAKYKB7ZpDUDynJbyn0ciDoTnJAx.output.response_body$",
+                "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.input.variable_workflow_02XONE7OAKYJY3ckAhF2GsyzpsFhRoi4blD$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "status",
+                  "script_query_name": "status",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "statusCode",
+                  "script_query_name": "statusCode",
+                  "script_query_type": "integer"
+                },
+                {
+                  "script_query": "message",
+                  "script_query_name": "message",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "resultJson",
+                  "script_query_name": "resultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "ready",
+                  "script_query_name": "ready",
+                  "script_query_type": "boolean"
+                },
+                {
+                  "script_query": "organizationMoid",
+                  "script_query_name": "organizationMoid",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYKN3ajJe6DJ4COU1gLQIpCxjd",
+            "name": "Condition Block",
+            "title": "Validate organization inspection",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately distinguishes expected validation or cardinality failures from helper execution and output-quality failures.",
+              "display_name": "Validate organization inspection",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYKJ6MmJefjOCLcKkCr0xm2xQN",
+                "name": "Condition Branch",
+                "title": "organization inspection rejected",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Returns the helper's actionable fail-closed result without running subsequent operations.",
+                  "display_name": "organization inspection rejected",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYKG19wyQqjMaIC5QCq84HJRhZ.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYKG19wyQqjMaIC5QCq84HJRhZ.output.script_queries.ready$",
+                        "operator": "eq",
+                        "right_operand": true
+                      }
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYKG19wyQqjMaIC5QCq84HJRhZ.output.script_queries.status$",
+                      "operator": "ne",
+                      "right_operand": "ok"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYKH4oNgBlWtIG1OUzF44PaQjO",
+                    "name": "Set Variables",
+                    "title": "Set organization inspection rejected outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set organization inspection rejected outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYKG19wyQqjMaIC5QCq84HJRhZ.output.script_queries.statusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYKG19wyQqjMaIC5QCq84HJRhZ.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYKG19wyQqjMaIC5QCq84HJRhZ.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYKG19wyQqjMaIC5QCq84HJRhZ.output.script_queries.resultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYKI4SQK9AxYvvmZhHEl0DEWbp",
+                    "name": "Completed",
+                    "title": "Completed - organization inspection rejected",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - organization inspection rejected",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "$activity.definition_activity_02XONE7OAKYKG19wyQqjMaIC5QCq84HJRhZ.output.script_queries.message$"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XONE7OAKYKM17BmPOVb3b2qotJbNPdnKU",
+                "name": "Condition Branch",
+                "title": "organization inspection helper failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles script failure or missing readiness output before any dependent activity runs.",
+                  "display_name": "organization inspection helper failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYKG19wyQqjMaIC5QCq84HJRhZ.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYKG19wyQqjMaIC5QCq84HJRhZ.output.script_queries.ready$",
+                      "operator": "ne",
+                      "right_operand": true
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYKK7aLWDbcBp1912BYNBTQjIJ",
+                    "name": "Set Variables",
+                    "title": "Set organization inspection helper failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set organization inspection helper failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "organization inspection helper failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "The organization inspection helper failed or returned incomplete output."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "{\"error\":\"helper failure\",\"helper\":\"organization inspection\"}"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYKL00d05DcgWwQN9prOsSXY6t",
+                    "name": "Completed",
+                    "title": "Completed - organization inspection helper failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - organization inspection helper failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "organization inspection helper failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYKO1zEQPo0GI4SCwx9TrbTVzf",
+            "name": "Execute Python Script",
+            "title": "Build exact definition deletion route",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Builds one organization-scoped exact Name-and-Version collection query with an escaped OData literal.",
+              "display_name": "Build exact definition deletion route",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport sys\n\nname = sys.argv[1].replace(\"'\", \"''\")\nversion = int(sys.argv[2])\norganizationMoid = sys.argv[3]\ndefinitionUrl = \"/api/v1/workload/WorkloadDefinitions?$filter=Name eq '%s' and Version eq %d and Organization.Moid eq '%s'&$select=Moid,Name,Version,Status,Organization&$top=2\" % (name, version, organizationMoid)\nstatus, statusCode, message, resultJson, ready = \"ok\", 200, \"Exact definition route built\", \"{}\", bool(organizationMoid)\n",
+              "script_arguments": [
+                "$activity.definition_activity_02XONE7OAKYK237kCWZMxP2IBeU7KsGvjpb.output.script_queries.definitionName$",
+                "$activity.definition_activity_02XONE7OAKYK237kCWZMxP2IBeU7KsGvjpb.output.script_queries.definitionVersion$",
+                "$activity.definition_activity_02XONE7OAKYKG19wyQqjMaIC5QCq84HJRhZ.output.script_queries.organizationMoid$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "status",
+                  "script_query_name": "status",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "statusCode",
+                  "script_query_name": "statusCode",
+                  "script_query_type": "integer"
+                },
+                {
+                  "script_query": "message",
+                  "script_query_name": "message",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "resultJson",
+                  "script_query_name": "resultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "ready",
+                  "script_query_name": "ready",
+                  "script_query_type": "boolean"
+                },
+                {
+                  "script_query": "definitionUrl",
+                  "script_query_name": "definitionUrl",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYKV6eFoIGkLoQH4Wi65tuVXDw",
+            "name": "Condition Block",
+            "title": "Validate definition deletion route preparation",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately distinguishes expected validation or cardinality failures from helper execution and output-quality failures.",
+              "display_name": "Validate definition deletion route preparation",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYKR0dxdBKlecHHUTV3VTJtve4",
+                "name": "Condition Branch",
+                "title": "definition deletion route preparation rejected",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Returns the helper's actionable fail-closed result without running subsequent operations.",
+                  "display_name": "definition deletion route preparation rejected",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYKO1zEQPo0GI4SCwx9TrbTVzf.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYKO1zEQPo0GI4SCwx9TrbTVzf.output.script_queries.ready$",
+                        "operator": "eq",
+                        "right_operand": true
+                      }
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYKO1zEQPo0GI4SCwx9TrbTVzf.output.script_queries.status$",
+                      "operator": "ne",
+                      "right_operand": "ok"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYKP2b5CtzD0oANeWReTnWDiXU",
+                    "name": "Set Variables",
+                    "title": "Set definition deletion route preparation rejected outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set definition deletion route preparation rejected outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYKO1zEQPo0GI4SCwx9TrbTVzf.output.script_queries.statusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYKO1zEQPo0GI4SCwx9TrbTVzf.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYKO1zEQPo0GI4SCwx9TrbTVzf.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYKO1zEQPo0GI4SCwx9TrbTVzf.output.script_queries.resultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYKQ47oEysKtyAR9gDSoT7hn2q",
+                    "name": "Completed",
+                    "title": "Completed - definition deletion route preparation rejected",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - definition deletion route preparation rejected",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "$activity.definition_activity_02XONE7OAKYKO1zEQPo0GI4SCwx9TrbTVzf.output.script_queries.message$"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XONE7OAKYKU0EKUUEWS5FqAD53zGI2Crf",
+                "name": "Condition Branch",
+                "title": "definition deletion route preparation helper failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles script failure or missing readiness output before any dependent activity runs.",
+                  "display_name": "definition deletion route preparation helper failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYKO1zEQPo0GI4SCwx9TrbTVzf.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYKO1zEQPo0GI4SCwx9TrbTVzf.output.script_queries.ready$",
+                      "operator": "ne",
+                      "right_operand": true
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYKS105o1AQYk1U0Q0oi9KIsvi",
+                    "name": "Set Variables",
+                    "title": "Set definition deletion route preparation helper failu outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set definition deletion route preparation helper failu outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "definition deletion route preparation helper failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "The definition deletion route preparation helper failed or returned incomplete output."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "{\"error\":\"helper failure\",\"helper\":\"definition deletion route preparation\"}"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYKT3Z49x4sd15ywQfx1VrVRAi",
+                    "name": "Completed",
+                    "title": "Completed - definition deletion route preparation helper failu",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - definition deletion route preparation helper failu",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "definition deletion route preparation helper failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYKW6aekkIw8Fk0EY64F3VkgXx",
+            "name": "Generic Cisco Intersight API Request",
+            "title": "Find exact inactive definition version",
+            "type": "intersight.api_request",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Reads only the exact organization, Name, and Version candidate before destructive checks. A generic request is used because no purpose-built atomic for this operation is included in the export. Replace this generic request with a supported purpose-built atomic when one becomes available.",
+              "display_name": "Find exact inactive definition version",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "api_method": "GET",
+              "api_url": "$activity.definition_activity_02XONE7OAKYKO1zEQPo0GI4SCwx9TrbTVzf.output.script_queries.definitionUrl$",
+              "content_type": "application/json",
+              "endpoint": "primary",
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYL00SakhKmHcJnrtRLuFHcC5y",
+            "name": "Condition Block",
+            "title": "Validate definition deletion lookup response",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately requires an activity success with a numeric HTTP 2xx status, except for explicitly documented response codes.",
+              "display_name": "Validate definition deletion lookup response",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYKZ7BXlR92sFpuGlLt4DT7YUI",
+                "name": "Condition Branch",
+                "title": "definition deletion lookup API failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles activity failure, a missing status, or a non-2xx response with one standard-output path.",
+                  "display_name": "definition deletion lookup API failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYKW6aekkIw8Fk0EY64F3VkgXx.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XONE7OAKYKW6aekkIw8Fk0EY64F3VkgXx.output.succeeded$",
+                          "operator": "eq",
+                          "right_operand": true
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XONE7OAKYKW6aekkIw8Fk0EY64F3VkgXx.output.status_code$",
+                          "operator": "lt",
+                          "right_operand": 1
+                        }
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYKW6aekkIw8Fk0EY64F3VkgXx.output.succeeded$",
+                            "operator": "eq",
+                            "right_operand": true
+                          },
+                          "operator": "and",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYKW6aekkIw8Fk0EY64F3VkgXx.output.status_code$",
+                            "operator": "gt",
+                            "right_operand": 0
+                          }
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYKW6aekkIw8Fk0EY64F3VkgXx.output.status_code$",
+                            "operator": "lt",
+                            "right_operand": 200
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYKW6aekkIw8Fk0EY64F3VkgXx.output.status_code$",
+                            "operator": "gte",
+                            "right_operand": 300
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYKX43xAo8XWTU9AbA4QYbK0VN",
+                    "name": "Set Variables",
+                    "title": "Set definition deletion lookup API failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set definition deletion lookup API failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "definition deletion lookup failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "The definition deletion lookup request failed or returned an unexpected HTTP status. Review the response body."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYKW6aekkIw8Fk0EY64F3VkgXx.output.response_body$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYKY2SlcgtSqzbKxBIPtdgZzsp",
+                    "name": "Completed",
+                    "title": "Completed - definition deletion lookup API failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - definition deletion lookup API failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "definition deletion lookup failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYL17MNLiveI04EVsX2LfTrZKD",
+            "name": "Execute Python Script",
+            "title": "Inspect exact definition deletion match",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Enforces exact-one collection cardinality and derives only the selected Moid item route.",
+              "display_name": "Inspect exact definition deletion match",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport sys\n\nstatus, statusCode, message, resultJson, ready = \"ok\", 200, \"Exact definition resolved\", \"{}\", False\ndefinitionMoid = definitionItemUrl = \"\"\ntry:\n    body = json.loads(sys.argv[1])\n    name, version, organizationMoid = sys.argv[2], int(sys.argv[3]), sys.argv[4]\n    rows = body.get(\"Results\") if isinstance(body,dict) else None\n    if not isinstance(rows,list): raise ValueError(\"Definition response does not contain a Results array.\")\n    exact = [row for row in rows if row.get(\"Name\") == name and int(row.get(\"Version\",0)) == version and isinstance(row.get(\"Organization\"),dict) and row[\"Organization\"].get(\"Moid\") == organizationMoid]\n    if len(exact) != len(rows):\n        status, statusCode = \"identity-mismatch\", 409\n        message = \"Definition response contains an identity outside the exact requested filter.\"\n        resultJson = json.dumps({\"error\":message,\"returnedCount\":len(rows),\"exactCount\":len(exact)}, separators=(\",\", \":\"))\n    elif len(exact) != 1:\n        status = \"not-found\" if len(exact) == 0 else \"conflict\"\n        statusCode = 404 if len(exact) == 0 else 409\n        message = \"Definition identity must resolve exactly one result; received %d.\" % len(exact)\n        resultJson = json.dumps({\"error\":message,\"resultCount\":len(exact)}, separators=(\",\", \":\"))\n    else:\n        definitionMoid = str(exact[0].get(\"Moid\") or \"\")\n        if not definitionMoid: raise ValueError(\"Selected definition has no Moid.\")\n        definitionItemUrl = \"/api/v1/workload/WorkloadDefinitions/\" + definitionMoid\n        resultJson = json.dumps({\"selected\":exact[0]}, separators=(\",\", \":\"))\n    ready = True\nexcept Exception as exc:\n    status, statusCode, message = \"malformed\", 502, str(exc)\n    resultJson, ready = json.dumps({\"error\":message}, separators=(\",\", \":\")), True\n",
+              "script_arguments": [
+                "$activity.definition_activity_02XONE7OAKYKW6aekkIw8Fk0EY64F3VkgXx.output.response_body$",
+                "$activity.definition_activity_02XONE7OAKYK237kCWZMxP2IBeU7KsGvjpb.output.script_queries.definitionName$",
+                "$activity.definition_activity_02XONE7OAKYK237kCWZMxP2IBeU7KsGvjpb.output.script_queries.definitionVersion$",
+                "$activity.definition_activity_02XONE7OAKYKG19wyQqjMaIC5QCq84HJRhZ.output.script_queries.organizationMoid$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "status",
+                  "script_query_name": "status",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "statusCode",
+                  "script_query_name": "statusCode",
+                  "script_query_type": "integer"
+                },
+                {
+                  "script_query": "message",
+                  "script_query_name": "message",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "resultJson",
+                  "script_query_name": "resultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "ready",
+                  "script_query_name": "ready",
+                  "script_query_type": "boolean"
+                },
+                {
+                  "script_query": "definitionMoid",
+                  "script_query_name": "definitionMoid",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "definitionItemUrl",
+                  "script_query_name": "definitionItemUrl",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYL86AeVKmOWF1jb01uTngg28Y",
+            "name": "Condition Block",
+            "title": "Validate definition deletion match inspection",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately distinguishes expected validation or cardinality failures from helper execution and output-quality failures.",
+              "display_name": "Validate definition deletion match inspection",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYL412m27jWq26YHCUqsyrlIVV",
+                "name": "Condition Branch",
+                "title": "definition deletion match inspection rejected",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Returns the helper's actionable fail-closed result without running subsequent operations.",
+                  "display_name": "definition deletion match inspection rejected",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYL17MNLiveI04EVsX2LfTrZKD.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYL17MNLiveI04EVsX2LfTrZKD.output.script_queries.ready$",
+                        "operator": "eq",
+                        "right_operand": true
+                      }
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYL17MNLiveI04EVsX2LfTrZKD.output.script_queries.status$",
+                      "operator": "ne",
+                      "right_operand": "ok"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYL26bwSBDSzYBDFEUukwbqUuO",
+                    "name": "Set Variables",
+                    "title": "Set definition deletion match inspection rejected outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set definition deletion match inspection rejected outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYL17MNLiveI04EVsX2LfTrZKD.output.script_queries.statusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYL17MNLiveI04EVsX2LfTrZKD.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYL17MNLiveI04EVsX2LfTrZKD.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYL17MNLiveI04EVsX2LfTrZKD.output.script_queries.resultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYL373IAuarAelTHXoCdA9pfUV",
+                    "name": "Completed",
+                    "title": "Completed - definition deletion match inspection rejected",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - definition deletion match inspection rejected",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "$activity.definition_activity_02XONE7OAKYL17MNLiveI04EVsX2LfTrZKD.output.script_queries.message$"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XONE7OAKYL72ftS62YlBg50zdfmLtBcaN",
+                "name": "Condition Branch",
+                "title": "definition deletion match inspection helper failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles script failure or missing readiness output before any dependent activity runs.",
+                  "display_name": "definition deletion match inspection helper failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYL17MNLiveI04EVsX2LfTrZKD.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYL17MNLiveI04EVsX2LfTrZKD.output.script_queries.ready$",
+                      "operator": "ne",
+                      "right_operand": true
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYL575iYWtRMVvubelJM2d8Pa0",
+                    "name": "Set Variables",
+                    "title": "Set definition deletion match inspection helper failur outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set definition deletion match inspection helper failur outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "definition deletion match inspection helper failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "The definition deletion match inspection helper failed or returned incomplete output."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "{\"error\":\"helper failure\",\"helper\":\"definition deletion match inspection\"}"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYL66mNxbTc6CGLdQAnMkociTr",
+                    "name": "Completed",
+                    "title": "Completed - definition deletion match inspection helper failur",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - definition deletion match inspection helper failur",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "definition deletion match inspection helper failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYL93B5xu4EIZj9h0SlQ27ou9i",
+            "name": "Generic Cisco Intersight API Request",
+            "title": "Get exact definition before deletion",
+            "type": "intersight.api_request",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Re-reads the selected item so identity and inactive status are verified immediately before dependency checks. A generic request is used because no purpose-built atomic for this operation is included in the export. Replace this generic request with a supported purpose-built atomic when one becomes available.",
+              "display_name": "Get exact definition before deletion",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "api_method": "GET",
+              "api_url": "$activity.definition_activity_02XONE7OAKYL17MNLiveI04EVsX2LfTrZKD.output.script_queries.definitionItemUrl$",
+              "content_type": "application/json",
+              "endpoint": "primary",
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYLD0igOBnN0gBvdDPK0MJbdp9",
+            "name": "Condition Block",
+            "title": "Validate definition deletion item read response",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately requires an activity success with a numeric HTTP 2xx status, except for explicitly documented response codes.",
+              "display_name": "Validate definition deletion item read response",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYLC5Ww6LDtY9yNnEra4WDM4hy",
+                "name": "Condition Branch",
+                "title": "definition deletion item read API failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles activity failure, a missing status, or a non-2xx response with one standard-output path.",
+                  "display_name": "definition deletion item read API failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYL93B5xu4EIZj9h0SlQ27ou9i.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XONE7OAKYL93B5xu4EIZj9h0SlQ27ou9i.output.succeeded$",
+                          "operator": "eq",
+                          "right_operand": true
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XONE7OAKYL93B5xu4EIZj9h0SlQ27ou9i.output.status_code$",
+                          "operator": "lt",
+                          "right_operand": 1
+                        }
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYL93B5xu4EIZj9h0SlQ27ou9i.output.succeeded$",
+                            "operator": "eq",
+                            "right_operand": true
+                          },
+                          "operator": "and",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYL93B5xu4EIZj9h0SlQ27ou9i.output.status_code$",
+                            "operator": "gt",
+                            "right_operand": 0
+                          }
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYL93B5xu4EIZj9h0SlQ27ou9i.output.status_code$",
+                            "operator": "lt",
+                            "right_operand": 200
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYL93B5xu4EIZj9h0SlQ27ou9i.output.status_code$",
+                            "operator": "gte",
+                            "right_operand": 300
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYLA0ZHgMSdHl8As5LhtBZP8Ka",
+                    "name": "Set Variables",
+                    "title": "Set definition deletion item read API failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set definition deletion item read API failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "definition deletion item read failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "The definition deletion item read request failed or returned an unexpected HTTP status. Review the response body."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYL93B5xu4EIZj9h0SlQ27ou9i.output.response_body$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYLB229E93MlkZvsE116l2sjA0",
+                    "name": "Completed",
+                    "title": "Completed - definition deletion item read API failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - definition deletion item read API failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "definition deletion item read failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYLE12byWrNVy2N2M70aBkK5PV",
+            "name": "Execute Python Script",
+            "title": "Verify exact inactive definition identity",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Requires exact Moid, Name, Version, Organization, and Status Inactive before any deployment check or DELETE.",
+              "display_name": "Verify exact inactive definition identity",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport sys\n\nstatus, statusCode, message, resultJson, ready = \"ok\", 200, \"Inactive definition identity verified\", \"{}\", False\ndefinitionMoid = definitionItemUrl = selectedResultJson = \"\"\ntry:\n    body = json.loads(sys.argv[1])\n    expectedMoid, expectedName, expectedVersion, expectedOrganization = sys.argv[2], sys.argv[3], int(sys.argv[4]), sys.argv[5]\n    organization = body.get(\"Organization\") if isinstance(body, dict) else None\n    if not isinstance(body, dict) or body.get(\"Moid\") != expectedMoid or body.get(\"Name\") != expectedName or int(body.get(\"Version\", 0)) != expectedVersion or not isinstance(organization, dict) or organization.get(\"Moid\") != expectedOrganization:\n        status, statusCode, message = \"identity-mismatch\", 409, \"Definition identity changed between collection and item reads.\"\n    elif body.get(\"Status\") != \"Inactive\":\n        status, statusCode, message = \"not-inactive\", 409, \"Only a workload definition with exact Status Inactive can be deleted.\"\n    else:\n        definitionMoid = expectedMoid\n        definitionItemUrl = \"/api/v1/workload/WorkloadDefinitions/\" + expectedMoid\n        selectedResultJson = json.dumps(body, separators=(\",\",\":\"), ensure_ascii=False)\n        resultJson = selectedResultJson\n    if status != \"ok\": resultJson = json.dumps({\"error\":message,\"mutationSubmitted\":False}, separators=(\",\",\":\"))\n    ready = True\nexcept Exception as exc:\n    status, statusCode, message = \"malformed\", 502, str(exc)\n    resultJson, ready = json.dumps({\"error\":message}, separators=(\",\",\":\")), True\n",
+              "script_arguments": [
+                "$activity.definition_activity_02XONE7OAKYL93B5xu4EIZj9h0SlQ27ou9i.output.response_body$",
+                "$activity.definition_activity_02XONE7OAKYL17MNLiveI04EVsX2LfTrZKD.output.script_queries.definitionMoid$",
+                "$activity.definition_activity_02XONE7OAKYK237kCWZMxP2IBeU7KsGvjpb.output.script_queries.definitionName$",
+                "$activity.definition_activity_02XONE7OAKYK237kCWZMxP2IBeU7KsGvjpb.output.script_queries.definitionVersion$",
+                "$activity.definition_activity_02XONE7OAKYKG19wyQqjMaIC5QCq84HJRhZ.output.script_queries.organizationMoid$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "status",
+                  "script_query_name": "status",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "statusCode",
+                  "script_query_name": "statusCode",
+                  "script_query_type": "integer"
+                },
+                {
+                  "script_query": "message",
+                  "script_query_name": "message",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "resultJson",
+                  "script_query_name": "resultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "ready",
+                  "script_query_name": "ready",
+                  "script_query_type": "boolean"
+                },
+                {
+                  "script_query": "definitionMoid",
+                  "script_query_name": "definitionMoid",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "definitionItemUrl",
+                  "script_query_name": "definitionItemUrl",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "selectedResultJson",
+                  "script_query_name": "selectedResultJson",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYLL7kZipVwsx7dJEXnNMeonUg",
+            "name": "Condition Block",
+            "title": "Validate inactive definition verification",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately distinguishes expected validation or cardinality failures from helper execution and output-quality failures.",
+              "display_name": "Validate inactive definition verification",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYLH0qwD5o96CWnhJAvweqsY2X",
+                "name": "Condition Branch",
+                "title": "inactive definition verification rejected",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Returns the helper's actionable fail-closed result without running subsequent operations.",
+                  "display_name": "inactive definition verification rejected",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYLE12byWrNVy2N2M70aBkK5PV.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYLE12byWrNVy2N2M70aBkK5PV.output.script_queries.ready$",
+                        "operator": "eq",
+                        "right_operand": true
+                      }
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYLE12byWrNVy2N2M70aBkK5PV.output.script_queries.status$",
+                      "operator": "ne",
+                      "right_operand": "ok"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYLF2YciQrtLzTrQWM46mhm02Y",
+                    "name": "Set Variables",
+                    "title": "Set inactive definition verification rejected outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set inactive definition verification rejected outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYLE12byWrNVy2N2M70aBkK5PV.output.script_queries.statusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYLE12byWrNVy2N2M70aBkK5PV.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYLE12byWrNVy2N2M70aBkK5PV.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYLE12byWrNVy2N2M70aBkK5PV.output.script_queries.resultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYLG1xyoe0bmjWEFe2I4BcgVFK",
+                    "name": "Completed",
+                    "title": "Completed - inactive definition verification rejected",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - inactive definition verification rejected",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "$activity.definition_activity_02XONE7OAKYLE12byWrNVy2N2M70aBkK5PV.output.script_queries.message$"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XONE7OAKYLK6MVV3IZLSmEhVTCrtzCzHf",
+                "name": "Condition Branch",
+                "title": "inactive definition verification helper failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles script failure or missing readiness output before any dependent activity runs.",
+                  "display_name": "inactive definition verification helper failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYLE12byWrNVy2N2M70aBkK5PV.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYLE12byWrNVy2N2M70aBkK5PV.output.script_queries.ready$",
+                      "operator": "ne",
+                      "right_operand": true
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYLI6YBWKYJswUS9zpmqEbL1Sl",
+                    "name": "Set Variables",
+                    "title": "Set inactive definition verification helper failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set inactive definition verification helper failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "inactive definition verification helper failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "The inactive definition verification helper failed or returned incomplete output."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "{\"error\":\"helper failure\",\"helper\":\"inactive definition verification\"}"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYLJ5nqeso3XZn0laoeoriHfY7",
+                    "name": "Completed",
+                    "title": "Completed - inactive definition verification helper failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - inactive definition verification helper failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "inactive definition verification helper failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XONE7OAKYM86UM661xoTm9Sn7A7ngBjml",
+        "name": "Group",
+        "title": "Check deployment deletion dependencies",
+        "type": "logic.group",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Fails closed unless the exact relationship query proves zero dependent deployments immediately before DELETE.",
+          "display_name": "Check deployment deletion dependencies",
+          "skip_execution": false,
+          "display_as_suggestion": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_02XONE7OAKYLN5eg0aSY4v06Y0z4h5Vd3Q7",
+            "name": "Execute Python Script",
+            "title": "Build exact deployment dependency route",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Builds a count-enabled, one-row maximum query for deployments related to only the verified definition Moid.",
+              "display_name": "Build exact deployment dependency route",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport sys\n\nmoid = sys.argv[1]\ndeploymentUrl = \"/api/v1/workload/WorkloadDeployments?$filter=WorkloadDefinition.Moid eq '%s'&$inlinecount=allpages&$top=1&$select=Moid,Name,Status,WorkloadDefinition\" % moid\nstatus, statusCode, message, resultJson, ready = \"ok\", 200, \"Deployment dependency route built\", \"{}\", bool(moid)\n",
+              "script_arguments": [
+                "$activity.definition_activity_02XONE7OAKYLE12byWrNVy2N2M70aBkK5PV.output.script_queries.definitionMoid$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "status",
+                  "script_query_name": "status",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "statusCode",
+                  "script_query_name": "statusCode",
+                  "script_query_type": "integer"
+                },
+                {
+                  "script_query": "message",
+                  "script_query_name": "message",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "resultJson",
+                  "script_query_name": "resultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "ready",
+                  "script_query_name": "ready",
+                  "script_query_type": "boolean"
+                },
+                {
+                  "script_query": "deploymentUrl",
+                  "script_query_name": "deploymentUrl",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYLU4CDDIOPaVKK0e06CA9HDWr",
+            "name": "Condition Block",
+            "title": "Validate deployment dependency route preparation",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately distinguishes expected validation or cardinality failures from helper execution and output-quality failures.",
+              "display_name": "Validate deployment dependency route preparation",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYLQ0AuL8LKvDu1PJVwZQmlCNy",
+                "name": "Condition Branch",
+                "title": "deployment dependency route preparation rejected",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Returns the helper's actionable fail-closed result without running subsequent operations.",
+                  "display_name": "deployment dependency route preparation rejected",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYLN5eg0aSY4v06Y0z4h5Vd3Q7.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYLN5eg0aSY4v06Y0z4h5Vd3Q7.output.script_queries.ready$",
+                        "operator": "eq",
+                        "right_operand": true
+                      }
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYLN5eg0aSY4v06Y0z4h5Vd3Q7.output.script_queries.status$",
+                      "operator": "ne",
+                      "right_operand": "ok"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYLO2PYG75CN0pQGQNpGCtbf3R",
+                    "name": "Set Variables",
+                    "title": "Set deployment dependency route preparation rejected outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set deployment dependency route preparation rejected outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYLN5eg0aSY4v06Y0z4h5Vd3Q7.output.script_queries.statusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYLN5eg0aSY4v06Y0z4h5Vd3Q7.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYLN5eg0aSY4v06Y0z4h5Vd3Q7.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYLN5eg0aSY4v06Y0z4h5Vd3Q7.output.script_queries.resultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYLP4H2nrmkZnfxrWY6hKim703",
+                    "name": "Completed",
+                    "title": "Completed - deployment dependency route preparation rejected",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - deployment dependency route preparation rejected",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "$activity.definition_activity_02XONE7OAKYLN5eg0aSY4v06Y0z4h5Vd3Q7.output.script_queries.message$"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XONE7OAKYLT6qR9pFoCwvwuKyhfuM1XcN",
+                "name": "Condition Branch",
+                "title": "deployment dependency route preparation helper failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles script failure or missing readiness output before any dependent activity runs.",
+                  "display_name": "deployment dependency route preparation helper failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYLN5eg0aSY4v06Y0z4h5Vd3Q7.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYLN5eg0aSY4v06Y0z4h5Vd3Q7.output.script_queries.ready$",
+                      "operator": "ne",
+                      "right_operand": true
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYLR5g5use1JDutGcoc1Ng04OT",
+                    "name": "Set Variables",
+                    "title": "Set deployment dependency route preparation helper fai outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set deployment dependency route preparation helper fai outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "deployment dependency route preparation helper failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "The deployment dependency route preparation helper failed or returned incomplete output."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "{\"error\":\"helper failure\",\"helper\":\"deployment dependency route preparation\"}"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYLS7AgRxEbGR7LSL2H8UcWs5Z",
+                    "name": "Completed",
+                    "title": "Completed - deployment dependency route preparation helper fai",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - deployment dependency route preparation helper fai",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "deployment dependency route preparation helper failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYLV2FTmqq5lqQvgqNISY8dZHW",
+            "name": "Generic Cisco Intersight API Request",
+            "title": "Count deployments using definition",
+            "type": "intersight.api_request",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Requests total dependency count but at most one evidence row; no deployment collection is returned from the workflow. A generic request is used because no purpose-built atomic for this operation is included in the export. Replace this generic request with a supported purpose-built atomic when one becomes available.",
+              "display_name": "Count deployments using definition",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "api_method": "GET",
+              "api_url": "$activity.definition_activity_02XONE7OAKYLN5eg0aSY4v06Y0z4h5Vd3Q7.output.script_queries.deploymentUrl$",
+              "content_type": "application/json",
+              "endpoint": "primary",
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYLZ0yqjuNK7D1rye1gz7irAOe",
+            "name": "Condition Block",
+            "title": "Validate deployment dependency lookup response",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately requires an activity success with a numeric HTTP 2xx status, except for explicitly documented response codes.",
+              "display_name": "Validate deployment dependency lookup response",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYLY5vhseB5JN93mSZ3cXqXDBP",
+                "name": "Condition Branch",
+                "title": "deployment dependency lookup API failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles activity failure, a missing status, or a non-2xx response with one standard-output path.",
+                  "display_name": "deployment dependency lookup API failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYLV2FTmqq5lqQvgqNISY8dZHW.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XONE7OAKYLV2FTmqq5lqQvgqNISY8dZHW.output.succeeded$",
+                          "operator": "eq",
+                          "right_operand": true
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XONE7OAKYLV2FTmqq5lqQvgqNISY8dZHW.output.status_code$",
+                          "operator": "lt",
+                          "right_operand": 1
+                        }
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYLV2FTmqq5lqQvgqNISY8dZHW.output.succeeded$",
+                            "operator": "eq",
+                            "right_operand": true
+                          },
+                          "operator": "and",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYLV2FTmqq5lqQvgqNISY8dZHW.output.status_code$",
+                            "operator": "gt",
+                            "right_operand": 0
+                          }
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYLV2FTmqq5lqQvgqNISY8dZHW.output.status_code$",
+                            "operator": "lt",
+                            "right_operand": 200
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYLV2FTmqq5lqQvgqNISY8dZHW.output.status_code$",
+                            "operator": "gte",
+                            "right_operand": 300
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYLW32s4asTlqG0VQ4Wmc48JIT",
+                    "name": "Set Variables",
+                    "title": "Set deployment dependency lookup API failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set deployment dependency lookup API failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "deployment dependency lookup failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "The deployment dependency lookup request failed or returned an unexpected HTTP status. Review the response body."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYLV2FTmqq5lqQvgqNISY8dZHW.output.response_body$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYLX0l7GXvXfLHAE7Os6P82yZv",
+                    "name": "Completed",
+                    "title": "Completed - deployment dependency lookup API failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - deployment dependency lookup API failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "deployment dependency lookup failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYM00cdyIN68dSwFitzCiioHHv",
+            "name": "Execute Python Script",
+            "title": "Require zero deployment dependencies",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Requires a consistent zero count and empty result page; any dependency blocks deletion without exposing the collection.",
+              "display_name": "Require zero deployment dependencies",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport sys\n\nstatus, statusCode, message, resultJson, ready = \"ok\", 200, \"No deployment dependencies found\", \"{}\", False\ntry:\n    body = json.loads(sys.argv[1])\n    rows = body.get(\"Results\") if isinstance(body, dict) else None\n    count = body.get(\"Count\") if isinstance(body, dict) else None\n    if not isinstance(rows, list) or isinstance(count, bool) or not isinstance(count, int) or count < 0:\n        raise ValueError(\"Deployment response must contain a non-negative integer Count and Results array.\")\n    if count == 0 and rows:\n        raise ValueError(\"Deployment response is internally inconsistent: Count is zero but Results is not empty.\")\n    if count > 0:\n        if not rows or not isinstance(rows[0].get(\"WorkloadDefinition\"), dict) or rows[0][\"WorkloadDefinition\"].get(\"Moid\") != sys.argv[2]:\n            status, statusCode, message = \"identity-mismatch\", 409, \"Deployment dependency evidence does not preserve the requested relationship.\"\n        else:\n            status, statusCode, message = \"dependency-conflict\", 409, \"Workload definition is referenced by %d deployment(s); deletion is blocked.\" % count\n        resultJson = json.dumps({\"error\":message,\"deploymentCount\":count,\"mutationSubmitted\":False}, separators=(\",\",\":\"))\n    else:\n        resultJson = json.dumps({\"deploymentCount\":0,\"safeToSubmitDelete\":True}, separators=(\",\",\":\"))\n    ready = True\nexcept Exception as exc:\n    status, statusCode, message = \"malformed\", 502, str(exc)\n    resultJson, ready = json.dumps({\"error\":message}, separators=(\",\",\":\")), True\n",
+              "script_arguments": [
+                "$activity.definition_activity_02XONE7OAKYLV2FTmqq5lqQvgqNISY8dZHW.output.response_body$",
+                "$activity.definition_activity_02XONE7OAKYLE12byWrNVy2N2M70aBkK5PV.output.script_queries.definitionMoid$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "status",
+                  "script_query_name": "status",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "statusCode",
+                  "script_query_name": "statusCode",
+                  "script_query_type": "integer"
+                },
+                {
+                  "script_query": "message",
+                  "script_query_name": "message",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "resultJson",
+                  "script_query_name": "resultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "ready",
+                  "script_query_name": "ready",
+                  "script_query_type": "boolean"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYM71qgXWUZkNyI3Km5owNnZ7s",
+            "name": "Condition Block",
+            "title": "Validate deployment dependency inspection",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately distinguishes expected validation or cardinality failures from helper execution and output-quality failures.",
+              "display_name": "Validate deployment dependency inspection",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYM31DLdD2SIRb1lHAPwA07fxV",
+                "name": "Condition Branch",
+                "title": "deployment dependency inspection rejected",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Returns the helper's actionable fail-closed result without running subsequent operations.",
+                  "display_name": "deployment dependency inspection rejected",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYM00cdyIN68dSwFitzCiioHHv.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYM00cdyIN68dSwFitzCiioHHv.output.script_queries.ready$",
+                        "operator": "eq",
+                        "right_operand": true
+                      }
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYM00cdyIN68dSwFitzCiioHHv.output.script_queries.status$",
+                      "operator": "ne",
+                      "right_operand": "ok"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYM11jQOpjfK870jHL3Y6n4JOg",
+                    "name": "Set Variables",
+                    "title": "Set deployment dependency inspection rejected outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set deployment dependency inspection rejected outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYM00cdyIN68dSwFitzCiioHHv.output.script_queries.statusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYM00cdyIN68dSwFitzCiioHHv.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYM00cdyIN68dSwFitzCiioHHv.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYM00cdyIN68dSwFitzCiioHHv.output.script_queries.resultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYM23IAgCS3ljzxKKa2h9NpBgO",
+                    "name": "Completed",
+                    "title": "Completed - deployment dependency inspection rejected",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - deployment dependency inspection rejected",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "$activity.definition_activity_02XONE7OAKYM00cdyIN68dSwFitzCiioHHv.output.script_queries.message$"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XONE7OAKYM619Y0KmKepegrfjVYOQPRZZ",
+                "name": "Condition Branch",
+                "title": "deployment dependency inspection helper failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles script failure or missing readiness output before any dependent activity runs.",
+                  "display_name": "deployment dependency inspection helper failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYM00cdyIN68dSwFitzCiioHHv.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYM00cdyIN68dSwFitzCiioHHv.output.script_queries.ready$",
+                      "operator": "ne",
+                      "right_operand": true
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYM43PGrv5GkaOiE8pJ90BCqyP",
+                    "name": "Set Variables",
+                    "title": "Set deployment dependency inspection helper failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set deployment dependency inspection helper failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "deployment dependency inspection helper failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "The deployment dependency inspection helper failed or returned incomplete output."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "{\"error\":\"helper failure\",\"helper\":\"deployment dependency inspection\"}"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYM51anzJAPpvRKCODOKjSvk3q",
+                    "name": "Completed",
+                    "title": "Completed - deployment dependency inspection helper failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - deployment dependency inspection helper failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "deployment dependency inspection helper failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XONE7OAKYMT3ekruRYkfhGc35rKH3NQj1",
+        "name": "Group",
+        "title": "Delete and verify inactive definition",
+        "type": "logic.group",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Submits one exact DELETE and then requires authoritative HTTP 404 absence for the same Moid.",
+          "display_name": "Delete and verify inactive definition",
+          "skip_execution": false,
+          "display_as_suggestion": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_02XONE7OAKYM90rLzxKiPOVe2oU8BbDIjRW",
+            "name": "Generic Cisco Intersight API Request",
+            "title": "Delete exact inactive definition version",
+            "type": "intersight.api_request",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Deletes the one verified inactive Moid. The supported route has no If-Match parameter, so no unsupported header is guessed. A generic request is used because no purpose-built atomic for this operation is included in the export. Replace this generic request with a supported purpose-built atomic when one becomes available.",
+              "display_name": "Delete exact inactive definition version",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "api_method": "DELETE",
+              "api_url": "$activity.definition_activity_02XONE7OAKYLE12byWrNVy2N2M70aBkK5PV.output.script_queries.definitionItemUrl$",
+              "content_type": "application/json",
+              "endpoint": "primary",
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYMD5xYbQzSJNdjn4IvS879irH",
+            "name": "Condition Block",
+            "title": "Validate inactive definition delete response",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately requires an activity success with a numeric HTTP 2xx status, except for explicitly documented response codes.",
+              "display_name": "Validate inactive definition delete response",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYMC0yB1ZcLw1fQnaN3qsTUCyT",
+                "name": "Condition Branch",
+                "title": "inactive definition delete API failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles activity failure, a missing status, or a non-2xx response with one standard-output path.",
+                  "display_name": "inactive definition delete API failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYM90rLzxKiPOVe2oU8BbDIjRW.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XONE7OAKYM90rLzxKiPOVe2oU8BbDIjRW.output.succeeded$",
+                          "operator": "eq",
+                          "right_operand": true
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XONE7OAKYM90rLzxKiPOVe2oU8BbDIjRW.output.status_code$",
+                          "operator": "lt",
+                          "right_operand": 1
+                        }
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYM90rLzxKiPOVe2oU8BbDIjRW.output.succeeded$",
+                            "operator": "eq",
+                            "right_operand": true
+                          },
+                          "operator": "and",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYM90rLzxKiPOVe2oU8BbDIjRW.output.status_code$",
+                            "operator": "gt",
+                            "right_operand": 0
+                          }
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYM90rLzxKiPOVe2oU8BbDIjRW.output.status_code$",
+                            "operator": "lt",
+                            "right_operand": 200
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYM90rLzxKiPOVe2oU8BbDIjRW.output.status_code$",
+                            "operator": "gte",
+                            "right_operand": 300
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYMA5qk8VxtOnzuoG0ry1cbV3k",
+                    "name": "Set Variables",
+                    "title": "Set inactive definition delete API failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set inactive definition delete API failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "inactive definition delete failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "The inactive definition delete request failed or returned an unexpected HTTP status. Review the response body."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYM90rLzxKiPOVe2oU8BbDIjRW.output.response_body$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYMB31qyyQSNyuOovoqIC8M6WQ",
+                    "name": "Completed",
+                    "title": "Completed - inactive definition delete API failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - inactive definition delete API failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "inactive definition delete failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYME0iemMJ5qGu5tY1XQTYFd1l",
+            "name": "Generic Cisco Intersight API Request",
+            "title": "Verify deleted definition is absent",
+            "type": "intersight.api_request",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Re-reads the exact Moid; HTTP 404 is the only successful deletion-verification result. A generic request is used because no purpose-built atomic for this operation is included in the export. Replace this generic request with a supported purpose-built atomic when one becomes available.",
+              "display_name": "Verify deleted definition is absent",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "api_method": "GET",
+              "api_url": "$activity.definition_activity_02XONE7OAKYLE12byWrNVy2N2M70aBkK5PV.output.script_queries.definitionItemUrl$",
+              "content_type": "application/json",
+              "endpoint": "primary",
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYMI5Q7GyGpn82NTNplaEA2TPg",
+            "name": "Condition Block",
+            "title": "Validate deletion absence verification response",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately requires an activity success with a numeric HTTP 2xx status, except for explicitly documented response codes.",
+              "display_name": "Validate deletion absence verification response",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYMH0x3IcFBRoSV7MKmYIMRpAN",
+                "name": "Condition Branch",
+                "title": "deletion absence verification API failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles activity failure, a missing status, or a non-2xx response with one standard-output path.",
+                  "display_name": "deletion absence verification API failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYME0iemMJ5qGu5tY1XQTYFd1l.output.status_code$",
+                      "operator": "ne",
+                      "right_operand": 404
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYME0iemMJ5qGu5tY1XQTYFd1l.output.succeeded$",
+                        "operator": "ne",
+                        "right_operand": true
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYME0iemMJ5qGu5tY1XQTYFd1l.output.succeeded$",
+                            "operator": "eq",
+                            "right_operand": true
+                          },
+                          "operator": "and",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYME0iemMJ5qGu5tY1XQTYFd1l.output.status_code$",
+                            "operator": "lt",
+                            "right_operand": 1
+                          }
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": {
+                            "left_operand": {
+                              "left_operand": "$activity.definition_activity_02XONE7OAKYME0iemMJ5qGu5tY1XQTYFd1l.output.succeeded$",
+                              "operator": "eq",
+                              "right_operand": true
+                            },
+                            "operator": "and",
+                            "right_operand": {
+                              "left_operand": "$activity.definition_activity_02XONE7OAKYME0iemMJ5qGu5tY1XQTYFd1l.output.status_code$",
+                              "operator": "gt",
+                              "right_operand": 0
+                            }
+                          },
+                          "operator": "and",
+                          "right_operand": {
+                            "left_operand": {
+                              "left_operand": "$activity.definition_activity_02XONE7OAKYME0iemMJ5qGu5tY1XQTYFd1l.output.status_code$",
+                              "operator": "lt",
+                              "right_operand": 200
+                            },
+                            "operator": "or",
+                            "right_operand": {
+                              "left_operand": "$activity.definition_activity_02XONE7OAKYME0iemMJ5qGu5tY1XQTYFd1l.output.status_code$",
+                              "operator": "gte",
+                              "right_operand": 300
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYMF7Vo9iL386vcqGmNJeNqGRb",
+                    "name": "Set Variables",
+                    "title": "Set deletion absence verification API failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set deletion absence verification API failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "deletion absence verification failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "The deletion absence verification request failed or returned an unexpected HTTP status. Review the response body."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYME0iemMJ5qGu5tY1XQTYFd1l.output.response_body$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYMG4WaaSJ97Q0uGHawE96KZbF",
+                    "name": "Completed",
+                    "title": "Completed - deletion absence verification API failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - deletion absence verification API failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "deletion absence verification failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYMJ1AsVdNx2wpZNYkWpf0tcvX",
+            "name": "Execute Python Script",
+            "title": "Inspect exact deletion verification status",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Accepts only HTTP 404 as verified absence and rejects a surviving 2xx item without returning ambiguous success.",
+              "display_name": "Inspect exact deletion verification status",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport sys\n\nstatus, statusCode, message, resultJson, ready = \"ok\", 200, \"Deleted definition absence verified\", \"{}\", False\ndeletedResultJson = \"{}\"\ntry:\n    verificationCode = int(sys.argv[1])\n    deleteCode = int(sys.argv[2])\n    selected = json.loads(sys.argv[3])\n    if verificationCode != 404:\n        status, statusCode, message = \"still-present\", 409, \"Definition still returned after DELETE; absence was not verified.\"\n        resultJson = json.dumps({\"error\":message,\"deleteStatusCode\":deleteCode,\"verificationStatusCode\":verificationCode}, separators=(\",\",\":\"))\n    else:\n        deletedResultJson = json.dumps({\"deleted\":True,\"definition\":selected,\"deleteStatusCode\":deleteCode,\"verificationStatusCode\":verificationCode}, separators=(\",\",\":\"), ensure_ascii=False)\n        resultJson = deletedResultJson\n    ready = True\nexcept Exception as exc:\n    status, statusCode, message = \"malformed\", 502, str(exc)\n    resultJson, ready = json.dumps({\"error\":message}, separators=(\",\",\":\")), True\n",
+              "script_arguments": [
+                "$activity.definition_activity_02XONE7OAKYME0iemMJ5qGu5tY1XQTYFd1l.output.status_code$",
+                "$activity.definition_activity_02XONE7OAKYM90rLzxKiPOVe2oU8BbDIjRW.output.status_code$",
+                "$activity.definition_activity_02XONE7OAKYLE12byWrNVy2N2M70aBkK5PV.output.script_queries.selectedResultJson$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "status",
+                  "script_query_name": "status",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "statusCode",
+                  "script_query_name": "statusCode",
+                  "script_query_type": "integer"
+                },
+                {
+                  "script_query": "message",
+                  "script_query_name": "message",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "resultJson",
+                  "script_query_name": "resultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "ready",
+                  "script_query_name": "ready",
+                  "script_query_type": "boolean"
+                },
+                {
+                  "script_query": "deletedResultJson",
+                  "script_query_name": "deletedResultJson",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYMQ0fmbsUXwXxV39vfMwcA9XP",
+            "name": "Condition Block",
+            "title": "Validate deletion absence inspection",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately distinguishes expected validation or cardinality failures from helper execution and output-quality failures.",
+              "display_name": "Validate deletion absence inspection",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYMM5t7ybOgfVSfGPQDbYWAcV2",
+                "name": "Condition Branch",
+                "title": "deletion absence inspection rejected",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Returns the helper's actionable fail-closed result without running subsequent operations.",
+                  "display_name": "deletion absence inspection rejected",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYMJ1AsVdNx2wpZNYkWpf0tcvX.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYMJ1AsVdNx2wpZNYkWpf0tcvX.output.script_queries.ready$",
+                        "operator": "eq",
+                        "right_operand": true
+                      }
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYMJ1AsVdNx2wpZNYkWpf0tcvX.output.script_queries.status$",
+                      "operator": "ne",
+                      "right_operand": "ok"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYMK2y84Bvfe2KhUULUgqZm3iF",
+                    "name": "Set Variables",
+                    "title": "Set deletion absence inspection rejected outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set deletion absence inspection rejected outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYMJ1AsVdNx2wpZNYkWpf0tcvX.output.script_queries.statusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYMJ1AsVdNx2wpZNYkWpf0tcvX.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYMJ1AsVdNx2wpZNYkWpf0tcvX.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYMJ1AsVdNx2wpZNYkWpf0tcvX.output.script_queries.resultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYML7SbXyjMsklMsMsDx7gonjK",
+                    "name": "Completed",
+                    "title": "Completed - deletion absence inspection rejected",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - deletion absence inspection rejected",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "$activity.definition_activity_02XONE7OAKYMJ1AsVdNx2wpZNYkWpf0tcvX.output.script_queries.message$"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XONE7OAKYMP52Ez5whhRvnxwUJvp3wCKa",
+                "name": "Condition Branch",
+                "title": "deletion absence inspection helper failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles script failure or missing readiness output before any dependent activity runs.",
+                  "display_name": "deletion absence inspection helper failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYMJ1AsVdNx2wpZNYkWpf0tcvX.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYMJ1AsVdNx2wpZNYkWpf0tcvX.output.script_queries.ready$",
+                      "operator": "ne",
+                      "right_operand": true
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYMN4LAOxWgzxdurieZ1KIKohT",
+                    "name": "Set Variables",
+                    "title": "Set deletion absence inspection helper failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set deletion absence inspection helper failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                          "variable_value_new": "deletion absence inspection helper failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                          "variable_value_new": "The deletion absence inspection helper failed or returned incomplete output."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                          "variable_value_new": "{\"error\":\"helper failure\",\"helper\":\"deletion absence inspection\"}"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYMO42HSVeNPTwTU5xrm4CDUGu",
+                    "name": "Completed",
+                    "title": "Completed - deletion absence inspection helper failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - deletion absence inspection helper failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "deletion absence inspection helper failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYMR02lQ18HEsyOm9SWfw3R48N",
+            "name": "Set Variables",
+            "title": "Set inactive definition deleted outputs",
+            "type": "core.set_multiple_variables",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Populates all four standard outputs immediately before this terminal path ends.",
+              "display_name": "Set inactive definition deleted outputs",
+              "skip_execution": false,
+              "variables_to_update": [
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJV3ExZMHg9cJsZG4huZGNGO0$",
+                  "variable_value_new": "$activity.definition_activity_02XONE7OAKYM90rLzxKiPOVe2oU8BbDIjRW.output.status_code$"
+                },
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJW4Lx7Hb7r1gcUOlWK9np2fD$",
+                  "variable_value_new": "Inactive workload definition deleted successfully"
+                },
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJX2mm6Aq3D2BgKTCZ8zCH43I$",
+                  "variable_value_new": ""
+                },
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYJT4ZkETMO5ZNHNIEc4H469R2.output.variable_workflow_02XONE7OAKYJU4negzCzNHaUcH7pJkOwIMZ$",
+                  "variable_value_new": "$activity.definition_activity_02XONE7OAKYMJ1AsVdNx2wpZNYkWpf0tcvX.output.script_queries.deletedResultJson$"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYMS6xXjPPqmxtTutO1TgcVPRh",
+            "name": "Completed",
+            "title": "Completed - inactive definition deleted",
+            "type": "logic.completed",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Ends this terminal path after all four standard outputs are populated.",
+              "display_name": "Completed - inactive definition deleted",
+              "skip_execution": false,
+              "completion_type": "succeeded",
+              "result_message": "Inactive workload definition deleted successfully"
+            },
+            "object_type": "definition_activity"
+          }
+        ]
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "atomic_group": "Cisco Intersight",
+        "is_atomic": true
+      },
+      "delete_workflow_instance": false,
+      "description": "Deletes one exact inactive Cisco Unified Edge workload definition version only after explicit confirmation and a zero-count deployment preflight. The workflow verifies exact Name, Version, Organization, Moid, and Status before DELETE, never returns a deployment collection, and confirms absence by an exact Moid GET that must return HTTP 404. The workload DELETE route has no If-Match parameter in the local February or newer official schema, so a status or deployment race can still occur after preflight; Cisco Intersight remains authoritative and live-tenant validation is required. A repeated run returns exact not-found rather than silently claiming deletion.",
+      "display_name": "Cisco Intersight - Delete workload definition version",
+      "runtime_user": {
+        "override_target_runtime_user": false,
+        "specify_on_workflow_start": false,
+        "target_default": true
+      },
+      "target": {
+        "target_type": "intersight.endpoint",
+        "specify_on_workflow_start": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "categories": [
+      "category_02XOMFAGO64RC6dYBT2G3od2WlgF1ROecIm"
+    ]
+  }
+}

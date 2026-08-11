@@ -1,0 +1,1152 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX",
+    "name": "Cisco Intersight - Disable alarm suppression rule",
+    "title": "Cisco Intersight - Disable alarm suppression rule",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "Suppression Name",
+          "type": "datatype.string",
+          "description": "Enter the exact name of the reusable rule-based alarm suppression to disable. Apostrophes are escaped before the value is used in the OData lookup filter.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L727S6TLMQET3EVBlHoyTxhNDqb",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "500",
+          "scope": "output",
+          "name": "Status Code",
+          "type": "datatype.string",
+          "description": "HTTP-style status code for the final workflow outcome. Successful changes return the PATCH response status; an already-disabled suppression returns 200; validation, lookup, helper, and API failures return an appropriate 4xx, 500, or 502 value.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L728V4AyY8zJPsUQ9016sGNX8OC",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "{\"error\":\"Workflow ended before a terminal output path completed\"}",
+          "scope": "output",
+          "name": "Result",
+          "type": "datatype.string",
+          "description": "Structured response data or a final resource summary associated with the workflow outcome.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "json"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L728S31iYXzY7xNB5t1uKph43V2",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "Workflow execution did not reach a terminal output path",
+          "scope": "output",
+          "name": "Status Message",
+          "type": "datatype.string",
+          "description": "Human-readable summary of the final workflow outcome.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L728T4RbygfwVcgZ2kwVCEK6AKh",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "The workflow ended before a terminal path populated the final output values. Review the workflow instance for the underlying activity error.",
+          "scope": "output",
+          "name": "Error Message",
+          "type": "datatype.string",
+          "description": "Detailed and actionable failure information. This value is empty when the workflow completes successfully.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L728U08Oq00tiXiKuXazuY0iLA9",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "atomic_group": "Cisco Intersight",
+        "is_atomic": true
+      },
+      "delete_workflow_instance": false,
+      "description": "Disables one existing reusable, rule-based Cisco Intersight alarm suppression without deleting it. Prerequisites: select an Intersight endpoint target whose default runtime user can read and update cond.AlarmSuppression resources. The workflow escapes the supplied name for OData, requires exactly one name match, requires a populated AlarmRules array and no Entity relationship, and validates every helper and HTTP response before mutation. Entity-based server-maintenance suppressions are rejected. An already-disabled compatible rule is an explicit idempotent success. A successful PATCH confirms that Cisco Intersight accepted the synchronous Enabled=false update; the workflow does not delete the rule or alter its rules, classifications, or time window. Generic API request activities are used because no purpose-built alarm-suppression atomics are present in this export.",
+      "display_name": "Cisco Intersight - Disable alarm suppression rule",
+      "runtime_user": {
+        "override_target_runtime_user": false,
+        "specify_on_workflow_start": false,
+        "target_default": true
+      },
+      "target": {
+        "target_type": "intersight.endpoint",
+        "specify_on_workflow_start": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_02XOKCY8L6ZCU4jyXFLgHVhZVOmZisNSCJ1",
+        "name": "Condition Block",
+        "title": "Validate suppression name input",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "conditions": [],
+          "continue_on_failure": false,
+          "description": "Rejects an empty or whitespace-only Suppression Name before any helper or API activity runs.",
+          "display_name": "Validate suppression name input",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L711Q5yZZmgjYEDRCeMeVuN3lv2",
+            "name": "Condition Branch",
+            "title": "Suppression name is blank",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.input.variable_workflow_02XOKCY8L727S6TLMQET3EVBlHoyTxhNDqb$",
+                "operator": "mregex",
+                "right_operand": "^\\s*$"
+              },
+              "continue_on_failure": false,
+              "description": "Handles a missing usable suppression name, populates every standard output, and ends the workflow.",
+              "display_name": "Suppression name is blank",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L71230QY8aGhOGHIwaIPbnuIPC4",
+                "name": "Set Variables",
+                "title": "Set input validation failure outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates Result, Status Code, Status Message, and Error Message for an invalid Suppression Name.",
+                  "display_name": "Set input validation failure outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728V4AyY8zJPsUQ9016sGNX8OC$",
+                      "variable_value_new": "400"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728T4RbygfwVcgZ2kwVCEK6AKh$",
+                      "variable_value_new": "Suppression Name validation failed"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728U08Oq00tiXiKuXazuY0iLA9$",
+                      "variable_value_new": "Suppression Name is required and must contain at least one non-whitespace character."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728S31iYXzY7xNB5t1uKph43V2$",
+                      "variable_value_new": "{\"error\":\"Invalid input\",\"field\":\"Suppression Name\",\"requirement\":\"non-empty exact name\"}"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L6ZCQ0pfCAV64JAxq7SGeI84fsB",
+                "name": "Completed",
+                "title": "Completed - Suppression name validation failed",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow after the invalid-input outputs are populated.",
+                  "display_name": "Completed - Suppression name validation failed",
+                  "result_message": "Suppression Name must not be blank.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L6ZCV3MZqhUpQSFw0MWTHD36j56",
+        "name": "Execute Python Script",
+        "title": "Escape suppression name for OData",
+        "type": "python3.script",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": true,
+          "description": "Escapes apostrophes in Suppression Name by doubling them, as required for an OData single-quoted string literal.",
+          "display_name": "Escape suppression name for OData",
+          "script": "import sys\n\nescapedSuppressionName = sys.argv[1].replace(\"'\", \"''\")",
+          "script_arguments": [
+            "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.input.variable_workflow_02XOKCY8L727S6TLMQET3EVBlHoyTxhNDqb$"
+          ],
+          "script_queries": [
+            {
+              "script_query": "escapedSuppressionName",
+              "script_query_name": "escapedSuppressionName",
+              "script_query_type": "string"
+            }
+          ],
+          "skip_execution": false
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L6ZCP7HtaSwR4UOTrMuW8czB0k4",
+        "name": "Condition Block",
+        "title": "Validate OData name preparation",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "conditions": [],
+          "continue_on_failure": false,
+          "description": "Requires the OData escaping helper to succeed and return a non-empty escaped name before the lookup runs.",
+          "display_name": "Validate OData name preparation",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L6ZCX74uoQo29a9xW6mCuxP9x2M",
+            "name": "Condition Branch",
+            "title": "OData name preparation failed",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L6ZCV3MZqhUpQSFw0MWTHD36j56.output.succeeded$",
+                  "operator": "ne",
+                  "right_operand": true
+                },
+                "operator": "or",
+                "right_operand": {
+                  "left_operand": {
+                    "left_operand": "$activity.definition_activity_02XOKCY8L6ZCV3MZqhUpQSFw0MWTHD36j56.output.succeeded$",
+                    "operator": "eq",
+                    "right_operand": true
+                  },
+                  "operator": "and",
+                  "right_operand": {
+                    "left_operand": "$activity.definition_activity_02XOKCY8L6ZCV3MZqhUpQSFw0MWTHD36j56.output.script_queries.escapedSuppressionName$",
+                    "operator": "mregex",
+                    "right_operand": "^\\s*$"
+                  }
+                }
+              },
+              "continue_on_failure": false,
+              "description": "Handles a failed OData escaping helper or a missing escaped-name output.",
+              "display_name": "OData name preparation failed",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L6ZBO3KRSWkUpD73wFSdHEtJO1u",
+                "name": "Set Variables",
+                "title": "Set OData preparation failure outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates every standard output when the OData escaping helper fails or returns unusable data.",
+                  "display_name": "Set OData preparation failure outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728V4AyY8zJPsUQ9016sGNX8OC$",
+                      "variable_value_new": "500"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728T4RbygfwVcgZ2kwVCEK6AKh$",
+                      "variable_value_new": "OData name preparation failed"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728U08Oq00tiXiKuXazuY0iLA9$",
+                      "variable_value_new": "The 'Escape suppression name for OData' helper failed or returned an empty escapedSuppressionName value. Review that activity's execution details."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728S31iYXzY7xNB5t1uKph43V2$",
+                      "variable_value_new": "{\"error\":\"OData name preparation failed\",\"activity\":\"Escape suppression name for OData\"}"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L711W7aEkEw5Znh3ki90xSz4bUr",
+                "name": "Completed",
+                "title": "Completed - OData name preparation failed",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow after OData preparation failure outputs are populated.",
+                  "display_name": "Completed - OData name preparation failed",
+                  "result_message": "The workflow could not safely prepare the suppression-name lookup filter.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L6ZCS6ZxCt4W1A0gJOYwqZG6lnA",
+        "name": "Generic Cisco Intersight API Request",
+        "title": "Get alarm suppression by exact name",
+        "type": "intersight.api_request",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "api_method": "GET",
+          "api_url": "/api/v1/cond/AlarmSuppressions?$filter=Name eq '$activity.definition_activity_02XOKCY8L6ZCV3MZqhUpQSFw0MWTHD36j56.output.script_queries.escapedSuppressionName$'&$select=Moid,Name,Enabled,AlarmRules,Entity",
+          "content_type": "application/json",
+          "continue_on_failure": true,
+          "description": "Retrieves all alarm suppressions whose Name exactly matches the escaped input and explicitly requests Moid, Name, Enabled, AlarmRules, and Entity. A generic API request is used because no purpose-built alarm-suppression lookup atomic is present in this export; replace it with a supported atomic if one becomes available.",
+          "display_name": "Get alarm suppression by exact name",
+          "endpoint": "primary",
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "use_workflow_target": true
+          }
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L6ZBR5rY5jdTH8ihYIBaOtn4byp",
+        "name": "Condition Block",
+        "title": "Validate alarm suppression lookup response",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "conditions": [],
+          "continue_on_failure": false,
+          "description": "Requires the alarm-suppression lookup activity to succeed with an HTTP 2xx response before its response body is inspected.",
+          "display_name": "Validate alarm suppression lookup response",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L6ZBQ3kytozwYNwtZz0mhV0vHpX",
+            "name": "Condition Branch",
+            "title": "Alarm suppression lookup HTTP failure",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L6ZCS6ZxCt4W1A0gJOYwqZG6lnA.output.succeeded$",
+                  "operator": "ne",
+                  "right_operand": true
+                },
+                "operator": "or",
+                "right_operand": {
+                  "left_operand": {
+                    "left_operand": "$activity.definition_activity_02XOKCY8L6ZCS6ZxCt4W1A0gJOYwqZG6lnA.output.succeeded$",
+                    "operator": "eq",
+                    "right_operand": true
+                  },
+                  "operator": "and",
+                  "right_operand": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L6ZCS6ZxCt4W1A0gJOYwqZG6lnA.output.status_code$",
+                      "operator": "lt",
+                      "right_operand": 200
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L6ZCS6ZxCt4W1A0gJOYwqZG6lnA.output.status_code$",
+                      "operator": "gte",
+                      "right_operand": 300
+                    }
+                  }
+                }
+              },
+              "continue_on_failure": false,
+              "description": "Handles an activity failure, missing or zero status, or non-2xx response from the exact-name alarm-suppression lookup.",
+              "display_name": "Alarm suppression lookup HTTP failure",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L6ZCR1FWsjdajQSWnzBrA79kH66",
+                "name": "Set Variables",
+                "title": "Set alarm suppression lookup HTTP failure outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates every standard output for a failed or non-2xx alarm-suppression lookup.",
+                  "display_name": "Set alarm suppression lookup HTTP failure outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728V4AyY8zJPsUQ9016sGNX8OC$",
+                      "variable_value_new": "502"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728T4RbygfwVcgZ2kwVCEK6AKh$",
+                      "variable_value_new": "Alarm suppression lookup failed or returned a non-2xx response"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728U08Oq00tiXiKuXazuY0iLA9$",
+                      "variable_value_new": "The 'Get alarm suppression by exact name' activity failed or did not return HTTP 2xx. Review its status code and response body; no update was attempted."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728S31iYXzY7xNB5t1uKph43V2$",
+                      "variable_value_new": "$activity.definition_activity_02XOKCY8L6ZCS6ZxCt4W1A0gJOYwqZG6lnA.output.response_body$"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L711X1I68j3tgYM2jeMoXq36YSK",
+                "name": "Completed",
+                "title": "Completed - Alarm suppression lookup HTTP failure",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow after the lookup HTTP failure outputs are populated.",
+                  "display_name": "Completed - Alarm suppression lookup HTTP failure",
+                  "result_message": "The alarm-suppression lookup failed or returned a non-2xx response.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR",
+        "name": "Execute Python Script",
+        "title": "Inspect exact alarm suppression match",
+        "type": "python3.script",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": true,
+          "description": "Parses the successful lookup response, requires a Results array with exactly one object, validates its Moid, Name, and boolean Enabled fields, requires a non-empty AlarmRules array, rejects any populated Entity relationship, and prepares JSON-safe terminal summaries.",
+          "display_name": "Inspect exact alarm suppression match",
+          "script": "import json\nimport sys\n\nlookupStatus = \"helper-failure\"\nlookupStatusCode = \"500\"\nlookupMessage = \"The lookup response could not be inspected.\"\nresultCount = -1\nsuppressionMoid = \"\"\nresultJson = json.dumps({\"error\": \"Lookup inspection did not complete\"}, separators=(\",\", \":\"))\n\ntry:\n    payload = json.loads(sys.argv[1])\n    if not isinstance(payload, dict):\n        raise ValueError(\"The API response body is not a JSON object.\")\n    results = payload.get(\"Results\")\n    if not isinstance(results, list):\n        raise ValueError(\"The API response does not contain a Results array.\")\n\n    resultCount = len(results)\n    if resultCount != 1:\n        lookupStatus = \"cardinality\"\n        lookupStatusCode = \"404\" if resultCount == 0 else \"409\"\n        lookupMessage = \"The exact-name lookup returned %d matches; exactly one is required.\" % resultCount\n        resultJson = json.dumps({\"error\": \"Exact lookup cardinality failure\", \"matchCount\": resultCount, \"requiredMatchCount\": 1}, separators=(\",\", \":\"))\n    else:\n        item = results[0]\n        if not isinstance(item, dict):\n            lookupStatus = \"invalid-resource\"\n            lookupStatusCode = \"502\"\n            lookupMessage = \"The single lookup result is not a JSON object.\"\n            resultJson = json.dumps({\"error\": lookupMessage}, separators=(\",\", \":\"))\n        else:\n            moid = item.get(\"Moid\")\n            name = item.get(\"Name\")\n            enabled = item.get(\"Enabled\")\n            alarmRules = item.get(\"AlarmRules\")\n            entity = item.get(\"Entity\")\n            alarmRulesCount = len(alarmRules) if isinstance(alarmRules, list) else 0\n            entityPresent = entity is not None\n\n            if not isinstance(moid, str) or not moid.strip() or not isinstance(name, str) or not name.strip() or not isinstance(enabled, bool):\n                lookupStatus = \"invalid-resource\"\n                lookupStatusCode = \"502\"\n                lookupMessage = \"The matching resource is missing a usable Moid, Name, or boolean Enabled value.\"\n                resultJson = json.dumps({\"error\": lookupMessage, \"MoidPresent\": isinstance(moid, str) and bool(moid.strip()), \"NamePresent\": isinstance(name, str) and bool(name.strip()), \"EnabledIsBoolean\": isinstance(enabled, bool)}, separators=(\",\", \":\"))\n            elif not isinstance(alarmRules, list) or alarmRulesCount == 0:\n                suppressionMoid = moid\n                lookupStatus = \"incompatible\"\n                lookupStatusCode = \"409\"\n                lookupMessage = \"The matching suppression does not have a populated AlarmRules array and cannot be disabled by this rule-only workflow.\"\n                resultJson = json.dumps({\"Moid\": moid, \"Name\": name, \"Enabled\": enabled, \"AlarmRulesCount\": alarmRulesCount, \"EntityPresent\": entityPresent, \"error\": lookupMessage}, separators=(\",\", \":\"))\n            elif entityPresent:\n                suppressionMoid = moid\n                lookupStatus = \"incompatible\"\n                lookupStatusCode = \"409\"\n                lookupMessage = \"The matching suppression has an Entity relationship and may be a server-maintenance suppression; no update is permitted.\"\n                resultJson = json.dumps({\"Moid\": moid, \"Name\": name, \"Enabled\": enabled, \"AlarmRulesCount\": alarmRulesCount, \"EntityPresent\": True, \"error\": lookupMessage}, separators=(\",\", \":\"))\n            else:\n                suppressionMoid = moid\n                if enabled is False:\n                    lookupStatus = \"already-disabled\"\n                    lookupStatusCode = \"200\"\n                    lookupMessage = \"The compatible rule-based alarm suppression is already disabled; no PATCH is required.\"\n                    resultJson = json.dumps({\"Moid\": moid, \"Name\": name, \"Enabled\": False, \"AlarmRulesCount\": alarmRulesCount, \"EntityPresent\": False, \"Changed\": False, \"Idempotent\": True}, separators=(\",\", \":\"))\n                else:\n                    lookupStatus = \"ready\"\n                    lookupStatusCode = \"200\"\n                    lookupMessage = \"The compatible rule-based alarm suppression is enabled and ready to be disabled.\"\n                    resultJson = json.dumps({\"Moid\": moid, \"Name\": name, \"Enabled\": False, \"PreviousEnabled\": True, \"AlarmRulesCount\": alarmRulesCount, \"EntityPresent\": False, \"Changed\": True, \"Idempotent\": False}, separators=(\",\", \":\"))\nexcept Exception as exc:\n    lookupStatus = \"helper-failure\"\n    lookupStatusCode = \"500\"\n    lookupMessage = str(exc)\n    resultJson = json.dumps({\"error\": \"Lookup response inspection failed\", \"detail\": lookupMessage}, separators=(\",\", \":\"))",
+          "script_arguments": [
+            "$activity.definition_activity_02XOKCY8L6ZCS6ZxCt4W1A0gJOYwqZG6lnA.output.response_body$"
+          ],
+          "script_queries": [
+            {
+              "script_query": "lookupStatus",
+              "script_query_name": "lookupStatus",
+              "script_query_type": "string"
+            },
+            {
+              "script_query": "lookupStatusCode",
+              "script_query_name": "lookupStatusCode",
+              "script_query_type": "string"
+            },
+            {
+              "script_query": "lookupMessage",
+              "script_query_name": "lookupMessage",
+              "script_query_type": "string"
+            },
+            {
+              "script_query": "resultCount",
+              "script_query_name": "resultCount",
+              "script_query_type": "integer"
+            },
+            {
+              "script_query": "suppressionMoid",
+              "script_query_name": "suppressionMoid",
+              "script_query_type": "string"
+            },
+            {
+              "script_query": "resultJson",
+              "script_query_name": "resultJson",
+              "script_query_type": "string"
+            }
+          ],
+          "skip_execution": false
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L6ZCM6L1GOzlN7bLJ3O8R3gDzpB",
+        "name": "Condition Block",
+        "title": "Validate inspected alarm suppression",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "conditions": [],
+          "continue_on_failure": false,
+          "description": "Validates the lookup-inspection helper itself, then routes cardinality, resource-shape, rule-safety, and already-disabled outcomes to explicit terminal paths. Only a validated 'ready' outcome can reach PATCH.",
+          "display_name": "Validate inspected alarm suppression",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L711Y2dKrM0jSFvunBGnWPtZUFL",
+            "name": "Condition Branch",
+            "title": "Lookup inspection helper failed",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.succeeded$",
+                  "operator": "ne",
+                  "right_operand": true
+                },
+                "operator": "or",
+                "right_operand": {
+                  "left_operand": {
+                    "left_operand": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.succeeded$",
+                    "operator": "eq",
+                    "right_operand": true
+                  },
+                  "operator": "and",
+                  "right_operand": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.lookupStatus$",
+                      "operator": "eq",
+                      "right_operand": "helper-failure"
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.lookupStatus$",
+                        "operator": "mregex",
+                        "right_operand": "^(?!(?:helper-failure|cardinality|invalid-resource|incompatible|already-disabled|ready)$).*$"
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.lookupStatus$",
+                          "operator": "mregex",
+                          "right_operand": "^(?:already-disabled|ready)$"
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.suppressionMoid$",
+                            "operator": "mregex",
+                            "right_operand": "^\\s*$"
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.resultJson$",
+                            "operator": "mregex",
+                            "right_operand": "^\\s*$"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "continue_on_failure": false,
+              "description": "Handles a technical helper failure, an unexpected lookup status, or missing required outputs for a mutation-ready or already-disabled resource.",
+              "display_name": "Lookup inspection helper failed",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L6ZCT6NkhdTmPIBOxgOX9IkdHfX",
+                "name": "Set Variables",
+                "title": "Set lookup inspection helper failure outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all standard outputs when lookup-response inspection fails technically or returns unusable helper outputs.",
+                  "display_name": "Set lookup inspection helper failure outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728V4AyY8zJPsUQ9016sGNX8OC$",
+                      "variable_value_new": "500"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728T4RbygfwVcgZ2kwVCEK6AKh$",
+                      "variable_value_new": "Alarm suppression lookup inspection failed"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728U08Oq00tiXiKuXazuY0iLA9$",
+                      "variable_value_new": "The 'Inspect exact alarm suppression match' helper failed or returned incomplete or unexpected output. Review that activity's execution details; no update was attempted."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728S31iYXzY7xNB5t1uKph43V2$",
+                      "variable_value_new": "{\"error\":\"Lookup inspection helper failed or returned unusable output\",\"activity\":\"Inspect exact alarm suppression match\"}"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L711T1T4ZrZz5Wr2Z0gWiURAdqY",
+                "name": "Completed",
+                "title": "Completed - Lookup inspection helper failed",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow after lookup inspection helper failure outputs are populated.",
+                  "display_name": "Completed - Lookup inspection helper failed",
+                  "result_message": "The lookup response could not be validated safely.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L6ZCI4b9FK2KQfNmLrVeDpYYAuz",
+            "name": "Condition Branch",
+            "title": "Exact lookup cardinality failure",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.succeeded$",
+                  "operator": "eq",
+                  "right_operand": true
+                },
+                "operator": "and",
+                "right_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.lookupStatus$",
+                  "operator": "eq",
+                  "right_operand": "cardinality"
+                }
+              },
+              "continue_on_failure": false,
+              "description": "Requires exactly one result from the escaped exact-name lookup and handles zero or multiple matches without selecting one silently.",
+              "display_name": "Exact lookup cardinality failure",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L6ZCL2RdJ31ciflu9pnKfxE1F9y",
+                "name": "Set Variables",
+                "title": "Set exact lookup cardinality failure outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all standard outputs when Suppression Name returns anything other than exactly one resource.",
+                  "display_name": "Set exact lookup cardinality failure outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728V4AyY8zJPsUQ9016sGNX8OC$",
+                      "variable_value_new": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.lookupStatusCode$"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728T4RbygfwVcgZ2kwVCEK6AKh$",
+                      "variable_value_new": "Alarm suppression exact-name lookup did not return exactly one match"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728U08Oq00tiXiKuXazuY0iLA9$",
+                      "variable_value_new": "Suppression Name '$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.input.variable_workflow_02XOKCY8L727S6TLMQET3EVBlHoyTxhNDqb$' returned $activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.resultCount$ matches; exactly one is required and no update was attempted."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728S31iYXzY7xNB5t1uKph43V2$",
+                      "variable_value_new": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.resultJson$"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L711S07sVMNcDNgGlOaTgN0rFj1",
+                "name": "Completed",
+                "title": "Completed - Exact lookup cardinality failure",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow after a zero-match or multiple-match exact-name lookup.",
+                  "display_name": "Completed - Exact lookup cardinality failure",
+                  "result_message": "Exactly one matching alarm suppression is required.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L6Z7X6ndPH8uaQrk84HBUxDYKCS",
+            "name": "Condition Branch",
+            "title": "Alarm suppression resource data is invalid",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.succeeded$",
+                  "operator": "eq",
+                  "right_operand": true
+                },
+                "operator": "and",
+                "right_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.lookupStatus$",
+                  "operator": "eq",
+                  "right_operand": "invalid-resource"
+                }
+              },
+              "continue_on_failure": false,
+              "description": "Rejects a single matching object that lacks the required Moid, Name, or boolean Enabled data before any mutation.",
+              "display_name": "Alarm suppression resource data is invalid",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L6ZBP2C3kryPEDvY8rsqziK7ie9",
+                "name": "Set Variables",
+                "title": "Set invalid alarm suppression resource outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates every standard output when the matching API object lacks required data.",
+                  "display_name": "Set invalid alarm suppression resource outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728V4AyY8zJPsUQ9016sGNX8OC$",
+                      "variable_value_new": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.lookupStatusCode$"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728T4RbygfwVcgZ2kwVCEK6AKh$",
+                      "variable_value_new": "Alarm suppression lookup returned incomplete resource data"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728U08Oq00tiXiKuXazuY0iLA9$",
+                      "variable_value_new": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.lookupMessage$ No update was attempted."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728S31iYXzY7xNB5t1uKph43V2$",
+                      "variable_value_new": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.resultJson$"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L6ZCN2ht3VpbVnquTbDJF1Cu2W8",
+                "name": "Completed",
+                "title": "Completed - Alarm suppression resource data is invalid",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow after an incomplete or invalid matching resource is detected.",
+                  "display_name": "Completed - Alarm suppression resource data is invalid",
+                  "result_message": "The matching alarm suppression did not include required resource data.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L6ZCK7ieP8GzF2B50Irmsq93OZV",
+            "name": "Condition Branch",
+            "title": "Alarm suppression is not a reusable rule",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.succeeded$",
+                  "operator": "eq",
+                  "right_operand": true
+                },
+                "operator": "and",
+                "right_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.lookupStatus$",
+                  "operator": "eq",
+                  "right_operand": "incompatible"
+                }
+              },
+              "continue_on_failure": false,
+              "description": "Explicitly requires AlarmRules to be a populated array and Entity to be absent, preventing this workflow from disabling an entity-based server-maintenance suppression.",
+              "display_name": "Alarm suppression is not a reusable rule",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L711R6AmExPfoZjcGs9BkHWsjDQ",
+                "name": "Set Variables",
+                "title": "Set incompatible suppression outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all standard outputs when AlarmRules is absent or empty, or Entity is present.",
+                  "display_name": "Set incompatible suppression outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728V4AyY8zJPsUQ9016sGNX8OC$",
+                      "variable_value_new": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.lookupStatusCode$"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728T4RbygfwVcgZ2kwVCEK6AKh$",
+                      "variable_value_new": "Alarm suppression is not a compatible reusable rule"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728U08Oq00tiXiKuXazuY0iLA9$",
+                      "variable_value_new": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.lookupMessage$ The workflow requires populated AlarmRules and no Entity relationship."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728S31iYXzY7xNB5t1uKph43V2$",
+                      "variable_value_new": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.resultJson$"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L71223efLGMh3WYEwe2qLDrg5Xi",
+                "name": "Completed",
+                "title": "Completed - Alarm suppression is not a reusable rule",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow safely without mutating an incompatible rule-less or entity-based suppression.",
+                  "display_name": "Completed - Alarm suppression is not a reusable rule",
+                  "result_message": "Only reusable rule-based suppressions with AlarmRules and no Entity can be disabled by this workflow.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L6ZCY5SGbo2LbLrOOApQIkYfuGu",
+            "name": "Condition Branch",
+            "title": "Compatible alarm suppression is already disabled",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.succeeded$",
+                  "operator": "eq",
+                  "right_operand": true
+                },
+                "operator": "and",
+                "right_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.lookupStatus$",
+                  "operator": "eq",
+                  "right_operand": "already-disabled"
+                }
+              },
+              "continue_on_failure": false,
+              "description": "Treats an exactly matched, structurally compatible suppression whose Enabled value is already false as an explicit idempotent success without issuing PATCH.",
+              "display_name": "Compatible alarm suppression is already disabled",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L6ZCO77UMv5bIN6NdSPBvhivhr1",
+                "name": "Set Variables",
+                "title": "Set already-disabled success outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all four standard outputs for the explicit idempotent already-disabled success path.",
+                  "display_name": "Set already-disabled success outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728V4AyY8zJPsUQ9016sGNX8OC$",
+                      "variable_value_new": "200"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728T4RbygfwVcgZ2kwVCEK6AKh$",
+                      "variable_value_new": "Alarm suppression rule is already disabled; no change was required"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728U08Oq00tiXiKuXazuY0iLA9$",
+                      "variable_value_new": ""
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728S31iYXzY7xNB5t1uKph43V2$",
+                      "variable_value_new": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.resultJson$"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L711U4OhFfwohsqDwdv5R6Ywt4N",
+                "name": "Completed",
+                "title": "Completed - Alarm suppression was already disabled",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "succeeded",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow successfully after confirming the compatible reusable rule was already disabled and all standard outputs were populated.",
+                  "display_name": "Completed - Alarm suppression was already disabled",
+                  "result_message": "The compatible alarm suppression rule was already disabled; no PATCH was sent.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L71205zzS80CjkyGrkObqlorYUC",
+        "name": "Generic Cisco Intersight API Request",
+        "title": "Disable alarm suppression rule",
+        "type": "intersight.api_request",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "api_body": "{\"Enabled\":false}",
+          "api_method": "PATCH",
+          "api_url": "/api/v1/cond/AlarmSuppressions/$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.suppressionMoid$",
+          "content_type": "application/json",
+          "continue_on_failure": true,
+          "description": "Sets Enabled to false on the one validated reusable rule-based alarm suppression. This activity can run only after exact cardinality, required Moid, populated AlarmRules, absent Entity, and current Enabled=true are confirmed. A generic API request is used because no purpose-built disable-suppression atomic is present in this export; replace it with a supported atomic if one becomes available.",
+          "display_name": "Disable alarm suppression rule",
+          "endpoint": "primary",
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "use_workflow_target": true
+          }
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L6ZCZ021MrAz23SeAwqOpjJJih5",
+        "name": "Condition Block",
+        "title": "Validate disable request response",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "conditions": [],
+          "continue_on_failure": false,
+          "description": "Requires the disable PATCH activity to succeed with an HTTP 2xx response before reporting success.",
+          "display_name": "Validate disable request response",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L711V0FyDkti5xbnYYyvxjR1A46",
+            "name": "Condition Branch",
+            "title": "Disable request HTTP failure",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": {
+                  "left_operand": "$activity.definition_activity_02XOKCY8L71205zzS80CjkyGrkObqlorYUC.output.succeeded$",
+                  "operator": "ne",
+                  "right_operand": true
+                },
+                "operator": "or",
+                "right_operand": {
+                  "left_operand": {
+                    "left_operand": "$activity.definition_activity_02XOKCY8L71205zzS80CjkyGrkObqlorYUC.output.succeeded$",
+                    "operator": "eq",
+                    "right_operand": true
+                  },
+                  "operator": "and",
+                  "right_operand": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L71205zzS80CjkyGrkObqlorYUC.output.status_code$",
+                      "operator": "lt",
+                      "right_operand": 200
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L71205zzS80CjkyGrkObqlorYUC.output.status_code$",
+                      "operator": "gte",
+                      "right_operand": 300
+                    }
+                  }
+                }
+              },
+              "continue_on_failure": false,
+              "description": "Handles a failed PATCH activity, missing or zero status, or non-2xx HTTP response and preserves the API response for diagnosis.",
+              "display_name": "Disable request HTTP failure",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L6Z7W6asmuPwOXjGELMlLCrLnX6",
+                "name": "Set Variables",
+                "title": "Set disable request HTTP failure outputs",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Populates all standard outputs for a failed or non-2xx PATCH response.",
+                  "display_name": "Set disable request HTTP failure outputs",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728V4AyY8zJPsUQ9016sGNX8OC$",
+                      "variable_value_new": "502"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728T4RbygfwVcgZ2kwVCEK6AKh$",
+                      "variable_value_new": "Disable alarm suppression request failed or returned a non-2xx response"
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728U08Oq00tiXiKuXazuY0iLA9$",
+                      "variable_value_new": "The 'Disable alarm suppression rule' PATCH activity failed or did not return HTTP 2xx. Review its status code and response body; the rule's final Enabled state is not confirmed."
+                    },
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728S31iYXzY7xNB5t1uKph43V2$",
+                      "variable_value_new": "$activity.definition_activity_02XOKCY8L71205zzS80CjkyGrkObqlorYUC.output.response_body$"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L6ZCJ7gPTPXW2aJt2sQzUDH7Dy2",
+                "name": "Completed",
+                "title": "Completed - Disable request HTTP failure",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "description": "Ends the workflow after PATCH failure outputs are populated.",
+                  "display_name": "Completed - Disable request HTTP failure",
+                  "result_message": "Cisco Intersight did not accept the disable request with an HTTP 2xx response.",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L6ZCW6NuWheMwNbua15ajUgldCQ",
+        "name": "Set Variables",
+        "title": "Set alarm suppression disabled outputs",
+        "type": "core.set_multiple_variables",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Populates all four standard outputs after Cisco Intersight accepts the Enabled=false PATCH for the validated rule-based suppression.",
+          "display_name": "Set alarm suppression disabled outputs",
+          "skip_execution": false,
+          "variables_to_update": [
+            {
+              "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728V4AyY8zJPsUQ9016sGNX8OC$",
+              "variable_value_new": "$activity.definition_activity_02XOKCY8L71205zzS80CjkyGrkObqlorYUC.output.status_code$"
+            },
+            {
+              "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728T4RbygfwVcgZ2kwVCEK6AKh$",
+              "variable_value_new": "Alarm suppression rule disabled"
+            },
+            {
+              "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728U08Oq00tiXiKuXazuY0iLA9$",
+              "variable_value_new": ""
+            },
+            {
+              "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72713f46c4Z92zyJG6fJH6vezX.output.variable_workflow_02XOKCY8L728S31iYXzY7xNB5t1uKph43V2$",
+              "variable_value_new": "$activity.definition_activity_02XOKCY8L71215DKKQhQyNvi9YDMb8pbZqR.output.script_queries.resultJson$"
+            }
+          ]
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L711Z1gEF9OXHTgrEu6eIOiltYO",
+        "name": "Completed",
+        "title": "Completed - Alarm suppression rule disabled",
+        "type": "logic.completed",
+        "base_type": "activity",
+        "properties": {
+          "completion_type": "succeeded",
+          "continue_on_failure": false,
+          "description": "Ends the workflow successfully after the compatible rule-based alarm suppression is disabled and every standard output is populated.",
+          "display_name": "Completed - Alarm suppression rule disabled",
+          "result_message": "Cisco Intersight accepted the Enabled=false update for the alarm suppression rule.",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity"
+      }
+    ],
+    "categories": [
+      "category_02XOKCY8L6Z5K2jm4aWXC4lwTD27TeF9NGI"
+    ]
+  },
+  "categories": {
+    "category_02XOKCY8L6Z5K2jm4aWXC4lwTD27TeF9NGI": {
+      "unique_name": "category_02XOKCY8L6Z5K2jm4aWXC4lwTD27TeF9NGI",
+      "name": "Cisco Intersight - Alarm Management",
+      "title": "Cisco Intersight - Alarm Management",
+      "type": "basic.category",
+      "base_type": "category",
+      "category_type": "custom",
+      "object_type": "category"
+    }
+  }
+}

@@ -1,0 +1,2214 @@
+{
+  "categories": {
+    "category_02XOMFAGO64RC6dYBT2G3od2WlgF1ROecIm": {
+      "unique_name": "category_02XOMFAGO64RC6dYBT2G3od2WlgF1ROecIm",
+      "name": "Cisco Intersight - Workload Definition Management",
+      "title": "Cisco Intersight - Workload Definition Management",
+      "type": "basic.category",
+      "base_type": "category",
+      "category_type": "custom",
+      "object_type": "category"
+    }
+  },
+  "workflow": {
+    "unique_name": "definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb",
+    "name": "Cisco Intersight - Set preferred workload definition version",
+    "title": "Cisco Intersight - Set preferred workload definition version",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "default",
+          "scope": "input",
+          "name": "Workload Organization",
+          "type": "datatype.string",
+          "description": "Exact organization containing the definition family.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XONE7OAKYCL2Lz13jmrYO5yrP3luP0p8u",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "Workload Definition Name",
+          "type": "datatype.string",
+          "description": "Exact definition family name.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XONE7OAKYCM1M401m2LgL8qwgDOnccW1C",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.integer",
+        "properties": {
+          "value": 1,
+          "scope": "input",
+          "name": "Workload Definition Version",
+          "type": "datatype.integer",
+          "description": "Exact validated version at least 1.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": ""
+        },
+        "unique_name": "variable_workflow_02XONE7OAKYCN2h9xO2KdyfVsaaC9VqtVtU",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "Preferred Version Rollout Strategy",
+          "type": "datatype.string",
+          "description": "Optional Batch or Canary JSON object; supplying it requires a mutation and remains gated.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "json"
+        },
+        "unique_name": "variable_workflow_02XONE7OAKYCO3SHbnmBo0ptSuIZ0yGhyFP",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.boolean",
+        "properties": {
+          "value": false,
+          "scope": "input",
+          "name": "Confirm Active Deployment Rollout",
+          "type": "datatype.boolean",
+          "description": "Must be true when active deployments following the preferred version are found.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": ""
+        },
+        "unique_name": "variable_workflow_02XONE7OAKYCP1zCaiSkvx5eLECujz79isa",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "{\"error\":\"Workflow ended before a terminal output path completed\"}",
+          "scope": "output",
+          "name": "Result",
+          "type": "datatype.string",
+          "description": "Response data or structured validation details associated with the final outcome.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "json"
+        },
+        "unique_name": "variable_workflow_02XONE7OAKYCH5YithxzC4DElLQM4dWWo5h",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "500",
+          "scope": "output",
+          "name": "Status Code",
+          "type": "datatype.string",
+          "description": "HTTP-style status code for the final workflow outcome.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XONE7OAKYCI3VpvpMREhS3EbTm2ymA4L7",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "Workflow execution did not reach a terminal output path",
+          "scope": "output",
+          "name": "Status Message",
+          "type": "datatype.string",
+          "description": "Human-readable summary of the final workflow outcome.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XONE7OAKYCJ3bOxmi9skIgBHaT6zUyY7M",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "The workflow ended before a terminal path populated the final output values.",
+          "scope": "output",
+          "name": "Error Message",
+          "type": "datatype.string",
+          "description": "Detailed failure information; empty when the workflow succeeds.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XONE7OAKYCK4nAfw7eIebrL2J2cOAryad",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "actions": [
+      {
+        "unique_name": "definition_activity_02XONE7OAKYCY6PequJrbVyt8IKt600Anmz",
+        "name": "Group",
+        "title": "Validate preferred-version request",
+        "type": "logic.group",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Validates exact identity, confirmation, and latest-schema rollout fields before inventory reads.",
+          "display_name": "Validate preferred-version request",
+          "skip_execution": false,
+          "display_as_suggestion": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx",
+            "name": "Execute Python Script",
+            "title": "Validate preferred-version request and strategy",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Validates exact identity and strict rollout JSON, rejects inherited read-only fields, and builds the safely escaped organization route.",
+              "display_name": "Validate preferred-version request and strategy",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport re\nimport sys\ndef strict_object(pairs):\n result={}\n for key,value in pairs:\n  if key in result: raise ValueError(\"Duplicate JSON key: \"+key)\n  result[key]=value\n return result\norganization=sys.argv[1].strip();definitionName=sys.argv[2].strip()\ntry: definitionVersion=int(sys.argv[3])\nexcept Exception: definitionVersion=0\nstrategyProvided=bool(sys.argv[4].strip());confirmationAccepted=sys.argv[5].strip().lower()==\"true\";strategy=None;errors=[]\nif not organization: errors.append(\"Workload Organization must not be blank.\")\nif not re.fullmatch(r\"[A-Za-z0-9][A-Za-z0-9 _-]{0,31}\",definitionName): errors.append(\"Workload Definition Name does not meet the public-schema pattern.\")\nif definitionVersion<1: errors.append(\"Workload Definition Version must be at least 1.\")\nif strategyProvided:\n try: strategy=json.loads(sys.argv[4],object_pairs_hook=strict_object)\n except Exception as exc: errors.append(\"Preferred Version Rollout Strategy is invalid JSON: \"+str(exc))\n if isinstance(strategy,dict):\n  kind=strategy.get(\"ObjectType\") or strategy.get(\"ClassId\");allowed={\"ClassId\",\"ObjectType\"} if kind==\"workload.BatchDeployment\" else {\"ClassId\",\"ObjectType\",\"RolloutPercentages\"}\n  if kind not in (\"workload.BatchDeployment\",\"workload.CanaryDeployment\"): errors.append(\"Rollout strategy type must be BatchDeployment or CanaryDeployment.\")\n  elif set(strategy)-allowed or strategy.get(\"ClassId\",kind)!=kind or strategy.get(\"ObjectType\",kind)!=kind: errors.append(\"Rollout strategy contains mismatched, read-only, or unsupported fields.\")\n  elif kind==\"workload.CanaryDeployment\" and (not isinstance(strategy.get(\"RolloutPercentages\",[]),list) or any(not isinstance(v,int) or isinstance(v,bool) or v<1 or v>100 for v in strategy.get(\"RolloutPercentages\",[]))): errors.append(\"Canary RolloutPercentages must be integer percentages from 1 through 100.\")\n  strategy={\"ClassId\":kind,\"ObjectType\":kind,**({\"RolloutPercentages\":strategy.get(\"RolloutPercentages\",[])} if kind==\"workload.CanaryDeployment\" else {})}\n elif strategy is not None: errors.append(\"Preferred Version Rollout Strategy must be an object.\")\nstatus,statusCode=(\"invalid\",400) if errors else (\"ok\",200);message=\" \".join(errors) if errors else \"Preferred-version request is valid.\"\nresultJson=json.dumps({\"error\":message},separators=(\",\",\":\")) if errors else \"{}\";ready=True\norganizationUrl=\"/api/v1/organization/Organizations?$filter=Name eq '%s'&$select=Moid,Name\"%organization.replace(\"'\",\"''\")\nrolloutJson=json.dumps(strategy,separators=(\",\",\":\")) if strategy is not None else \"\"\n",
+              "script_arguments": [
+                "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.input.variable_workflow_02XONE7OAKYCL2Lz13jmrYO5yrP3luP0p8u$",
+                "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.input.variable_workflow_02XONE7OAKYCM1M401m2LgL8qwgDOnccW1C$",
+                "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.input.variable_workflow_02XONE7OAKYCN2h9xO2KdyfVsaaC9VqtVtU$",
+                "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.input.variable_workflow_02XONE7OAKYCO3SHbnmBo0ptSuIZ0yGhyFP$",
+                "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.input.variable_workflow_02XONE7OAKYCP1zCaiSkvx5eLECujz79isa$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "status",
+                  "script_query_name": "status",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "statusCode",
+                  "script_query_name": "statusCode",
+                  "script_query_type": "integer"
+                },
+                {
+                  "script_query": "message",
+                  "script_query_name": "message",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "resultJson",
+                  "script_query_name": "resultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "ready",
+                  "script_query_name": "ready",
+                  "script_query_type": "boolean"
+                },
+                {
+                  "script_query": "organizationUrl",
+                  "script_query_name": "organizationUrl",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "definitionName",
+                  "script_query_name": "definitionName",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "definitionVersion",
+                  "script_query_name": "definitionVersion",
+                  "script_query_type": "integer"
+                },
+                {
+                  "script_query": "strategyProvided",
+                  "script_query_name": "strategyProvided",
+                  "script_query_type": "boolean"
+                },
+                {
+                  "script_query": "confirmationAccepted",
+                  "script_query_name": "confirmationAccepted",
+                  "script_query_type": "boolean"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYCX27QtDcqP8IUrPksOAyBGsk",
+            "name": "Condition Block",
+            "title": "Validate preferred-version request preparation",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately distinguishes expected validation or cardinality failures from helper execution and output-quality failures.",
+              "display_name": "Validate preferred-version request preparation",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYCT6DKmZTWPD9OesiIi5hziMc",
+                "name": "Condition Branch",
+                "title": "preferred-version request preparation rejected",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Returns the helper's actionable fail-closed result without running subsequent operations.",
+                  "display_name": "preferred-version request preparation rejected",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx.output.script_queries.ready$",
+                        "operator": "eq",
+                        "right_operand": true
+                      }
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx.output.script_queries.status$",
+                      "operator": "ne",
+                      "right_operand": "ok"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYCR2RvGCYVvIDEVwHAx7kuq1o",
+                    "name": "Set Variables",
+                    "title": "Set preferred-version request preparation rejected outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set preferred-version request preparation rejected outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCI3VpvpMREhS3EbTm2ymA4L7$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx.output.script_queries.statusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCJ3bOxmi9skIgBHaT6zUyY7M$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCK4nAfw7eIebrL2J2cOAryad$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCH5YithxzC4DElLQM4dWWo5h$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx.output.script_queries.resultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYCS7BQq6OH5VfE2S5Cx6qt0Mg",
+                    "name": "Completed",
+                    "title": "Completed - preferred-version request preparation rejected",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - preferred-version request preparation rejected",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "$activity.definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx.output.script_queries.message$"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XONE7OAKYCW2rQFm1KGwq49lNRLIbOhUa",
+                "name": "Condition Branch",
+                "title": "preferred-version request preparation helper failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles script failure or missing readiness output before any dependent activity runs.",
+                  "display_name": "preferred-version request preparation helper failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx.output.script_queries.ready$",
+                      "operator": "ne",
+                      "right_operand": true
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYCU74RgPWc1oazpN5dn1HVNoy",
+                    "name": "Set Variables",
+                    "title": "Set preferred-version request preparation helper failu outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set preferred-version request preparation helper failu outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCI3VpvpMREhS3EbTm2ymA4L7$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCJ3bOxmi9skIgBHaT6zUyY7M$",
+                          "variable_value_new": "preferred-version request preparation helper failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCK4nAfw7eIebrL2J2cOAryad$",
+                          "variable_value_new": "The preferred-version request preparation helper failed or returned incomplete output."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCH5YithxzC4DElLQM4dWWo5h$",
+                          "variable_value_new": "{\"error\":\"helper failure\",\"helper\":\"preferred-version request preparation\"}"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYCV2k1bcUUaz29a8SWR5KsKTb",
+                    "name": "Completed",
+                    "title": "Completed - preferred-version request preparation helper failu",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - preferred-version request preparation helper failu",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "preferred-version request preparation helper failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XONE7OAKYEL2ibSyuLhNFEmoFCi2VZRnW",
+        "name": "Group",
+        "title": "Inspect preferred-version state and impact",
+        "type": "logic.group",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Reads the exact validated target and internally summarizes affected deployments before an idempotent success or fail-closed gate.",
+          "display_name": "Inspect preferred-version state and impact",
+          "skip_execution": false,
+          "display_as_suggestion": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_02XONE7OAKYCZ4KJZjNueBnh0JjZfH6tVnc",
+            "name": "Generic Cisco Intersight API Request",
+            "title": "Get workload organization",
+            "type": "intersight.api_request",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Reads the exact Cisco Intersight organization by its OData-escaped name. A generic request is used because no purpose-built atomic for this operation is included in the export. Replace this generic request with a supported purpose-built atomic when one becomes available.",
+              "display_name": "Get workload organization",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "api_method": "GET",
+              "api_url": "$activity.definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx.output.script_queries.organizationUrl$",
+              "content_type": "application/json",
+              "endpoint": "primary",
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYD35d3Mpv2zleggwoGp0cSjAV",
+            "name": "Condition Block",
+            "title": "Validate organization lookup response",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately requires an activity success with a numeric HTTP 2xx status, except for explicitly documented response codes.",
+              "display_name": "Validate organization lookup response",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYD234yVDNEzZ5sFhkWc3gVoD3",
+                "name": "Condition Branch",
+                "title": "organization lookup API failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles activity failure, a missing status, or a non-2xx response with one standard-output path.",
+                  "display_name": "organization lookup API failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYCZ4KJZjNueBnh0JjZfH6tVnc.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XONE7OAKYCZ4KJZjNueBnh0JjZfH6tVnc.output.succeeded$",
+                          "operator": "eq",
+                          "right_operand": true
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XONE7OAKYCZ4KJZjNueBnh0JjZfH6tVnc.output.status_code$",
+                          "operator": "lt",
+                          "right_operand": 1
+                        }
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYCZ4KJZjNueBnh0JjZfH6tVnc.output.succeeded$",
+                            "operator": "eq",
+                            "right_operand": true
+                          },
+                          "operator": "and",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYCZ4KJZjNueBnh0JjZfH6tVnc.output.status_code$",
+                            "operator": "gt",
+                            "right_operand": 0
+                          }
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYCZ4KJZjNueBnh0JjZfH6tVnc.output.status_code$",
+                            "operator": "lt",
+                            "right_operand": 200
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYCZ4KJZjNueBnh0JjZfH6tVnc.output.status_code$",
+                            "operator": "gte",
+                            "right_operand": 300
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYD00oVJ3GMRf3eDTkLiTlYUU3",
+                    "name": "Set Variables",
+                    "title": "Set organization lookup API failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set organization lookup API failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCI3VpvpMREhS3EbTm2ymA4L7$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCJ3bOxmi9skIgBHaT6zUyY7M$",
+                          "variable_value_new": "organization lookup failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCK4nAfw7eIebrL2J2cOAryad$",
+                          "variable_value_new": "The organization lookup request failed or returned an unexpected HTTP status. Review the response body."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCH5YithxzC4DElLQM4dWWo5h$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYCZ4KJZjNueBnh0JjZfH6tVnc.output.response_body$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYD13x40MjFwGrc5B8LYv632k8",
+                    "name": "Completed",
+                    "title": "Completed - organization lookup API failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - organization lookup API failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "organization lookup failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYD47Qd3133Magd7sCpOPLYB4Y",
+            "name": "Execute Python Script",
+            "title": "Inspect exact organization match",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Parses the organization response, enforces exact-one cardinality, and returns the selected Moid.",
+              "display_name": "Inspect exact organization match",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport sys\n\nstatus = \"ok\"\nstatusCode = 200\nmessage = \"Organization resolved\"\nresultJson = \"{}\"\nready = False\norganizationMoid = \"\"\ntry:\n    body = json.loads(sys.argv[1])\n    rows = body.get(\"Results\") if isinstance(body, dict) else None\n    if not isinstance(rows, list):\n        raise ValueError(\"Organization response does not contain a Results array.\")\n    expectedName = sys.argv[2].strip()\n    if len(rows) != 1:\n        status = \"not-found\" if len(rows) == 0 else \"conflict\"\n        statusCode = 404 if len(rows) == 0 else 409\n        message = \"Organization lookup must return exactly one result; received %d.\" % len(rows)\n        resultJson = json.dumps({\"error\": message, \"resultCount\": len(rows)}, separators=(\",\", \":\"))\n    elif rows[0].get(\"Name\") != expectedName:\n        status = \"identity-mismatch\"\n        statusCode = 409\n        message = \"Organization response does not preserve the exact requested Name.\"\n        resultJson = json.dumps({\"error\": message}, separators=(\",\", \":\"))\n    else:\n        organizationMoid = str(rows[0].get(\"Moid\") or \"\")\n        if not organizationMoid:\n            raise ValueError(\"The exact organization result has no Moid.\")\n        resultJson = json.dumps({\"organization\": rows[0]}, separators=(\",\", \":\"))\n    ready = True\nexcept Exception as exc:\n    status = \"malformed\"\n    statusCode = 502\n    message = str(exc)\n    resultJson = json.dumps({\"error\": message}, separators=(\",\", \":\"))\n    ready = True\n",
+              "script_arguments": [
+                "$activity.definition_activity_02XONE7OAKYCZ4KJZjNueBnh0JjZfH6tVnc.output.response_body$",
+                "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.input.variable_workflow_02XONE7OAKYCL2Lz13jmrYO5yrP3luP0p8u$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "status",
+                  "script_query_name": "status",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "statusCode",
+                  "script_query_name": "statusCode",
+                  "script_query_type": "integer"
+                },
+                {
+                  "script_query": "message",
+                  "script_query_name": "message",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "resultJson",
+                  "script_query_name": "resultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "ready",
+                  "script_query_name": "ready",
+                  "script_query_type": "boolean"
+                },
+                {
+                  "script_query": "organizationMoid",
+                  "script_query_name": "organizationMoid",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYDB2SeHmKwDH1Da7RMP6eB1kf",
+            "name": "Condition Block",
+            "title": "Validate organization inspection",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately distinguishes expected validation or cardinality failures from helper execution and output-quality failures.",
+              "display_name": "Validate organization inspection",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYD712MNeIJ7b84TZGTCZsMeC2",
+                "name": "Condition Branch",
+                "title": "organization inspection rejected",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Returns the helper's actionable fail-closed result without running subsequent operations.",
+                  "display_name": "organization inspection rejected",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYD47Qd3133Magd7sCpOPLYB4Y.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYD47Qd3133Magd7sCpOPLYB4Y.output.script_queries.ready$",
+                        "operator": "eq",
+                        "right_operand": true
+                      }
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYD47Qd3133Magd7sCpOPLYB4Y.output.script_queries.status$",
+                      "operator": "ne",
+                      "right_operand": "ok"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYD54HVNjorbPwUywqZQ4UQRc8",
+                    "name": "Set Variables",
+                    "title": "Set organization inspection rejected outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set organization inspection rejected outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCI3VpvpMREhS3EbTm2ymA4L7$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYD47Qd3133Magd7sCpOPLYB4Y.output.script_queries.statusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCJ3bOxmi9skIgBHaT6zUyY7M$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYD47Qd3133Magd7sCpOPLYB4Y.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCK4nAfw7eIebrL2J2cOAryad$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYD47Qd3133Magd7sCpOPLYB4Y.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCH5YithxzC4DElLQM4dWWo5h$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYD47Qd3133Magd7sCpOPLYB4Y.output.script_queries.resultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYD62GEkri1IidugCwtWw2mC0n",
+                    "name": "Completed",
+                    "title": "Completed - organization inspection rejected",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - organization inspection rejected",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "$activity.definition_activity_02XONE7OAKYD47Qd3133Magd7sCpOPLYB4Y.output.script_queries.message$"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XONE7OAKYDA2IQiLEjr4bdKw4t2ZVhzVb",
+                "name": "Condition Branch",
+                "title": "organization inspection helper failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles script failure or missing readiness output before any dependent activity runs.",
+                  "display_name": "organization inspection helper failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYD47Qd3133Magd7sCpOPLYB4Y.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYD47Qd3133Magd7sCpOPLYB4Y.output.script_queries.ready$",
+                      "operator": "ne",
+                      "right_operand": true
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYD844owtLlbA07Hc2E0EpnqUU",
+                    "name": "Set Variables",
+                    "title": "Set organization inspection helper failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set organization inspection helper failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCI3VpvpMREhS3EbTm2ymA4L7$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCJ3bOxmi9skIgBHaT6zUyY7M$",
+                          "variable_value_new": "organization inspection helper failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCK4nAfw7eIebrL2J2cOAryad$",
+                          "variable_value_new": "The organization inspection helper failed or returned incomplete output."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCH5YithxzC4DElLQM4dWWo5h$",
+                          "variable_value_new": "{\"error\":\"helper failure\",\"helper\":\"organization inspection\"}"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYD92MqBXLjAr5oC28jfFnQpvi",
+                    "name": "Completed",
+                    "title": "Completed - organization inspection helper failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - organization inspection helper failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "organization inspection helper failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYDC6CnlesXGS2qLaf6xt5cKXG",
+            "name": "Execute Python Script",
+            "title": "Build family and deployment impact routes",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Builds the exact family query and an organization-scoped deployment query used only for internal filtering and impact counts.",
+              "display_name": "Build family and deployment impact routes",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport sys\nname=sys.argv[1].replace(\"'\",\"''\");organizationMoid=sys.argv[2]\nfamilyUrl=\"/api/v1/workload/WorkloadDefinitions?$filter=Name eq '%s' and Organization.Moid eq '%s'&$orderby=Version desc&$inlinecount=allpages&$top=1000\"%(name,organizationMoid)\ndeploymentsUrl=\"/api/v1/workload/WorkloadDeployments?$filter=Organization.Moid eq '%s'&$select=Moid,Name,Status,Organization,WorkloadDefinitionReference&$inlinecount=allpages&$top=1000\"%organizationMoid\nstatus,statusCode,message,resultJson,ready=\"ok\",200,\"Impact routes built\",\"{}\",bool(organizationMoid)\n",
+              "script_arguments": [
+                "$activity.definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx.output.script_queries.definitionName$",
+                "$activity.definition_activity_02XONE7OAKYD47Qd3133Magd7sCpOPLYB4Y.output.script_queries.organizationMoid$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "status",
+                  "script_query_name": "status",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "statusCode",
+                  "script_query_name": "statusCode",
+                  "script_query_type": "integer"
+                },
+                {
+                  "script_query": "message",
+                  "script_query_name": "message",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "resultJson",
+                  "script_query_name": "resultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "ready",
+                  "script_query_name": "ready",
+                  "script_query_type": "boolean"
+                },
+                {
+                  "script_query": "familyUrl",
+                  "script_query_name": "familyUrl",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "deploymentsUrl",
+                  "script_query_name": "deploymentsUrl",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYDJ6aWg7gtvogdRcQtyz2WL5c",
+            "name": "Condition Block",
+            "title": "Validate impact route preparation",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately distinguishes expected validation or cardinality failures from helper execution and output-quality failures.",
+              "display_name": "Validate impact route preparation",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYDF6cyxdr20BhTw2pnHSmxciE",
+                "name": "Condition Branch",
+                "title": "impact route preparation rejected",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Returns the helper's actionable fail-closed result without running subsequent operations.",
+                  "display_name": "impact route preparation rejected",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYDC6CnlesXGS2qLaf6xt5cKXG.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYDC6CnlesXGS2qLaf6xt5cKXG.output.script_queries.ready$",
+                        "operator": "eq",
+                        "right_operand": true
+                      }
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYDC6CnlesXGS2qLaf6xt5cKXG.output.script_queries.status$",
+                      "operator": "ne",
+                      "right_operand": "ok"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYDD1SqE5W2MB0S3Mw6OnF96Ij",
+                    "name": "Set Variables",
+                    "title": "Set impact route preparation rejected outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set impact route preparation rejected outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCI3VpvpMREhS3EbTm2ymA4L7$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYDC6CnlesXGS2qLaf6xt5cKXG.output.script_queries.statusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCJ3bOxmi9skIgBHaT6zUyY7M$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYDC6CnlesXGS2qLaf6xt5cKXG.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCK4nAfw7eIebrL2J2cOAryad$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYDC6CnlesXGS2qLaf6xt5cKXG.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCH5YithxzC4DElLQM4dWWo5h$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYDC6CnlesXGS2qLaf6xt5cKXG.output.script_queries.resultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYDE1HS9156PkvINvPSWooiwRb",
+                    "name": "Completed",
+                    "title": "Completed - impact route preparation rejected",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - impact route preparation rejected",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "$activity.definition_activity_02XONE7OAKYDC6CnlesXGS2qLaf6xt5cKXG.output.script_queries.message$"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XONE7OAKYDI5Y5fWLKOjrR2TMjTer4083",
+                "name": "Condition Branch",
+                "title": "impact route preparation helper failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles script failure or missing readiness output before any dependent activity runs.",
+                  "display_name": "impact route preparation helper failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYDC6CnlesXGS2qLaf6xt5cKXG.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYDC6CnlesXGS2qLaf6xt5cKXG.output.script_queries.ready$",
+                      "operator": "ne",
+                      "right_operand": true
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYDG7XuxjHJQfOGEfQn1nWIHfv",
+                    "name": "Set Variables",
+                    "title": "Set impact route preparation helper failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set impact route preparation helper failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCI3VpvpMREhS3EbTm2ymA4L7$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCJ3bOxmi9skIgBHaT6zUyY7M$",
+                          "variable_value_new": "impact route preparation helper failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCK4nAfw7eIebrL2J2cOAryad$",
+                          "variable_value_new": "The impact route preparation helper failed or returned incomplete output."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCH5YithxzC4DElLQM4dWWo5h$",
+                          "variable_value_new": "{\"error\":\"helper failure\",\"helper\":\"impact route preparation\"}"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYDH5LQcZCeB8mktxiiTkCRv23",
+                    "name": "Completed",
+                    "title": "Completed - impact route preparation helper failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - impact route preparation helper failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "impact route preparation helper failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYDK59qfEb8drAliTJjSSGUWP2",
+            "name": "Generic Cisco Intersight API Request",
+            "title": "Get definition family preferred state",
+            "type": "intersight.api_request",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Reads family versions to identify the exact target and current preferred version. A generic request is used because no purpose-built atomic for this operation is included in the export. Replace this generic request with a supported purpose-built atomic when one becomes available.",
+              "display_name": "Get definition family preferred state",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "api_method": "GET",
+              "api_url": "$activity.definition_activity_02XONE7OAKYDC6CnlesXGS2qLaf6xt5cKXG.output.script_queries.familyUrl$",
+              "content_type": "application/json",
+              "endpoint": "primary",
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYDO5ZxfgNMtpYcStHE0yMiuTL",
+            "name": "Condition Block",
+            "title": "Validate preferred family lookup response",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately requires an activity success with a numeric HTTP 2xx status, except for explicitly documented response codes.",
+              "display_name": "Validate preferred family lookup response",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYDN3QhIOAt7reoUSmOIPrfiKA",
+                "name": "Condition Branch",
+                "title": "preferred family lookup API failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles activity failure, a missing status, or a non-2xx response with one standard-output path.",
+                  "display_name": "preferred family lookup API failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYDK59qfEb8drAliTJjSSGUWP2.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XONE7OAKYDK59qfEb8drAliTJjSSGUWP2.output.succeeded$",
+                          "operator": "eq",
+                          "right_operand": true
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XONE7OAKYDK59qfEb8drAliTJjSSGUWP2.output.status_code$",
+                          "operator": "lt",
+                          "right_operand": 1
+                        }
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYDK59qfEb8drAliTJjSSGUWP2.output.succeeded$",
+                            "operator": "eq",
+                            "right_operand": true
+                          },
+                          "operator": "and",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYDK59qfEb8drAliTJjSSGUWP2.output.status_code$",
+                            "operator": "gt",
+                            "right_operand": 0
+                          }
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYDK59qfEb8drAliTJjSSGUWP2.output.status_code$",
+                            "operator": "lt",
+                            "right_operand": 200
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYDK59qfEb8drAliTJjSSGUWP2.output.status_code$",
+                            "operator": "gte",
+                            "right_operand": 300
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYDL21CfonGX7Waus3LxS7tFtx",
+                    "name": "Set Variables",
+                    "title": "Set preferred family lookup API failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set preferred family lookup API failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCI3VpvpMREhS3EbTm2ymA4L7$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCJ3bOxmi9skIgBHaT6zUyY7M$",
+                          "variable_value_new": "preferred family lookup failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCK4nAfw7eIebrL2J2cOAryad$",
+                          "variable_value_new": "The preferred family lookup request failed or returned an unexpected HTTP status. Review the response body."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCH5YithxzC4DElLQM4dWWo5h$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYDK59qfEb8drAliTJjSSGUWP2.output.response_body$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYDM6D3FFG1CyzEoie0dcyYehn",
+                    "name": "Completed",
+                    "title": "Completed - preferred family lookup API failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - preferred family lookup API failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "preferred family lookup failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYDP5QG9Md3zkNynmmsCLkF1hg",
+            "name": "Execute Python Script",
+            "title": "Select exact target and current preferred version",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Requires one exact target version, rejects multiple preferred versions, and builds the full target item URL.",
+              "display_name": "Select exact target and current preferred version",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport sys\nstatus,statusCode,message,resultJson,ready=\"ok\",200,\"Target and preferred state selected\",\"{}\",False\ntargetMoid=targetItemUrl=familyJson=\"\";targetAlreadyPreferred=False\ntry:\n body=json.loads(sys.argv[1]);name=sys.argv[2];version=int(sys.argv[3]);organizationMoid=sys.argv[4];rows=body.get(\"Results\") if isinstance(body,dict) else None;count=body.get(\"Count\") if isinstance(body,dict) else None\n if not isinstance(rows,list) or isinstance(count,bool) or not isinstance(count,int) or count<0: raise ValueError(\"Family response must contain a non-negative integer Count and Results array.\")\n if count>1000: status,statusCode,message=\"paging-required\",422,\"More than 1000 family versions require internal paging; this export fails closed before mutation.\";exact=[];targets=[];preferred=[]\n elif count!=len(rows): status,statusCode,message=\"incomplete-page\",422,\"Family Results are incomplete relative to Count; this export fails closed before mutation.\";exact=[];targets=[];preferred=[]\n else:\n  exact=[row for row in rows if row.get(\"Name\")==name and isinstance(row.get(\"Organization\"),dict) and row[\"Organization\"].get(\"Moid\")==organizationMoid]\n  targets=[row for row in exact if int(row.get(\"Version\",0))==version];preferred=[row for row in exact if row.get(\"PreferredVersion\") is True]\n if status==\"ok\" and len(exact)!=len(rows): status,statusCode,message=\"identity-mismatch\",409,\"Family response contains an identity outside the exact requested filter.\"\n elif status==\"ok\" and len(targets)!=1: status,statusCode,message=(\"not-found\",404,\"Target version was not found.\") if len(targets)==0 else (\"conflict\",409,\"Target version identity is duplicated.\")\n elif status==\"ok\" and len(preferred)>1: status,statusCode,message=\"conflict\",409,\"Definition family has multiple preferred versions.\"\n elif status==\"ok\":\n  targetMoid=str(targets[0].get(\"Moid\") or \"\");targetAlreadyPreferred=targets[0].get(\"PreferredVersion\") is True\n  if not targetMoid: raise ValueError(\"Target definition has no Moid.\")\n  targetItemUrl=\"/api/v1/workload/WorkloadDefinitions/\"+targetMoid;familyJson=json.dumps(exact,separators=(\",\",\":\"),ensure_ascii=False);resultJson=json.dumps({\"target\":targets[0],\"currentPreferred\":preferred[0] if preferred else None},separators=(\",\",\":\"),ensure_ascii=False)\n if status!=\"ok\": resultJson=json.dumps({\"error\":message},separators=(\",\",\":\"))\n ready=True\nexcept Exception as exc: status,statusCode,message,resultJson,ready=\"malformed\",502,str(exc),json.dumps({\"error\":str(exc)},separators=(\",\",\":\")),True\n",
+              "script_arguments": [
+                "$activity.definition_activity_02XONE7OAKYDK59qfEb8drAliTJjSSGUWP2.output.response_body$",
+                "$activity.definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx.output.script_queries.definitionName$",
+                "$activity.definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx.output.script_queries.definitionVersion$",
+                "$activity.definition_activity_02XONE7OAKYD47Qd3133Magd7sCpOPLYB4Y.output.script_queries.organizationMoid$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "status",
+                  "script_query_name": "status",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "statusCode",
+                  "script_query_name": "statusCode",
+                  "script_query_type": "integer"
+                },
+                {
+                  "script_query": "message",
+                  "script_query_name": "message",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "resultJson",
+                  "script_query_name": "resultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "ready",
+                  "script_query_name": "ready",
+                  "script_query_type": "boolean"
+                },
+                {
+                  "script_query": "targetMoid",
+                  "script_query_name": "targetMoid",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "targetItemUrl",
+                  "script_query_name": "targetItemUrl",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "familyJson",
+                  "script_query_name": "familyJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "targetAlreadyPreferred",
+                  "script_query_name": "targetAlreadyPreferred",
+                  "script_query_type": "boolean"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYDW1TJNXEoWi5Z09062TWTxfN",
+            "name": "Condition Block",
+            "title": "Validate target preferred-state selection",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately distinguishes expected validation or cardinality failures from helper execution and output-quality failures.",
+              "display_name": "Validate target preferred-state selection",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYDS3BFZ2buVvbbTK1m1axpzug",
+                "name": "Condition Branch",
+                "title": "target preferred-state selection rejected",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Returns the helper's actionable fail-closed result without running subsequent operations.",
+                  "display_name": "target preferred-state selection rejected",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYDP5QG9Md3zkNynmmsCLkF1hg.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYDP5QG9Md3zkNynmmsCLkF1hg.output.script_queries.ready$",
+                        "operator": "eq",
+                        "right_operand": true
+                      }
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYDP5QG9Md3zkNynmmsCLkF1hg.output.script_queries.status$",
+                      "operator": "ne",
+                      "right_operand": "ok"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYDQ7DgPnnEoAXhy0QXPs9Jda1",
+                    "name": "Set Variables",
+                    "title": "Set target preferred-state selection rejected outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set target preferred-state selection rejected outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCI3VpvpMREhS3EbTm2ymA4L7$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYDP5QG9Md3zkNynmmsCLkF1hg.output.script_queries.statusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCJ3bOxmi9skIgBHaT6zUyY7M$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYDP5QG9Md3zkNynmmsCLkF1hg.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCK4nAfw7eIebrL2J2cOAryad$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYDP5QG9Md3zkNynmmsCLkF1hg.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCH5YithxzC4DElLQM4dWWo5h$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYDP5QG9Md3zkNynmmsCLkF1hg.output.script_queries.resultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYDR0yrOtM7XbCCrsdFxgmDoWM",
+                    "name": "Completed",
+                    "title": "Completed - target preferred-state selection rejected",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - target preferred-state selection rejected",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "$activity.definition_activity_02XONE7OAKYDP5QG9Md3zkNynmmsCLkF1hg.output.script_queries.message$"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XONE7OAKYDV1RKJRhctvNytIsY6JQPxf0",
+                "name": "Condition Branch",
+                "title": "target preferred-state selection helper failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles script failure or missing readiness output before any dependent activity runs.",
+                  "display_name": "target preferred-state selection helper failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYDP5QG9Md3zkNynmmsCLkF1hg.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYDP5QG9Md3zkNynmmsCLkF1hg.output.script_queries.ready$",
+                      "operator": "ne",
+                      "right_operand": true
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYDT61WeJxt2yuD0TBHWsFN7iz",
+                    "name": "Set Variables",
+                    "title": "Set target preferred-state selection helper failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set target preferred-state selection helper failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCI3VpvpMREhS3EbTm2ymA4L7$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCJ3bOxmi9skIgBHaT6zUyY7M$",
+                          "variable_value_new": "target preferred-state selection helper failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCK4nAfw7eIebrL2J2cOAryad$",
+                          "variable_value_new": "The target preferred-state selection helper failed or returned incomplete output."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCH5YithxzC4DElLQM4dWWo5h$",
+                          "variable_value_new": "{\"error\":\"helper failure\",\"helper\":\"target preferred-state selection\"}"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYDU0PWStc5yMw0h8yItslYZmd",
+                    "name": "Completed",
+                    "title": "Completed - target preferred-state selection helper failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - target preferred-state selection helper failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "target preferred-state selection helper failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYDX7QSpcJols8Y3ui8Rkl6RkL",
+            "name": "Generic Cisco Intersight API Request",
+            "title": "Get validated preferred-version target",
+            "type": "intersight.api_request",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Reads the exact target and its current validation information. A generic request is used because no purpose-built atomic for this operation is included in the export. Replace this generic request with a supported purpose-built atomic when one becomes available.",
+              "display_name": "Get validated preferred-version target",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "api_method": "GET",
+              "api_url": "$activity.definition_activity_02XONE7OAKYDP5QG9Md3zkNynmmsCLkF1hg.output.script_queries.targetItemUrl$",
+              "content_type": "application/json",
+              "endpoint": "primary",
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYE130ZzhDcyuMpV4OTLz85Q9s",
+            "name": "Condition Block",
+            "title": "Validate preferred target read response",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately requires an activity success with a numeric HTTP 2xx status, except for explicitly documented response codes.",
+              "display_name": "Validate preferred target read response",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYE047Fa7ioMd3CbU44OcT0Val",
+                "name": "Condition Branch",
+                "title": "preferred target read API failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles activity failure, a missing status, or a non-2xx response with one standard-output path.",
+                  "display_name": "preferred target read API failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYDX7QSpcJols8Y3ui8Rkl6RkL.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XONE7OAKYDX7QSpcJols8Y3ui8Rkl6RkL.output.succeeded$",
+                          "operator": "eq",
+                          "right_operand": true
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XONE7OAKYDX7QSpcJols8Y3ui8Rkl6RkL.output.status_code$",
+                          "operator": "lt",
+                          "right_operand": 1
+                        }
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYDX7QSpcJols8Y3ui8Rkl6RkL.output.succeeded$",
+                            "operator": "eq",
+                            "right_operand": true
+                          },
+                          "operator": "and",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYDX7QSpcJols8Y3ui8Rkl6RkL.output.status_code$",
+                            "operator": "gt",
+                            "right_operand": 0
+                          }
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYDX7QSpcJols8Y3ui8Rkl6RkL.output.status_code$",
+                            "operator": "lt",
+                            "right_operand": 200
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYDX7QSpcJols8Y3ui8Rkl6RkL.output.status_code$",
+                            "operator": "gte",
+                            "right_operand": 300
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYDY3MpHf44rQhEFNcYmaJOqsr",
+                    "name": "Set Variables",
+                    "title": "Set preferred target read API failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set preferred target read API failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCI3VpvpMREhS3EbTm2ymA4L7$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCJ3bOxmi9skIgBHaT6zUyY7M$",
+                          "variable_value_new": "preferred target read failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCK4nAfw7eIebrL2J2cOAryad$",
+                          "variable_value_new": "The preferred target read request failed or returned an unexpected HTTP status. Review the response body."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCH5YithxzC4DElLQM4dWWo5h$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYDX7QSpcJols8Y3ui8Rkl6RkL.output.response_body$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYDZ0Xf1LVqQXBCVITwmcBEQ4O",
+                    "name": "Completed",
+                    "title": "Completed - preferred target read API failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - preferred target read API failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "preferred target read failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYE24zgUt9uO3KUELeVUVx0qid",
+            "name": "Generic Cisco Intersight API Request",
+            "title": "Get organization deployments for impact",
+            "type": "intersight.api_request",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Reads up to 1000 organization-scoped deployments for internal DefinitionName and UsePreferredVersion filtering; no collection is returned. A generic request is used because no purpose-built atomic for this operation is included in the export. Replace this generic request with a supported purpose-built atomic when one becomes available.",
+              "display_name": "Get organization deployments for impact",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "api_method": "GET",
+              "api_url": "$activity.definition_activity_02XONE7OAKYDC6CnlesXGS2qLaf6xt5cKXG.output.script_queries.deploymentsUrl$",
+              "content_type": "application/json",
+              "endpoint": "primary",
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYE6167lPyZHSyo60pNWTaN9gU",
+            "name": "Condition Block",
+            "title": "Validate deployment impact lookup response",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately requires an activity success with a numeric HTTP 2xx status, except for explicitly documented response codes.",
+              "display_name": "Validate deployment impact lookup response",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYE569CppDKXGCdhUuJIaH8L8G",
+                "name": "Condition Branch",
+                "title": "deployment impact lookup API failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles activity failure, a missing status, or a non-2xx response with one standard-output path.",
+                  "display_name": "deployment impact lookup API failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYE24zgUt9uO3KUELeVUVx0qid.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XONE7OAKYE24zgUt9uO3KUELeVUVx0qid.output.succeeded$",
+                          "operator": "eq",
+                          "right_operand": true
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XONE7OAKYE24zgUt9uO3KUELeVUVx0qid.output.status_code$",
+                          "operator": "lt",
+                          "right_operand": 1
+                        }
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYE24zgUt9uO3KUELeVUVx0qid.output.succeeded$",
+                            "operator": "eq",
+                            "right_operand": true
+                          },
+                          "operator": "and",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYE24zgUt9uO3KUELeVUVx0qid.output.status_code$",
+                            "operator": "gt",
+                            "right_operand": 0
+                          }
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYE24zgUt9uO3KUELeVUVx0qid.output.status_code$",
+                            "operator": "lt",
+                            "right_operand": 200
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XONE7OAKYE24zgUt9uO3KUELeVUVx0qid.output.status_code$",
+                            "operator": "gte",
+                            "right_operand": 300
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYE34jjRBPToX0U8MkEMpyr2l7",
+                    "name": "Set Variables",
+                    "title": "Set deployment impact lookup API failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set deployment impact lookup API failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCI3VpvpMREhS3EbTm2ymA4L7$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCJ3bOxmi9skIgBHaT6zUyY7M$",
+                          "variable_value_new": "deployment impact lookup failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCK4nAfw7eIebrL2J2cOAryad$",
+                          "variable_value_new": "The deployment impact lookup request failed or returned an unexpected HTTP status. Review the response body."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCH5YithxzC4DElLQM4dWWo5h$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYE24zgUt9uO3KUELeVUVx0qid.output.response_body$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYE47gFDhmLqnnC3ZmZH0Bz6kz",
+                    "name": "Completed",
+                    "title": "Completed - deployment impact lookup API failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - deployment impact lookup API failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "deployment impact lookup failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYE702vSGhBv5wcBs4jnsc25Dn",
+            "name": "Execute Python Script",
+            "title": "Verify target and summarize rollout impact",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Requires Updated and Valid, checks internal paging completeness, counts preferred-following deployments by status, and enforces active-rollout confirmation.",
+              "display_name": "Verify target and summarize rollout impact",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport sys\nstatus,statusCode,message,resultJson,ready=\"ok\",200,\"Preferred-version impact summarized\",\"{}\",False\nimpactResultJson=\"{}\";targetAlreadyPreferred=sys.argv[6].lower()==\"true\"\ntry:\n target=json.loads(sys.argv[1]);deploymentsBody=json.loads(sys.argv[2]);family=json.loads(sys.argv[3]);name=sys.argv[4];organizationMoid=sys.argv[5];confirmed=sys.argv[7].lower()==\"true\"\n org=target.get(\"Organization\") if isinstance(target,dict) else None;validation=target.get(\"ValidationInformation\") if isinstance(target,dict) else None\n if not isinstance(target,dict) or target.get(\"Moid\")!=sys.argv[8] or target.get(\"Name\")!=name or int(target.get(\"Version\",0))!=int(sys.argv[9]) or not isinstance(org,dict) or org.get(\"Moid\")!=organizationMoid: status,statusCode,message=\"identity-mismatch\",409,\"Target item identity changed.\"\n elif not isinstance(validation,dict) or validation.get(\"EngineState\")!=\"Updated\" or validation.get(\"State\")!=\"Valid\": status,statusCode,message=\"invalid\",422,\"Target definition must be Updated and Valid.\"\n else:\n  rows=deploymentsBody.get(\"Results\") if isinstance(deploymentsBody,dict) else None;count=deploymentsBody.get(\"Count\") if isinstance(deploymentsBody,dict) else None\n  if not isinstance(rows,list) or isinstance(count,bool) or not isinstance(count,int) or count<0: raise ValueError(\"Deployment impact response must contain a non-negative integer Count and Results array.\")\n  if count>1000: status,statusCode,message=\"paging-required\",422,\"More than 1000 organization deployments require internal paging; this export fails closed before mutation.\"\n  elif count!=len(rows): status,statusCode,message=\"incomplete-page\",422,\"Deployment impact Results are incomplete relative to Count; this export fails closed before mutation.\"\n  elif any(not isinstance(row,dict) or not isinstance(row.get(\"Organization\"),dict) or row[\"Organization\"].get(\"Moid\")!=organizationMoid for row in rows): status,statusCode,message=\"identity-mismatch\",409,\"Deployment impact response contains an identity outside the requested organization.\"\n  else:\n   affected=[]\n   for row in rows:\n    mapper=row.get(\"WorkloadDefinitionReference\") if isinstance(row,dict) else None\n    if isinstance(mapper,dict) and mapper.get(\"DefinitionName\")==name and mapper.get(\"UsePreferredVersion\") is True: affected.append(row)\n   byStatus={}\n   for row in affected: byStatus[row.get(\"Status\",\"Unknown\")]=byStatus.get(row.get(\"Status\",\"Unknown\"),0)+1\n   active=sum(value for key,value in byStatus.items() if key!=\"Draft\")\n   if active and not confirmed: status,statusCode,message=\"confirmation-required\",400,\"Confirm Active Deployment Rollout must be true because %d non-Draft deployments follow the preferred version.\"%active\n   preferred=[row for row in family if row.get(\"PreferredVersion\") is True]\n   impactResultJson=json.dumps({\"target\":target,\"impact\":{\"followingPreferredCount\":len(affected),\"activeFollowingPreferredCount\":active,\"byStatus\":byStatus},\"currentPreferred\":{\"Moid\":preferred[0].get(\"Moid\"),\"Version\":preferred[0].get(\"Version\")} if preferred else None},separators=(\",\",\":\"),ensure_ascii=False);resultJson=impactResultJson\n if status!=\"ok\": resultJson=json.dumps({\"error\":message,\"mutationSubmitted\":False},separators=(\",\",\":\"))\n ready=True\nexcept Exception as exc: status,statusCode,message,resultJson,ready=\"malformed\",502,str(exc),json.dumps({\"error\":str(exc)},separators=(\",\",\":\")),True\n",
+              "script_arguments": [
+                "$activity.definition_activity_02XONE7OAKYDX7QSpcJols8Y3ui8Rkl6RkL.output.response_body$",
+                "$activity.definition_activity_02XONE7OAKYE24zgUt9uO3KUELeVUVx0qid.output.response_body$",
+                "$activity.definition_activity_02XONE7OAKYDP5QG9Md3zkNynmmsCLkF1hg.output.script_queries.familyJson$",
+                "$activity.definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx.output.script_queries.definitionName$",
+                "$activity.definition_activity_02XONE7OAKYD47Qd3133Magd7sCpOPLYB4Y.output.script_queries.organizationMoid$",
+                "$activity.definition_activity_02XONE7OAKYDP5QG9Md3zkNynmmsCLkF1hg.output.script_queries.targetAlreadyPreferred$",
+                "$activity.definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx.output.script_queries.confirmationAccepted$",
+                "$activity.definition_activity_02XONE7OAKYDP5QG9Md3zkNynmmsCLkF1hg.output.script_queries.targetMoid$",
+                "$activity.definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx.output.script_queries.definitionVersion$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "status",
+                  "script_query_name": "status",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "statusCode",
+                  "script_query_name": "statusCode",
+                  "script_query_type": "integer"
+                },
+                {
+                  "script_query": "message",
+                  "script_query_name": "message",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "resultJson",
+                  "script_query_name": "resultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "ready",
+                  "script_query_name": "ready",
+                  "script_query_type": "boolean"
+                },
+                {
+                  "script_query": "impactResultJson",
+                  "script_query_name": "impactResultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "targetAlreadyPreferred",
+                  "script_query_name": "targetAlreadyPreferred",
+                  "script_query_type": "boolean"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYEE4mMY1TexFt0ghb840C573b",
+            "name": "Condition Block",
+            "title": "Validate preferred-version impact inspection",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Immediately distinguishes expected validation or cardinality failures from helper execution and output-quality failures.",
+              "display_name": "Validate preferred-version impact inspection",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYEA1qh1wiXuquNUTK4gxVz8La",
+                "name": "Condition Branch",
+                "title": "preferred-version impact inspection rejected",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Returns the helper's actionable fail-closed result without running subsequent operations.",
+                  "display_name": "preferred-version impact inspection rejected",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYE702vSGhBv5wcBs4jnsc25Dn.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XONE7OAKYE702vSGhBv5wcBs4jnsc25Dn.output.script_queries.ready$",
+                        "operator": "eq",
+                        "right_operand": true
+                      }
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYE702vSGhBv5wcBs4jnsc25Dn.output.script_queries.status$",
+                      "operator": "ne",
+                      "right_operand": "ok"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYE80m5BoMmAHoRTFap5ROnGRg",
+                    "name": "Set Variables",
+                    "title": "Set preferred-version impact inspection rejected outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set preferred-version impact inspection rejected outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCI3VpvpMREhS3EbTm2ymA4L7$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYE702vSGhBv5wcBs4jnsc25Dn.output.script_queries.statusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCJ3bOxmi9skIgBHaT6zUyY7M$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYE702vSGhBv5wcBs4jnsc25Dn.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCK4nAfw7eIebrL2J2cOAryad$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYE702vSGhBv5wcBs4jnsc25Dn.output.script_queries.message$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCH5YithxzC4DElLQM4dWWo5h$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYE702vSGhBv5wcBs4jnsc25Dn.output.script_queries.resultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYE90kxNGHmtsvF7vaQ9FwcNNX",
+                    "name": "Completed",
+                    "title": "Completed - preferred-version impact inspection rejected",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - preferred-version impact inspection rejected",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "$activity.definition_activity_02XONE7OAKYE702vSGhBv5wcBs4jnsc25Dn.output.script_queries.message$"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XONE7OAKYED0UF2i9rFKTiLmfc2xjpwQc",
+                "name": "Condition Branch",
+                "title": "preferred-version impact inspection helper failure",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles script failure or missing readiness output before any dependent activity runs.",
+                  "display_name": "preferred-version impact inspection helper failure",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYE702vSGhBv5wcBs4jnsc25Dn.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYE702vSGhBv5wcBs4jnsc25Dn.output.script_queries.ready$",
+                      "operator": "ne",
+                      "right_operand": true
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYEB75onRJ3q0IZ4i9fhYOV8Ex",
+                    "name": "Set Variables",
+                    "title": "Set preferred-version impact inspection helper failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set preferred-version impact inspection helper failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCI3VpvpMREhS3EbTm2ymA4L7$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCJ3bOxmi9skIgBHaT6zUyY7M$",
+                          "variable_value_new": "preferred-version impact inspection helper failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCK4nAfw7eIebrL2J2cOAryad$",
+                          "variable_value_new": "The preferred-version impact inspection helper failed or returned incomplete output."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCH5YithxzC4DElLQM4dWWo5h$",
+                          "variable_value_new": "{\"error\":\"helper failure\",\"helper\":\"preferred-version impact inspection\"}"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYEC1qO5EMZZc6dh3NpYh7zmgV",
+                    "name": "Completed",
+                    "title": "Completed - preferred-version impact inspection helper failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - preferred-version impact inspection helper failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "preferred-version impact inspection helper failed"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYEI5Dw2xOOKhunFmhlXtRi2ir",
+            "name": "Condition Block",
+            "title": "Return idempotent preferred-version success",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Treats an already-preferred exact target as success only when no rollout-strategy change was requested.",
+              "display_name": "Return idempotent preferred-version success",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XONE7OAKYEH6ZDcaxa5szuwRcX9EaEtCb",
+                "name": "Condition Branch",
+                "title": "Target is already preferred",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Returns the selected target and impact summary without mutation.",
+                  "display_name": "Target is already preferred",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYE702vSGhBv5wcBs4jnsc25Dn.output.script_queries.targetAlreadyPreferred$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XONE7OAKYCQ7WcJXQ3SRD8Er2FC2fcsCx.output.script_queries.strategyProvided$",
+                      "operator": "eq",
+                      "right_operand": false
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYEF5mMEEFdlnD1V5s0caN5Y4Q",
+                    "name": "Set Variables",
+                    "title": "Set target already preferred outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs immediately before this terminal path ends.",
+                      "display_name": "Set target already preferred outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCI3VpvpMREhS3EbTm2ymA4L7$",
+                          "variable_value_new": "200"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCJ3bOxmi9skIgBHaT6zUyY7M$",
+                          "variable_value_new": "Target workload definition version is already preferred"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCK4nAfw7eIebrL2J2cOAryad$",
+                          "variable_value_new": ""
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCH5YithxzC4DElLQM4dWWo5h$",
+                          "variable_value_new": "$activity.definition_activity_02XONE7OAKYE702vSGhBv5wcBs4jnsc25Dn.output.script_queries.impactResultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XONE7OAKYEG76mWfAVjUOy66QCIAO2WS6",
+                    "name": "Completed",
+                    "title": "Completed - target already preferred",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - target already preferred",
+                      "skip_execution": false,
+                      "completion_type": "succeeded",
+                      "result_message": "Target workload definition version is already preferred"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYEJ6bU1Y8ryL73pWLgLLhIzsC",
+            "name": "Set Variables",
+            "title": "Set preferred mutation gated outputs",
+            "type": "core.set_multiple_variables",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Populates all four standard outputs immediately before this terminal path ends.",
+              "display_name": "Set preferred mutation gated outputs",
+              "skip_execution": false,
+              "variables_to_update": [
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCI3VpvpMREhS3EbTm2ymA4L7$",
+                  "variable_value_new": "422"
+                },
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCJ3bOxmi9skIgBHaT6zUyY7M$",
+                  "variable_value_new": "Preferred-version mutation requires live-tenant validation"
+                },
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCK4nAfw7eIebrL2J2cOAryad$",
+                  "variable_value_new": "The service-side previous-preferred clear, rollback, and active-deployment rollout contract is not proven. No PATCH was submitted."
+                },
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XONE7OAKYCG3jQCuLJvOcHgqeVYGuEDgb.output.variable_workflow_02XONE7OAKYCH5YithxzC4DElLQM4dWWo5h$",
+                  "variable_value_new": "$activity.definition_activity_02XONE7OAKYE702vSGhBv5wcBs4jnsc25Dn.output.script_queries.impactResultJson$"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XONE7OAKYEK07edQjKrBO1ZGUvgCXuuNr",
+            "name": "Completed",
+            "title": "Completed - preferred mutation gated",
+            "type": "logic.completed",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Ends this terminal path after all four standard outputs are populated.",
+              "display_name": "Completed - preferred mutation gated",
+              "skip_execution": false,
+              "completion_type": "failed-completed",
+              "result_message": "Preferred-version mutation requires live-tenant validation"
+            },
+            "object_type": "definition_activity"
+          }
+        ]
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "atomic_group": "Cisco Intersight",
+        "is_atomic": true
+      },
+      "delete_workflow_instance": false,
+      "description": "Resolves one exact validated workload definition version, identifies the current preferred version, and internally summarizes deployments that follow the preferred version. An already-preferred target with no strategy change is an idempotent success. Every state-changing request otherwise fails closed with 422 before PATCH because service-side clearing of a previous PreferredVersion flag, rollback behavior, and active-deployment rollout effects remain explicit live-tenant gates. No deployment collection is returned. Canary writeability follows CiscoDevNet SDK commit 0e8dfdb798aac11684966f0edbbd5e5ea3106dff.",
+      "display_name": "Cisco Intersight - Set preferred workload definition version",
+      "runtime_user": {
+        "override_target_runtime_user": false,
+        "specify_on_workflow_start": false,
+        "target_default": true
+      },
+      "target": {
+        "target_type": "intersight.endpoint",
+        "specify_on_workflow_start": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "categories": [
+      "category_02XOMFAGO64RC6dYBT2G3od2WlgF1ROecIm"
+    ]
+  }
+}

@@ -1,0 +1,2313 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL",
+    "name": "Cisco Intersight - Create alarm suppression rule",
+    "title": "Cisco Intersight - Create alarm suppression rule",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "Rule Name",
+          "type": "datatype.string",
+          "description": "Exact new cond.AlarmSuppression Name. It must be 2-256 characters, begin with an alphanumeric character, and contain only word characters, spaces, periods, or hyphens. The value is OData-escaped before duplicate lookup.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L727V77kA5pdOAt9R2m9zgi83QD",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "Description",
+          "type": "datatype.string",
+          "description": "Optional reason for the alarm suppression. Maximum 120 characters.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L727W5acU89NrJFXuAMcnIknOXp",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "Start Date",
+          "type": "datatype.string",
+          "description": "Optional complete RFC 3339 timestamp with Z or an explicit UTC offset. It must not be more than 60 seconds in the past when the POST body is built.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L727X3T9cqCAp5I09Qat9wOHZzC",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "End Date",
+          "type": "datatype.string",
+          "description": "Optional complete RFC 3339 timestamp with timezone. It must be later than the effective start time when the POST body is built.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L727Y3IgBYg3XLGOwRcddUDlxrl",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "All",
+          "scope": "input",
+          "name": "Rules Operator",
+          "type": "datatype.string",
+          "description": "How Alarm Rules are combined. Allowed values are exactly All and Any; default All.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L727T2tiG7fgd9tL9Sn81lrnntE",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "[]",
+          "scope": "input",
+          "name": "Alarm Rules",
+          "type": "datatype.string",
+          "description": "Required JSON array of exact Property, Operator, and Value objects. Operator must be eq, contains, or in; eq/contains require exactly one string value and in requires one or more string values.",
+          "is_required": true,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "json"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L727U1EEPZF9OXeMDolrYkVtZaL",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "[]",
+          "scope": "input",
+          "name": "Classification Names",
+          "type": "datatype.string",
+          "description": "Optional JSON string array of exact cond.AlarmClassification Names. Names are validated against the current 1-64 character schema, deduplicated in first-occurrence order, OData-escaped, and every name must resolve exactly.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "json"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72834ighXprTGtEuamaTrg6FPp",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "500",
+          "scope": "output",
+          "name": "Status Code",
+          "type": "datatype.string",
+          "description": "HTTP-style final status: 2xx for validated creation, 400 for input/body validation, 409 for duplicate names, 404/409 for classification resolution cardinality, and 500/502 for handled helper, response, or API failures.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L727Z7Oi3ZNT5wTJdtfUITtwYxC",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "{\"error\":\"Workflow ended before a terminal output path completed\"}",
+          "scope": "output",
+          "name": "Result",
+          "type": "datatype.string",
+          "description": "JSON-formatted validation, duplicate, classification-resolution, request-body, created-resource, or failure details.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "json"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L7280428sWPqlE2I2UETfriEt4L",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "Workflow execution did not reach a terminal output path",
+          "scope": "output",
+          "name": "Status Message",
+          "type": "datatype.string",
+          "description": "Human-readable outcome distinguishing resource creation from currently active suppression state.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L728150jzdCZ3523ZyjDwWEukDD",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "The workflow ended before a terminal path populated the final output values. Review the workflow instance for the underlying activity error.",
+          "scope": "output",
+          "name": "Error Message",
+          "type": "datatype.string",
+          "description": "Actionable failure detail; empty only after the created cond.AlarmSuppression response is validated.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "text"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L72824tHa948qWAWWoFuD14zV1s",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "[]",
+          "scope": "local",
+          "name": "Classification Resolution",
+          "type": "datatype.string",
+          "description": "Internal initialized JSON array of exact classification Name, Moid, and ObjectType values. It remains empty when no classifications are requested, preventing references to skipped activity outputs.",
+          "is_required": false,
+          "display_on_wizard": false,
+          "is_invisible": false,
+          "variable_string_format": "json"
+        },
+        "unique_name": "variable_workflow_02XOKCY8L728437wacgz9aFsTe55tDhBt8f",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "atomic_group": "Cisco Intersight",
+        "is_atomic": true
+      },
+      "delete_workflow_instance": false,
+      "description": "Creates reusable rule-based cond.AlarmSuppression with nonempty AlarmRules, All/Any, exact classifications, and RFC 3339 window. Select an intersight.endpoint target authorized to read suppressions/classifications and create the resource. The workflow OData-escapes the unique name, validates eq/contains/in values, resolves each deduplicated classification exactly once, and revalidates JSON/dates before POST; Start Date may be at most 60 seconds past and End Date must follow it. Payload uses typed rule expressions and omits Entity. HTTP 2xx plus validated response proves creation, not current suppression activity, which also depends on scheduling/service state. Lookup and POST are separate, so concurrent same-name creates depend on service uniqueness. Rule Property keywords are tenant-defined and must match current documentation; generic APIs are used because no complete atomic exists.",
+      "display_name": "Cisco Intersight - Create alarm suppression rule",
+      "runtime_user": {
+        "override_target_runtime_user": false,
+        "specify_on_workflow_start": false,
+        "target_default": true
+      },
+      "target": {
+        "target_type": "intersight.endpoint",
+        "specify_on_workflow_start": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_02XOKCY8L6Z7Y47NzwmQRzmzdRorVnYJdJI",
+        "name": "Group",
+        "title": "Validate alarm suppression rule inputs",
+        "type": "logic.group",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Validates and normalizes every user input before any target request.",
+          "display_name": "Validate alarm suppression rule inputs",
+          "skip_execution": false,
+          "display_as_suggestion": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP",
+            "name": "Execute Python Script",
+            "title": "Validate rule inputs and prepare OData filters",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Validates the current suppression/classification schemas, description length, RFC 3339 window, Rules Operator, exact Alarm Rules contract, and optional classification names. It deduplicates classification names and OData-escapes every interpolated name.",
+              "display_name": "Validate rule inputs and prepare OData filters",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport re\nimport sys\nfrom datetime import datetime, timedelta, timezone\n\npreparationStatus = \"helper-failure\"\npreparationStatusCode = \"500\"\npreparationMessage = \"Workflow input preparation did not complete.\"\npreparationResultJson = json.dumps({\"error\": preparationMessage}, separators=(\",\", \":\"))\nescapedRuleName = \"\"\nnormalizedRulesOperator = \"\"\nnormalizedAlarmRulesJson = \"\"\nclassificationRequested = \"\"\nclassificationFilter = \"\"\nnormalizedClassificationNamesJson = \"\"\n\nRFC3339_PATTERN = re.compile(r\"^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$\")\nRULE_NAME_PATTERN = re.compile(r\"^[A-Za-z0-9][A-Za-z0-9_\\s.\\-]{1,255}$\")\nCLASSIFICATION_NAME_PATTERN = re.compile(r\"^[a-zA-Z0-9_.:-]{1,64}$\")\nALLOWED_RULE_OPERATORS = {\"eq\", \"contains\", \"in\"}\n\ndef parse_rfc3339(value, label):\n    if not RFC3339_PATTERN.fullmatch(value):\n        raise ValueError(label + \" must be a complete RFC 3339 timestamp with Z or an explicit UTC offset.\")\n    parsed = datetime.fromisoformat(value[:-1] + \"+00:00\" if value.endswith(\"Z\") else value)\n    if parsed.tzinfo is None or parsed.utcoffset() is None:\n        raise ValueError(label + \" must include a timezone.\")\n    return parsed.astimezone(timezone.utc)\n\ndef parse_rules(text):\n    raw = json.loads(text)\n    if not isinstance(raw, list) or not raw:\n        raise ValueError(\"Alarm Rules must be a nonempty JSON array.\")\n    normalized = []\n    for index, rule in enumerate(raw):\n        label = \"Alarm Rules[%d]\" % index\n        if not isinstance(rule, dict) or set(rule.keys()) != {\"Property\", \"Operator\", \"Value\"}:\n            raise ValueError(label + \" must be an object with exactly Property, Operator, and Value.\")\n        prop = rule.get(\"Property\")\n        operator = rule.get(\"Operator\")\n        values = rule.get(\"Value\")\n        if not isinstance(prop, str) or not prop.strip():\n            raise ValueError(label + \".Property must be a nonblank string.\")\n        if operator not in ALLOWED_RULE_OPERATORS:\n            raise ValueError(label + \".Operator must be exactly eq, contains, or in.\")\n        if not isinstance(values, list) or not values or any(not isinstance(value, str) for value in values):\n            raise ValueError(label + \".Value must be a nonempty JSON string array.\")\n        if operator in (\"eq\", \"contains\") and len(values) != 1:\n            raise ValueError(label + \".Value must contain exactly one string for eq or contains.\")\n        normalized.append({\"Property\": prop, \"Operator\": operator, \"Value\": values})\n    return normalized\n\ndef parse_classification_names(text):\n    raw = [] if not text.strip() else json.loads(text)\n    if not isinstance(raw, list) or any(not isinstance(name, str) for name in raw):\n        raise ValueError(\"Classification Names must be a JSON string array.\")\n    names = []\n    seen = set()\n    for index, name in enumerate(raw):\n        if not CLASSIFICATION_NAME_PATTERN.fullmatch(name):\n            raise ValueError(\"Classification Names[%d] must match the current cond.AlarmClassification Name schema.\" % index)\n        if name not in seen:\n            seen.add(name)\n            names.append(name)\n    return names\n\ntry:\n    ruleName = sys.argv[1]\n    description = sys.argv[2]\n    startText = sys.argv[3].strip()\n    endText = sys.argv[4].strip()\n    rulesOperator = sys.argv[5]\n    alarmRulesText = sys.argv[6]\n    classificationNamesText = sys.argv[7]\n    errors = []\n\n    if not ruleName.strip():\n        errors.append(\"Rule Name must not be blank.\")\n    elif not RULE_NAME_PATTERN.fullmatch(ruleName):\n        errors.append(\"Rule Name must match the current cond.AlarmSuppression Name schema: 2-256 characters, begin with an alphanumeric character, and contain only word characters, spaces, periods, or hyphens.\")\n    if len(description) > 120:\n        errors.append(\"Description must not exceed 120 characters.\")\n    if rulesOperator not in (\"All\", \"Any\"):\n        errors.append(\"Rules Operator must be exactly All or Any.\")\n    else:\n        normalizedRulesOperator = rulesOperator\n\n    try:\n        normalizedRules = parse_rules(alarmRulesText)\n        normalizedAlarmRulesJson = json.dumps(normalizedRules, separators=(\",\", \":\"))\n    except Exception as exc:\n        errors.append(str(exc))\n\n    try:\n        classificationNames = parse_classification_names(classificationNamesText)\n        normalizedClassificationNamesJson = json.dumps(classificationNames, separators=(\",\", \":\"))\n        classificationRequested = \"true\" if classificationNames else \"false\"\n        classificationFilter = \" or \".join(\"Name eq '%s'\" % name.replace(\"'\", \"''\") for name in classificationNames)\n    except Exception as exc:\n        errors.append(str(exc))\n\n    now = datetime.now(timezone.utc)\n    start = None\n    end = None\n    try:\n        if startText:\n            start = parse_rfc3339(startText, \"Start Date\")\n    except Exception as exc:\n        errors.append(str(exc))\n    try:\n        if endText:\n            end = parse_rfc3339(endText, \"End Date\")\n    except Exception as exc:\n        errors.append(str(exc))\n    if start is not None and start < now - timedelta(seconds=60):\n        errors.append(\"Start Date must not be more than 60 seconds in the past.\")\n    effectiveStart = max(now, start) if start is not None else now\n    if end is not None and end <= effectiveStart:\n        errors.append(\"End Date must be later than the effective start time.\")\n\n    if errors:\n        preparationStatus = \"invalid\"\n        preparationStatusCode = \"400\"\n        preparationMessage = \" \".join(errors)\n        preparationResultJson = json.dumps({\"error\": \"Input validation failed\", \"details\": errors}, separators=(\",\", \":\"))\n    else:\n        escapedRuleName = ruleName.replace(\"'\", \"''\")\n        preparationStatus = \"ready\"\n        preparationStatusCode = \"200\"\n        preparationMessage = \"Rule name, description, RFC 3339 window, Rules Operator, Alarm Rules, and optional classification names are valid.\"\n        preparationResultJson = json.dumps({\"validated\": True, \"ruleCount\": len(normalizedRules), \"rulesOperator\": rulesOperator, \"classificationCount\": len(classificationNames), \"classificationNamesDeduplicated\": len(classificationNames), \"startDateProvided\": bool(startText), \"endDateProvided\": bool(endText)}, separators=(\",\", \":\"))\nexcept Exception as exc:\n    preparationStatus = \"helper-failure\"\n    preparationStatusCode = \"500\"\n    preparationMessage = str(exc)\n    preparationResultJson = json.dumps({\"error\": \"Workflow input preparation failed\", \"detail\": preparationMessage}, separators=(\",\", \":\"))",
+              "script_arguments": [
+                "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.input.variable_workflow_02XOKCY8L727V77kA5pdOAt9R2m9zgi83QD$",
+                "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.input.variable_workflow_02XOKCY8L727W5acU89NrJFXuAMcnIknOXp$",
+                "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.input.variable_workflow_02XOKCY8L727X3T9cqCAp5I09Qat9wOHZzC$",
+                "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.input.variable_workflow_02XOKCY8L727Y3IgBYg3XLGOwRcddUDlxrl$",
+                "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.input.variable_workflow_02XOKCY8L727T2tiG7fgd9tL9Sn81lrnntE$",
+                "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.input.variable_workflow_02XOKCY8L727U1EEPZF9OXeMDolrYkVtZaL$",
+                "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.input.variable_workflow_02XOKCY8L72834ighXprTGtEuamaTrg6FPp$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "preparationStatus",
+                  "script_query_name": "preparationStatus",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "preparationStatusCode",
+                  "script_query_name": "preparationStatusCode",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "preparationMessage",
+                  "script_query_name": "preparationMessage",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "preparationResultJson",
+                  "script_query_name": "preparationResultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "escapedRuleName",
+                  "script_query_name": "escapedRuleName",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "normalizedRulesOperator",
+                  "script_query_name": "normalizedRulesOperator",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "normalizedAlarmRulesJson",
+                  "script_query_name": "normalizedAlarmRulesJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "classificationRequested",
+                  "script_query_name": "classificationRequested",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "classificationFilter",
+                  "script_query_name": "classificationFilter",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "normalizedClassificationNamesJson",
+                  "script_query_name": "normalizedClassificationNamesJson",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L6Z893mcZbHv9f3TEwqYwqA9j77",
+            "name": "Condition Block",
+            "title": "Validate prepared workflow inputs",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Separates technical helper/output failures from intentional 400 input validation before any target request.",
+              "display_name": "Validate prepared workflow inputs",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L6Z852McD9Xz6IHqNNevbWVzhK5",
+                "name": "Condition Branch",
+                "title": "Workflow input preparation helper failed",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles execution failure, caught helper-failure, unexpected status, or incomplete ready outputs so execution cannot fall through.",
+                  "display_name": "Workflow input preparation helper failed",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": {
+                              "left_operand": {
+                                "left_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.preparationStatus$",
+                                  "operator": "eq",
+                                  "right_operand": "helper-failure"
+                                },
+                                "operator": "or",
+                                "right_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.preparationStatus$",
+                                  "operator": "mregex",
+                                  "right_operand": "^(?!(?:helper-failure|invalid|ready)$).*$"
+                                }
+                              },
+                              "operator": "or",
+                              "right_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.preparationStatusCode$",
+                                "operator": "mregex",
+                                "right_operand": "^\\s*$"
+                              }
+                            },
+                            "operator": "or",
+                            "right_operand": {
+                              "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.preparationMessage$",
+                              "operator": "mregex",
+                              "right_operand": "^\\s*$"
+                            }
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.preparationResultJson$",
+                            "operator": "mregex",
+                            "right_operand": "^\\s*$"
+                          }
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.preparationStatus$",
+                            "operator": "eq",
+                            "right_operand": "ready"
+                          },
+                          "operator": "and",
+                          "right_operand": {
+                            "left_operand": {
+                              "left_operand": {
+                                "left_operand": {
+                                  "left_operand": {
+                                    "left_operand": {
+                                      "left_operand": {
+                                        "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.escapedRuleName$",
+                                        "operator": "mregex",
+                                        "right_operand": "^\\s*$"
+                                      },
+                                      "operator": "or",
+                                      "right_operand": {
+                                        "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.normalizedAlarmRulesJson$",
+                                        "operator": "mregex",
+                                        "right_operand": "^\\s*$"
+                                      }
+                                    },
+                                    "operator": "or",
+                                    "right_operand": {
+                                      "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.normalizedRulesOperator$",
+                                      "operator": "mregex",
+                                      "right_operand": "^(?!(?:All|Any)$).*$"
+                                    }
+                                  },
+                                  "operator": "or",
+                                  "right_operand": {
+                                    "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.classificationRequested$",
+                                    "operator": "mregex",
+                                    "right_operand": "^(?!(?:true|false)$).*$"
+                                  }
+                                },
+                                "operator": "or",
+                                "right_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.normalizedClassificationNamesJson$",
+                                  "operator": "mregex",
+                                  "right_operand": "^\\s*$"
+                                }
+                              },
+                              "operator": "or",
+                              "right_operand": {
+                                "left_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.classificationRequested$",
+                                  "operator": "eq",
+                                  "right_operand": "true"
+                                },
+                                "operator": "and",
+                                "right_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.classificationFilter$",
+                                  "operator": "mregex",
+                                  "right_operand": "^\\s*$"
+                                }
+                              }
+                            },
+                            "operator": "or",
+                            "right_operand": {
+                              "left_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.classificationRequested$",
+                                "operator": "eq",
+                                "right_operand": "false"
+                              },
+                              "operator": "and",
+                              "right_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.classificationFilter$",
+                                "operator": "mregex",
+                                "right_operand": "^\\s*\\S+.*$"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z834dSLjVUyTMWinC5v8hXh9X",
+                    "name": "Set Variables",
+                    "title": "Set workflow input preparation helper failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for set workflow input preparation helper failure outputs.",
+                      "display_name": "Set workflow input preparation helper failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L727Z7Oi3ZNT5wTJdtfUITtwYxC$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L728150jzdCZ3523ZyjDwWEukDD$",
+                          "variable_value_new": "Workflow input preparation failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L72824tHa948qWAWWoFuD14zV1s$",
+                          "variable_value_new": "The rule input-preparation helper failed or returned incomplete, inconsistent, or unexpected output. No API request or create operation was attempted."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L7280428sWPqlE2I2UETfriEt4L$",
+                          "variable_value_new": "{\"error\":\"Workflow input preparation helper failed or returned unusable output\"}"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z843Bf21QaZbCDM9jM7lMchTi",
+                    "name": "Completed",
+                    "title": "Completed - Workflow input preparation helper failed",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after completed - workflow input preparation helper failed outputs are populated.",
+                      "display_name": "Completed - Workflow input preparation helper failed",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "Workflow input preparation could not be completed safely."
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L6Z883cLJHzKZEemCBnv81hDZul",
+                "name": "Condition Branch",
+                "title": "Workflow input values are invalid",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles rule-name, description, date, Rules Operator, Alarm Rules, or Classification Names validation failures before any API request.",
+                  "display_name": "Workflow input values are invalid",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.preparationStatus$",
+                      "operator": "eq",
+                      "right_operand": "invalid"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z865i21WztpAm0xB7IMi6crFb",
+                    "name": "Set Variables",
+                    "title": "Set workflow input validation failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for set workflow input validation failure outputs.",
+                      "display_name": "Set workflow input validation failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L727Z7Oi3ZNT5wTJdtfUITtwYxC$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.preparationStatusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L728150jzdCZ3523ZyjDwWEukDD$",
+                          "variable_value_new": "Workflow input validation failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L72824tHa948qWAWWoFuD14zV1s$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.preparationMessage$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L7280428sWPqlE2I2UETfriEt4L$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.preparationResultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z870p92IuptieUlC1xDPgD5nu",
+                    "name": "Completed",
+                    "title": "Completed - Workflow input validation failed",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after completed - workflow input validation failed outputs are populated.",
+                      "display_name": "Completed - Workflow input validation failed",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "The workflow input values do not meet the documented requirements."
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L6Z7Z0fsXp8EgMWoajsXXwmpAnc",
+        "name": "Group",
+        "title": "Enforce uniqueness and resolve classifications",
+        "type": "logic.group",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Checks Rule Name availability first, then conditionally resolves every deduplicated exact Classification Name without referencing skipped outputs.",
+          "display_name": "Enforce uniqueness and resolve classifications",
+          "skip_execution": false,
+          "display_as_suggestion": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L6Z8A0HSqcV2mu8OS4hdfq7YPe7",
+            "name": "Generic API Request",
+            "title": "Check rule name availability",
+            "type": "intersight.api_request",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Checks the exact OData-escaped Rule Name before CREATE. This lookup and POST are separate operations, so concurrent creates still rely on server-side uniqueness. A generic request is used because no purpose-built exact duplicate resolver is present; replace it with a supported atomic if one becomes available.",
+              "display_name": "Check rule name availability",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "api_method": "GET",
+              "api_url": "/api/v1/cond/AlarmSuppressions?$filter=Name eq '$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.escapedRuleName$'&$select=Moid,Name,ObjectType",
+              "content_type": "application/json",
+              "endpoint": {
+                "target_type": "intersight.endpoint"
+              },
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "use_workflow_target": true
+              }
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L6Z8E53prgewDezZ1ydzbZbXmED",
+            "name": "Condition Block",
+            "title": "Validate rule name lookup HTTP response",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Stops on execution failure or any status outside the full HTTP 2xx range.",
+              "display_name": "Validate rule name lookup HTTP response",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L6Z8D2KttevPlwi602maefFYq4o",
+                "name": "Condition Branch",
+                "title": "Rule name lookup failed or returned non-2xx",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles duplicate-lookup transport and HTTP failures before mutation.",
+                  "display_name": "Rule name lookup failed or returned non-2xx",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L6Z8A0HSqcV2mu8OS4hdfq7YPe7.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L6Z8A0HSqcV2mu8OS4hdfq7YPe7.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L6Z8A0HSqcV2mu8OS4hdfq7YPe7.output.status_code$",
+                          "operator": "lt",
+                          "right_operand": 200
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L6Z8A0HSqcV2mu8OS4hdfq7YPe7.output.status_code$",
+                          "operator": "gte",
+                          "right_operand": 300
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z8B6mDByXwDxdYTFPuJHrKb4r",
+                    "name": "Set Variables",
+                    "title": "Set rule name lookup HTTP failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for set rule name lookup http failure outputs.",
+                      "display_name": "Set rule name lookup HTTP failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L727Z7Oi3ZNT5wTJdtfUITtwYxC$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L728150jzdCZ3523ZyjDwWEukDD$",
+                          "variable_value_new": "Rule name availability lookup failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L72824tHa948qWAWWoFuD14zV1s$",
+                          "variable_value_new": "The duplicate-check request failed or returned non-2xx. Review its status and response; no create request was attempted."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L7280428sWPqlE2I2UETfriEt4L$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z8A0HSqcV2mu8OS4hdfq7YPe7.output.response_body$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z8C5bJnhOvh0z9U1FO9XfAFFB",
+                    "name": "Completed",
+                    "title": "Completed - Rule name lookup HTTP failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after completed - rule name lookup http failure outputs are populated.",
+                      "display_name": "Completed - Rule name lookup HTTP failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "Rule name availability could not be established safely."
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L6Z8F6xoiH61nvGxG2p8XHwRFho",
+            "name": "Execute Python Script",
+            "title": "Inspect rule name availability",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Requires a JSON Results array, validates any returned resource identities, and fails closed with 409 when one or more exact-name suppressions exist.",
+              "display_name": "Inspect rule name availability",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport sys\n\nduplicateStatus = \"helper-failure\"\nduplicateStatusCode = \"500\"\nduplicateMessage = \"Rule-name availability inspection did not complete.\"\nduplicateResultJson = json.dumps({\"error\": duplicateMessage}, separators=(\",\", \":\"))\nduplicateResultCount = -1\n\ntry:\n    payload = json.loads(sys.argv[1])\n    expectedName = sys.argv[2]\n    if not isinstance(payload, dict):\n        raise ValueError(\"The alarm-suppression response body is not a JSON object.\")\n    results = payload.get(\"Results\")\n    if not isinstance(results, list):\n        raise ValueError(\"The alarm-suppression response does not contain a Results array.\")\n    duplicateResultCount = len(results)\n    malformed = []\n    for index, item in enumerate(results):\n        if not isinstance(item, dict) or not isinstance(item.get(\"Moid\"), str) or not item.get(\"Moid\").strip() or item.get(\"Name\") != expectedName or item.get(\"ObjectType\") != \"cond.AlarmSuppression\":\n            malformed.append(index)\n    if malformed:\n        duplicateStatus = \"invalid-resource\"\n        duplicateStatusCode = \"502\"\n        duplicateMessage = \"The duplicate lookup returned malformed or mismatched alarm-suppression identities.\"\n        duplicateResultJson = json.dumps({\"error\": duplicateMessage, \"invalidResultIndexes\": malformed, \"matchCount\": duplicateResultCount}, separators=(\",\", \":\"))\n    elif duplicateResultCount > 0:\n        duplicateStatus = \"duplicate\"\n        duplicateStatusCode = \"409\"\n        duplicateMessage = \"Rule Name already exists; a new alarm suppression rule was not created.\"\n        duplicateResultJson = json.dumps({\"error\": \"Duplicate Rule Name\", \"RuleName\": expectedName, \"matchCount\": duplicateResultCount}, separators=(\",\", \":\"))\n    else:\n        duplicateStatus = \"ready\"\n        duplicateStatusCode = \"200\"\n        duplicateMessage = \"Rule Name is available.\"\n        duplicateResultJson = json.dumps({\"RuleName\": expectedName, \"duplicateCount\": 0}, separators=(\",\", \":\"))\nexcept Exception as exc:\n    duplicateStatus = \"helper-failure\"\n    duplicateStatusCode = \"500\"\n    duplicateMessage = str(exc)\n    duplicateResultJson = json.dumps({\"error\": \"Rule-name availability inspection failed\", \"detail\": duplicateMessage}, separators=(\",\", \":\"))",
+              "script_arguments": [
+                "$activity.definition_activity_02XOKCY8L6Z8A0HSqcV2mu8OS4hdfq7YPe7.output.response_body$",
+                "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.input.variable_workflow_02XOKCY8L727V77kA5pdOAt9R2m9zgi83QD$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "duplicateStatus",
+                  "script_query_name": "duplicateStatus",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "duplicateStatusCode",
+                  "script_query_name": "duplicateStatusCode",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "duplicateMessage",
+                  "script_query_name": "duplicateMessage",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "duplicateResultJson",
+                  "script_query_name": "duplicateResultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "duplicateResultCount",
+                  "script_query_name": "duplicateResultCount",
+                  "script_query_type": "integer"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L6Z8M4PizdUDBWaXtNwUtvM8Fb3",
+            "name": "Condition Block",
+            "title": "Validate rule name availability",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Separates helper/output failures from a validated duplicate-name 409 terminal path.",
+              "display_name": "Validate rule name availability",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L6Z8I59hOCbzf0PfirATJhoJXYb",
+                "name": "Condition Branch",
+                "title": "Rule name inspection helper failed",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles execution failure, caught helper-failure, unexpected status, malformed returned identities, or incomplete outputs.",
+                  "display_name": "Rule name inspection helper failed",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L6Z8F6xoiH61nvGxG2p8XHwRFho.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L6Z8F6xoiH61nvGxG2p8XHwRFho.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": {
+                              "left_operand": {
+                                "left_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOKCY8L6Z8F6xoiH61nvGxG2p8XHwRFho.output.script_queries.duplicateStatus$",
+                                  "operator": "eq",
+                                  "right_operand": "helper-failure"
+                                },
+                                "operator": "or",
+                                "right_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOKCY8L6Z8F6xoiH61nvGxG2p8XHwRFho.output.script_queries.duplicateStatus$",
+                                  "operator": "mregex",
+                                  "right_operand": "^(?!(?:helper-failure|invalid-resource|duplicate|ready)$).*$"
+                                }
+                              },
+                              "operator": "or",
+                              "right_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L6Z8F6xoiH61nvGxG2p8XHwRFho.output.script_queries.duplicateStatusCode$",
+                                "operator": "mregex",
+                                "right_operand": "^\\s*$"
+                              }
+                            },
+                            "operator": "or",
+                            "right_operand": {
+                              "left_operand": "$activity.definition_activity_02XOKCY8L6Z8F6xoiH61nvGxG2p8XHwRFho.output.script_queries.duplicateMessage$",
+                              "operator": "mregex",
+                              "right_operand": "^\\s*$"
+                            }
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L6Z8F6xoiH61nvGxG2p8XHwRFho.output.script_queries.duplicateResultJson$",
+                            "operator": "mregex",
+                            "right_operand": "^\\s*$"
+                          }
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L6Z8F6xoiH61nvGxG2p8XHwRFho.output.script_queries.duplicateStatus$",
+                            "operator": "eq",
+                            "right_operand": "ready"
+                          },
+                          "operator": "and",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L6Z8F6xoiH61nvGxG2p8XHwRFho.output.script_queries.duplicateResultCount$",
+                            "operator": "ne",
+                            "right_operand": 0
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z8G6ubgRHEtotFJP1G8dZTUlM",
+                    "name": "Set Variables",
+                    "title": "Set rule name inspection helper failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for set rule name inspection helper failure outputs.",
+                      "display_name": "Set rule name inspection helper failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L727Z7Oi3ZNT5wTJdtfUITtwYxC$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L728150jzdCZ3523ZyjDwWEukDD$",
+                          "variable_value_new": "Rule name inspection failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L72824tHa948qWAWWoFuD14zV1s$",
+                          "variable_value_new": "The duplicate-inspection helper failed or returned malformed, inconsistent, or unexpected output. No create request was attempted."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L7280428sWPqlE2I2UETfriEt4L$",
+                          "variable_value_new": "{\"error\":\"Rule name inspection helper failed or returned unusable output\"}"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z8H45DpkR1KIAS6MVYmADoNlg",
+                    "name": "Completed",
+                    "title": "Completed - Rule name inspection helper failed",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after completed - rule name inspection helper failed outputs are populated.",
+                      "display_name": "Completed - Rule name inspection helper failed",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "Rule name inspection could not be completed safely."
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L6Z8L59TpGYf5uJ4tXtHbe5Js22",
+                "name": "Condition Branch",
+                "title": "Rule Name is duplicated or lookup identity is unusable",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Stops before classification lookup or POST with 409 for a validated duplicate or 502 for an unusable returned identity.",
+                  "display_name": "Rule Name is duplicated or lookup identity is unusable",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L6Z8F6xoiH61nvGxG2p8XHwRFho.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L6Z8F6xoiH61nvGxG2p8XHwRFho.output.script_queries.duplicateStatus$",
+                        "operator": "eq",
+                        "right_operand": "duplicate"
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L6Z8F6xoiH61nvGxG2p8XHwRFho.output.script_queries.duplicateStatus$",
+                        "operator": "eq",
+                        "right_operand": "invalid-resource"
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z8J7CfIvEUWctXsuGBl6XFE8C",
+                    "name": "Set Variables",
+                    "title": "Set unavailable Rule Name outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for a duplicate Rule Name or unusable lookup identity.",
+                      "display_name": "Set unavailable Rule Name outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L727Z7Oi3ZNT5wTJdtfUITtwYxC$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z8F6xoiH61nvGxG2p8XHwRFho.output.script_queries.duplicateStatusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L728150jzdCZ3523ZyjDwWEukDD$",
+                          "variable_value_new": "Alarm suppression Rule Name is unavailable"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L72824tHa948qWAWWoFuD14zV1s$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z8F6xoiH61nvGxG2p8XHwRFho.output.script_queries.duplicateMessage$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L7280428sWPqlE2I2UETfriEt4L$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z8F6xoiH61nvGxG2p8XHwRFho.output.script_queries.duplicateResultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z8K2nk5MYJQDKIlwuGm54K4lh",
+                    "name": "Completed",
+                    "title": "Completed - Rule Name unavailable",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after unavailable Rule Name outputs are populated.",
+                      "display_name": "Completed - Rule Name unavailable",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "An existing or unusable exact-name alarm suppression prevents safe creation."
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L6Z9G3H1ou2iNCiAaJWTIDSfB0l",
+            "name": "Condition Block",
+            "title": "Resolve optional alarm classifications",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Skips the target request when no Classification Names are supplied; otherwise every deduplicated exact name must resolve once.",
+              "display_name": "Resolve optional alarm classifications",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L6Z9F4HBie2cpQLx7r8rYvY1ix2",
+                "name": "Condition Branch",
+                "title": "Classification Names were supplied",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Runs the optional exact classification lookup and validation only when the deduplicated input array is nonempty.",
+                  "display_name": "Classification Names were supplied",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.classificationRequested$",
+                    "operator": "eq",
+                    "right_operand": "true"
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z9A7H4jxxBUp5ze4bAOB8sYOj",
+                    "name": "Generic API Request",
+                    "title": "Get requested alarm classifications",
+                    "type": "intersight.api_request",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": true,
+                      "description": "Retrieves all deduplicated exact Classification Names in one OData-escaped query; the subsequent helper requires a one-to-one identity match. A generic request is used because no purpose-built multi-classification resolver is present; replace it with a supported atomic if one becomes available.",
+                      "display_name": "Get requested alarm classifications",
+                      "skip_execution": false,
+                      "action_timeout": 180,
+                      "api_method": "GET",
+                      "api_url": "/api/v1/cond/AlarmClassifications?$filter=$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.classificationFilter$&$select=Moid,Name,ObjectType",
+                      "content_type": "application/json",
+                      "endpoint": {
+                        "target_type": "intersight.endpoint"
+                      },
+                      "runtime_user": {
+                        "target_default": true
+                      },
+                      "target": {
+                        "use_workflow_target": true
+                      }
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z9E2lvtOeUk7DNGFNtMQ6aIKs",
+                    "name": "Condition Block",
+                    "title": "Validate classification lookup HTTP response",
+                    "type": "logic.if_else",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Stops on execution failure or any status outside the full HTTP 2xx range.",
+                      "display_name": "Validate classification lookup HTTP response",
+                      "skip_execution": false,
+                      "conditions": []
+                    },
+                    "object_type": "definition_activity",
+                    "blocks": [
+                      {
+                        "unique_name": "definition_activity_02XOKCY8L6Z9D7aPr649icv26vQVwb5Y1pL",
+                        "name": "Condition Branch",
+                        "title": "Classification lookup failed or returned non-2xx",
+                        "type": "logic.condition_block",
+                        "base_type": "activity",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "description": "Handles optional-classification transport and HTTP failures before mutation.",
+                          "display_name": "Classification lookup failed or returned non-2xx",
+                          "skip_execution": false,
+                          "condition": {
+                            "left_operand": {
+                              "left_operand": "$activity.definition_activity_02XOKCY8L6Z9A7H4jxxBUp5ze4bAOB8sYOj.output.succeeded$",
+                              "operator": "ne",
+                              "right_operand": true
+                            },
+                            "operator": "or",
+                            "right_operand": {
+                              "left_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L6Z9A7H4jxxBUp5ze4bAOB8sYOj.output.succeeded$",
+                                "operator": "eq",
+                                "right_operand": true
+                              },
+                              "operator": "and",
+                              "right_operand": {
+                                "left_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOKCY8L6Z9A7H4jxxBUp5ze4bAOB8sYOj.output.status_code$",
+                                  "operator": "lt",
+                                  "right_operand": 200
+                                },
+                                "operator": "or",
+                                "right_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOKCY8L6Z9A7H4jxxBUp5ze4bAOB8sYOj.output.status_code$",
+                                  "operator": "gte",
+                                  "right_operand": 300
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "object_type": "definition_activity",
+                        "actions": [
+                          {
+                            "unique_name": "definition_activity_02XOKCY8L6Z9B68IWPuq4Ut34DRXa5c9kUc",
+                            "name": "Set Variables",
+                            "title": "Set classification lookup HTTP failure outputs",
+                            "type": "core.set_multiple_variables",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Populates all four standard outputs for set classification lookup http failure outputs.",
+                              "display_name": "Set classification lookup HTTP failure outputs",
+                              "skip_execution": false,
+                              "variables_to_update": [
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L727Z7Oi3ZNT5wTJdtfUITtwYxC$",
+                                  "variable_value_new": "502"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L728150jzdCZ3523ZyjDwWEukDD$",
+                                  "variable_value_new": "Alarm classification lookup failed"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L72824tHa948qWAWWoFuD14zV1s$",
+                                  "variable_value_new": "The requested classification lookup failed or returned non-2xx. Review its status and response; no create request was attempted."
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L7280428sWPqlE2I2UETfriEt4L$",
+                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z9A7H4jxxBUp5ze4bAOB8sYOj.output.response_body$"
+                                }
+                              ]
+                            },
+                            "object_type": "definition_activity"
+                          },
+                          {
+                            "unique_name": "definition_activity_02XOKCY8L6Z9C73S1pm5iKnYRRsToVCJll9",
+                            "name": "Completed",
+                            "title": "Completed - Classification lookup HTTP failure",
+                            "type": "logic.completed",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Ends the workflow after completed - classification lookup http failure outputs are populated.",
+                              "display_name": "Completed - Classification lookup HTTP failure",
+                              "skip_execution": false,
+                              "completion_type": "failed-completed",
+                              "result_message": "Requested alarm classifications could not be resolved safely."
+                            },
+                            "object_type": "definition_activity"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z9H6wvQPoPnnyeYxDQr9qBBbz",
+                    "name": "Execute Python Script",
+                    "title": "Inspect exact alarm classifications",
+                    "type": "python3.script",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": true,
+                      "description": "Validates the classification Results array, exact names, one-to-one cardinality, concrete ObjectType, and every returned Moid, then preserves requested order.",
+                      "display_name": "Inspect exact alarm classifications",
+                      "skip_execution": false,
+                      "action_timeout": 180,
+                      "script": "import json\nimport sys\n\nclassificationStatus = \"helper-failure\"\nclassificationStatusCode = \"500\"\nclassificationMessage = \"Alarm-classification inspection did not complete.\"\nclassificationResultJson = json.dumps({\"error\": classificationMessage}, separators=(\",\", \":\"))\nclassificationResolutionJson = \"\"\n\ntry:\n    payload = json.loads(sys.argv[1])\n    expectedNames = json.loads(sys.argv[2])\n    if not isinstance(payload, dict):\n        raise ValueError(\"The classification response body is not a JSON object.\")\n    if not isinstance(expectedNames, list) or not expectedNames or any(not isinstance(name, str) or not name for name in expectedNames) or len(expectedNames) != len(set(expectedNames)):\n        raise ValueError(\"The normalized requested classification names are missing, empty, or not deduplicated.\")\n    results = payload.get(\"Results\")\n    if not isinstance(results, list):\n        raise ValueError(\"The classification response does not contain a Results array.\")\n    byName = {}\n    problems = []\n    for index, item in enumerate(results):\n        if not isinstance(item, dict):\n            problems.append(\"Result %d is not an object.\" % index)\n            continue\n        name = item.get(\"Name\")\n        moid = item.get(\"Moid\")\n        objectType = item.get(\"ObjectType\")\n        if name not in expectedNames:\n            problems.append(\"Result %d has an unexpected Name.\" % index)\n        elif name in byName:\n            problems.append(\"Classification Name %s was returned more than once.\" % name)\n        elif not isinstance(moid, str) or not moid.strip():\n            problems.append(\"Classification %s is missing a usable Moid.\" % name)\n        elif objectType != \"cond.AlarmClassification\":\n            problems.append(\"Classification %s has an unexpected ObjectType.\" % name)\n        else:\n            byName[name] = {\"Name\": name, \"Moid\": moid, \"ObjectType\": objectType}\n    missing = [name for name in expectedNames if name not in byName]\n    if problems:\n        classificationStatus = \"invalid-resource\"\n        classificationStatusCode = \"502\"\n        classificationMessage = \" \".join(problems)\n        classificationResultJson = json.dumps({\"error\": \"Classification response validation failed\", \"details\": problems, \"missingNames\": missing}, separators=(\",\", \":\"))\n    elif missing or len(results) != len(expectedNames):\n        classificationStatus = \"cardinality\"\n        classificationStatusCode = \"404\" if missing else \"409\"\n        classificationMessage = \"Every deduplicated Classification Name must resolve exactly once.\"\n        classificationResultJson = json.dumps({\"error\": \"Classification lookup cardinality failure\", \"requestedNames\": expectedNames, \"missingNames\": missing, \"returnedCount\": len(results), \"requiredCount\": len(expectedNames)}, separators=(\",\", \":\"))\n    else:\n        resolution = [byName[name] for name in expectedNames]\n        classificationResolutionJson = json.dumps(resolution, separators=(\",\", \":\"))\n        classificationStatus = \"ready\"\n        classificationStatusCode = \"200\"\n        classificationMessage = \"Every deduplicated Classification Name resolved exactly once with a usable Moid.\"\n        classificationResultJson = json.dumps({\"resolvedCount\": len(resolution), \"requestedNames\": expectedNames, \"Moids\": [item[\"Moid\"] for item in resolution]}, separators=(\",\", \":\"))\nexcept Exception as exc:\n    classificationStatus = \"helper-failure\"\n    classificationStatusCode = \"500\"\n    classificationMessage = str(exc)\n    classificationResultJson = json.dumps({\"error\": \"Alarm-classification inspection failed\", \"detail\": classificationMessage}, separators=(\",\", \":\"))",
+                      "script_arguments": [
+                        "$activity.definition_activity_02XOKCY8L6Z9A7H4jxxBUp5ze4bAOB8sYOj.output.response_body$",
+                        "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.normalizedClassificationNamesJson$"
+                      ],
+                      "script_queries": [
+                        {
+                          "script_query": "classificationStatus",
+                          "script_query_name": "classificationStatus",
+                          "script_query_type": "string"
+                        },
+                        {
+                          "script_query": "classificationStatusCode",
+                          "script_query_name": "classificationStatusCode",
+                          "script_query_type": "string"
+                        },
+                        {
+                          "script_query": "classificationMessage",
+                          "script_query_name": "classificationMessage",
+                          "script_query_type": "string"
+                        },
+                        {
+                          "script_query": "classificationResultJson",
+                          "script_query_name": "classificationResultJson",
+                          "script_query_type": "string"
+                        },
+                        {
+                          "script_query": "classificationResolutionJson",
+                          "script_query_name": "classificationResolutionJson",
+                          "script_query_type": "string"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z9O3EXMOy0jRyWGsP2BdgQ44V",
+                    "name": "Condition Block",
+                    "title": "Validate exact alarm classifications",
+                    "type": "logic.if_else",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Separates helper/output failures from missing, duplicate, mismatched, or malformed classification resources.",
+                      "display_name": "Validate exact alarm classifications",
+                      "skip_execution": false,
+                      "conditions": []
+                    },
+                    "object_type": "definition_activity",
+                    "blocks": [
+                      {
+                        "unique_name": "definition_activity_02XOKCY8L6Z9N1DDEx3A3nuf5UPSRZy5VnC",
+                        "name": "Condition Branch",
+                        "title": "Classification inspection helper failed",
+                        "type": "logic.condition_block",
+                        "base_type": "activity",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "description": "Handles execution failure, caught helper-failure, unexpected status, or incomplete ready outputs.",
+                          "display_name": "Classification inspection helper failed",
+                          "skip_execution": false,
+                          "condition": {
+                            "left_operand": {
+                              "left_operand": "$activity.definition_activity_02XOKCY8L6Z9H6wvQPoPnnyeYxDQr9qBBbz.output.succeeded$",
+                              "operator": "ne",
+                              "right_operand": true
+                            },
+                            "operator": "or",
+                            "right_operand": {
+                              "left_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L6Z9H6wvQPoPnnyeYxDQr9qBBbz.output.succeeded$",
+                                "operator": "eq",
+                                "right_operand": true
+                              },
+                              "operator": "and",
+                              "right_operand": {
+                                "left_operand": {
+                                  "left_operand": {
+                                    "left_operand": {
+                                      "left_operand": {
+                                        "left_operand": {
+                                          "left_operand": "$activity.definition_activity_02XOKCY8L6Z9H6wvQPoPnnyeYxDQr9qBBbz.output.script_queries.classificationStatus$",
+                                          "operator": "eq",
+                                          "right_operand": "helper-failure"
+                                        },
+                                        "operator": "or",
+                                        "right_operand": {
+                                          "left_operand": "$activity.definition_activity_02XOKCY8L6Z9H6wvQPoPnnyeYxDQr9qBBbz.output.script_queries.classificationStatus$",
+                                          "operator": "mregex",
+                                          "right_operand": "^(?!(?:helper-failure|cardinality|invalid-resource|ready)$).*$"
+                                        }
+                                      },
+                                      "operator": "or",
+                                      "right_operand": {
+                                        "left_operand": "$activity.definition_activity_02XOKCY8L6Z9H6wvQPoPnnyeYxDQr9qBBbz.output.script_queries.classificationStatusCode$",
+                                        "operator": "mregex",
+                                        "right_operand": "^\\s*$"
+                                      }
+                                    },
+                                    "operator": "or",
+                                    "right_operand": {
+                                      "left_operand": "$activity.definition_activity_02XOKCY8L6Z9H6wvQPoPnnyeYxDQr9qBBbz.output.script_queries.classificationMessage$",
+                                      "operator": "mregex",
+                                      "right_operand": "^\\s*$"
+                                    }
+                                  },
+                                  "operator": "or",
+                                  "right_operand": {
+                                    "left_operand": "$activity.definition_activity_02XOKCY8L6Z9H6wvQPoPnnyeYxDQr9qBBbz.output.script_queries.classificationResultJson$",
+                                    "operator": "mregex",
+                                    "right_operand": "^\\s*$"
+                                  }
+                                },
+                                "operator": "or",
+                                "right_operand": {
+                                  "left_operand": {
+                                    "left_operand": "$activity.definition_activity_02XOKCY8L6Z9H6wvQPoPnnyeYxDQr9qBBbz.output.script_queries.classificationStatus$",
+                                    "operator": "eq",
+                                    "right_operand": "ready"
+                                  },
+                                  "operator": "and",
+                                  "right_operand": {
+                                    "left_operand": "$activity.definition_activity_02XOKCY8L6Z9H6wvQPoPnnyeYxDQr9qBBbz.output.script_queries.classificationResolutionJson$",
+                                    "operator": "mregex",
+                                    "right_operand": "^\\s*$"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "object_type": "definition_activity",
+                        "actions": [
+                          {
+                            "unique_name": "definition_activity_02XOKCY8L6Z9L7Q4bgVoXgBygutZtCc538l",
+                            "name": "Set Variables",
+                            "title": "Set classification inspection helper failure outputs",
+                            "type": "core.set_multiple_variables",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Populates all four standard outputs for set classification inspection helper failure outputs.",
+                              "display_name": "Set classification inspection helper failure outputs",
+                              "skip_execution": false,
+                              "variables_to_update": [
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L727Z7Oi3ZNT5wTJdtfUITtwYxC$",
+                                  "variable_value_new": "500"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L728150jzdCZ3523ZyjDwWEukDD$",
+                                  "variable_value_new": "Alarm classification inspection failed"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L72824tHa948qWAWWoFuD14zV1s$",
+                                  "variable_value_new": "The classification-inspection helper failed or returned incomplete, inconsistent, or unexpected output. No create request was attempted."
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L7280428sWPqlE2I2UETfriEt4L$",
+                                  "variable_value_new": "{\"error\":\"Classification inspection helper failed or returned unusable output\"}"
+                                }
+                              ]
+                            },
+                            "object_type": "definition_activity"
+                          },
+                          {
+                            "unique_name": "definition_activity_02XOKCY8L6Z9M5VCtrCpt6JXqoLXw0ytCxe",
+                            "name": "Completed",
+                            "title": "Completed - Classification inspection helper failed",
+                            "type": "logic.completed",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Ends the workflow after completed - classification inspection helper failed outputs are populated.",
+                              "display_name": "Completed - Classification inspection helper failed",
+                              "skip_execution": false,
+                              "completion_type": "failed-completed",
+                              "result_message": "Alarm classification inspection could not be completed safely."
+                            },
+                            "object_type": "definition_activity"
+                          }
+                        ]
+                      },
+                      {
+                        "unique_name": "definition_activity_02XOKCY8L6Z9K0P2pEp1PjZaEcS7ESOEQdo",
+                        "name": "Condition Branch",
+                        "title": "Requested classifications are not usable",
+                        "type": "logic.condition_block",
+                        "base_type": "activity",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "description": "Stops before POST when any requested name is missing, duplicated, mismatched, or lacks a usable Moid.",
+                          "display_name": "Requested classifications are not usable",
+                          "skip_execution": false,
+                          "condition": {
+                            "left_operand": {
+                              "left_operand": "$activity.definition_activity_02XOKCY8L6Z9H6wvQPoPnnyeYxDQr9qBBbz.output.succeeded$",
+                              "operator": "eq",
+                              "right_operand": true
+                            },
+                            "operator": "and",
+                            "right_operand": {
+                              "left_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L6Z9H6wvQPoPnnyeYxDQr9qBBbz.output.script_queries.classificationStatus$",
+                                "operator": "eq",
+                                "right_operand": "cardinality"
+                              },
+                              "operator": "or",
+                              "right_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L6Z9H6wvQPoPnnyeYxDQr9qBBbz.output.script_queries.classificationStatus$",
+                                "operator": "eq",
+                                "right_operand": "invalid-resource"
+                              }
+                            }
+                          }
+                        },
+                        "object_type": "definition_activity",
+                        "actions": [
+                          {
+                            "unique_name": "definition_activity_02XOKCY8L6Z9I7UYklxu3pXKh5Jx9eE42RM",
+                            "name": "Set Variables",
+                            "title": "Set unusable classification outputs",
+                            "type": "core.set_multiple_variables",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Populates all four standard outputs for set unusable classification outputs.",
+                              "display_name": "Set unusable classification outputs",
+                              "skip_execution": false,
+                              "variables_to_update": [
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L727Z7Oi3ZNT5wTJdtfUITtwYxC$",
+                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z9H6wvQPoPnnyeYxDQr9qBBbz.output.script_queries.classificationStatusCode$"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L728150jzdCZ3523ZyjDwWEukDD$",
+                                  "variable_value_new": "Requested alarm classifications are not usable"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L72824tHa948qWAWWoFuD14zV1s$",
+                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z9H6wvQPoPnnyeYxDQr9qBBbz.output.script_queries.classificationMessage$"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L7280428sWPqlE2I2UETfriEt4L$",
+                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z9H6wvQPoPnnyeYxDQr9qBBbz.output.script_queries.classificationResultJson$"
+                                }
+                              ]
+                            },
+                            "object_type": "definition_activity"
+                          },
+                          {
+                            "unique_name": "definition_activity_02XOKCY8L6Z9J67UUBp9G74LXdt5OLWLCXy",
+                            "name": "Completed",
+                            "title": "Completed - Unusable alarm classifications",
+                            "type": "logic.completed",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Ends the workflow after completed - unusable alarm classifications outputs are populated.",
+                              "display_name": "Completed - Unusable alarm classifications",
+                              "skip_execution": false,
+                              "completion_type": "failed-completed",
+                              "result_message": "Every requested classification must resolve exactly once before creation."
+                            },
+                            "object_type": "definition_activity"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z9P4riPKDZGu6V6T1CpoI62f4",
+                    "name": "Set Variables",
+                    "title": "Store validated classification resolution",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Copies the fully validated classification resolution to an initialized local JSON variable so the body builder never references outputs from a skipped branch.",
+                      "display_name": "Store validated classification resolution",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.local.variable_workflow_02XOKCY8L728437wacgz9aFsTe55tDhBt8f$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z9H6wvQPoPnnyeYxDQr9qBBbz.output.script_queries.classificationResolutionJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L6Z805VTSwWhOkwbtHpDuLtbdIE",
+        "name": "Group",
+        "title": "Build rule-based suppression body",
+        "type": "logic.group",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Revalidates dates and all rule/classification contracts immediately before POST and proves AlarmRules/Entity mutual exclusion.",
+          "display_name": "Build rule-based suppression body",
+          "skip_execution": false,
+          "display_as_suggestion": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L6Z8N7cqbUSYPfrQ7uVQUXeidfx",
+            "name": "Execute Python Script",
+            "title": "Build and revalidate alarm suppression rule body",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Reparses all raw JSON and RFC 3339 inputs immediately before POST, binds them to prepared/classification outputs, adds required discriminators, populates AlarmRules, and guarantees Entity is absent.",
+              "display_name": "Build and revalidate alarm suppression rule body",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport re\nimport sys\nfrom datetime import datetime, timedelta, timezone\n\nbodyStatus = \"helper-failure\"\nbodyStatusCode = \"500\"\nbodyMessage = \"Alarm-suppression rule body construction did not complete.\"\nbodyResultJson = json.dumps({\"error\": bodyMessage}, separators=(\",\", \":\"))\nrequestBody = \"\"\n\nRFC3339_PATTERN = re.compile(r\"^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$\")\nRULE_NAME_PATTERN = re.compile(r\"^[A-Za-z0-9][A-Za-z0-9_\\s.\\-]{1,255}$\")\nCLASSIFICATION_NAME_PATTERN = re.compile(r\"^[a-zA-Z0-9_.:-]{1,64}$\")\nALLOWED_RULE_OPERATORS = {\"eq\", \"contains\", \"in\"}\n\ndef parse_rfc3339(value, label):\n    if not RFC3339_PATTERN.fullmatch(value):\n        raise ValueError(label + \" must be a complete RFC 3339 timestamp with Z or an explicit UTC offset.\")\n    parsed = datetime.fromisoformat(value[:-1] + \"+00:00\" if value.endswith(\"Z\") else value)\n    if parsed.tzinfo is None or parsed.utcoffset() is None:\n        raise ValueError(label + \" must include a timezone.\")\n    return parsed.astimezone(timezone.utc)\n\ndef normalize_date(value):\n    return value.isoformat().replace(\"+00:00\", \"Z\")\n\ndef parse_rules(text):\n    raw = json.loads(text)\n    if not isinstance(raw, list) or not raw:\n        raise ValueError(\"Alarm Rules must be a nonempty JSON array.\")\n    normalized = []\n    for index, rule in enumerate(raw):\n        label = \"Alarm Rules[%d]\" % index\n        if not isinstance(rule, dict) or set(rule.keys()) != {\"Property\", \"Operator\", \"Value\"}:\n            raise ValueError(label + \" must contain exactly Property, Operator, and Value.\")\n        prop, operator, values = rule.get(\"Property\"), rule.get(\"Operator\"), rule.get(\"Value\")\n        if not isinstance(prop, str) or not prop.strip():\n            raise ValueError(label + \".Property must be a nonblank string.\")\n        if operator not in ALLOWED_RULE_OPERATORS:\n            raise ValueError(label + \".Operator must be exactly eq, contains, or in.\")\n        if not isinstance(values, list) or not values or any(not isinstance(value, str) for value in values):\n            raise ValueError(label + \".Value must be a nonempty JSON string array.\")\n        if operator in (\"eq\", \"contains\") and len(values) != 1:\n            raise ValueError(label + \".Value must contain exactly one string for eq or contains.\")\n        normalized.append({\"Property\": prop, \"Operator\": operator, \"Value\": values})\n    return normalized\n\ndef parse_names(text):\n    raw = [] if not text.strip() else json.loads(text)\n    if not isinstance(raw, list) or any(not isinstance(name, str) for name in raw):\n        raise ValueError(\"Classification Names must be a JSON string array.\")\n    names, seen = [], set()\n    for name in raw:\n        if not CLASSIFICATION_NAME_PATTERN.fullmatch(name):\n            raise ValueError(\"A Classification Name is outside the current schema.\")\n        if name not in seen:\n            seen.add(name)\n            names.append(name)\n    return names\n\ntry:\n    ruleName, description = sys.argv[1], sys.argv[2]\n    startText, endText = sys.argv[3].strip(), sys.argv[4].strip()\n    rulesOperator, alarmRulesText, classificationNamesText = sys.argv[5], sys.argv[6], sys.argv[7]\n    expectedRules = json.loads(sys.argv[8])\n    expectedNames = json.loads(sys.argv[9])\n    expectedRulesOperator = sys.argv[10]\n    resolution = json.loads(sys.argv[11])\n    errors = []\n\n    if not ruleName.strip() or not RULE_NAME_PATTERN.fullmatch(ruleName):\n        errors.append(\"Rule Name no longer matches the current cond.AlarmSuppression Name schema.\")\n    if len(description) > 120:\n        errors.append(\"Description must not exceed 120 characters.\")\n    if rulesOperator not in (\"All\", \"Any\") or rulesOperator != expectedRulesOperator:\n        errors.append(\"Rules Operator is invalid or inconsistent with the prepared value.\")\n\n    try:\n        rules = parse_rules(alarmRulesText)\n        if rules != expectedRules:\n            errors.append(\"Alarm Rules no longer match the prepared normalized rules.\")\n    except Exception as exc:\n        errors.append(str(exc))\n        rules = []\n\n    try:\n        names = parse_names(classificationNamesText)\n        if names != expectedNames:\n            errors.append(\"Classification Names no longer match the prepared deduplicated names.\")\n    except Exception as exc:\n        errors.append(str(exc))\n        names = []\n\n    relationships = []\n    if not isinstance(resolution, list):\n        errors.append(\"The classification resolution is not a JSON array.\")\n    elif names:\n        if len(resolution) != len(names):\n            errors.append(\"The classification resolution count does not match the deduplicated names.\")\n        seenMoid = set()\n        for index, name in enumerate(names):\n            if index >= len(resolution):\n                break\n            item = resolution[index]\n            if not isinstance(item, dict) or set(item.keys()) != {\"Name\", \"Moid\", \"ObjectType\"}:\n                errors.append(\"Classification resolution %d has an invalid shape.\" % index)\n                continue\n            moid = item.get(\"Moid\")\n            if item.get(\"Name\") != name or item.get(\"ObjectType\") != \"cond.AlarmClassification\" or not isinstance(moid, str) or not moid.strip() or moid in seenMoid:\n                errors.append(\"Classification resolution %d is inconsistent, missing a Moid, or duplicates a Moid.\" % index)\n                continue\n            seenMoid.add(moid)\n            relationships.append({\"ClassId\": \"mo.MoRef\", \"Moid\": moid, \"ObjectType\": \"cond.AlarmClassification\"})\n    elif resolution != []:\n        errors.append(\"Classification resolution must remain empty when no names are requested.\")\n\n    now = datetime.now(timezone.utc)\n    start = None\n    end = None\n    try:\n        if startText:\n            start = parse_rfc3339(startText, \"Start Date\")\n    except Exception as exc:\n        errors.append(str(exc))\n    try:\n        if endText:\n            end = parse_rfc3339(endText, \"End Date\")\n    except Exception as exc:\n        errors.append(str(exc))\n    if start is not None and start < now - timedelta(seconds=60):\n        errors.append(\"Start Date is now more than 60 seconds in the past; no create request was sent.\")\n    effectiveStart = max(now, start) if start is not None else now\n    if end is not None and end <= effectiveStart:\n        errors.append(\"End Date must be later than the effective start time.\")\n\n    if errors:\n        bodyStatus = \"invalid\"\n        bodyStatusCode = \"400\"\n        bodyMessage = \" \".join(errors)\n        bodyResultJson = json.dumps({\"error\": \"Request body validation failed\", \"details\": errors}, separators=(\",\", \":\"))\n    else:\n        bodyRules = [{\"ClassId\": \"cond.AlarmRuleExpression\", \"ObjectType\": \"cond.AlarmRuleExpression\", \"Property\": rule[\"Property\"], \"Operator\": rule[\"Operator\"], \"Value\": rule[\"Value\"]} for rule in rules]\n        body = {\"ClassId\": \"cond.AlarmSuppression\", \"ObjectType\": \"cond.AlarmSuppression\", \"Name\": ruleName, \"Enabled\": True, \"RulesOperator\": rulesOperator, \"AlarmRules\": bodyRules}\n        if description.strip():\n            body[\"Description\"] = description\n        if start is not None:\n            body[\"StartDate\"] = normalize_date(start)\n        if end is not None:\n            body[\"EndDate\"] = normalize_date(end)\n        if relationships:\n            body[\"Classifications\"] = relationships\n        if \"Entity\" in body or not body.get(\"AlarmRules\"):\n            raise ValueError(\"Rule-based AlarmRules must be populated and Entity must be absent.\")\n        requestBody = json.dumps(body, separators=(\",\", \":\"))\n        bodyStatus = \"ready\"\n        bodyStatusCode = \"200\"\n        bodyMessage = \"The rule-based cond.AlarmSuppression body is valid, AlarmRules is populated, and Entity is absent.\"\n        bodyResultJson = json.dumps({\"validated\": True, \"ruleCount\": len(bodyRules), \"rulesOperator\": rulesOperator, \"classificationCount\": len(relationships), \"startDateProvided\": start is not None, \"endDateProvided\": end is not None, \"EntityIncluded\": False}, separators=(\",\", \":\"))\nexcept Exception as exc:\n    bodyStatus = \"helper-failure\"\n    bodyStatusCode = \"500\"\n    bodyMessage = str(exc)\n    bodyResultJson = json.dumps({\"error\": \"Alarm-suppression rule body construction failed\", \"detail\": bodyMessage}, separators=(\",\", \":\"))",
+              "script_arguments": [
+                "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.input.variable_workflow_02XOKCY8L727V77kA5pdOAt9R2m9zgi83QD$",
+                "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.input.variable_workflow_02XOKCY8L727W5acU89NrJFXuAMcnIknOXp$",
+                "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.input.variable_workflow_02XOKCY8L727X3T9cqCAp5I09Qat9wOHZzC$",
+                "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.input.variable_workflow_02XOKCY8L727Y3IgBYg3XLGOwRcddUDlxrl$",
+                "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.input.variable_workflow_02XOKCY8L727T2tiG7fgd9tL9Sn81lrnntE$",
+                "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.input.variable_workflow_02XOKCY8L727U1EEPZF9OXeMDolrYkVtZaL$",
+                "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.input.variable_workflow_02XOKCY8L72834ighXprTGtEuamaTrg6FPp$",
+                "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.normalizedAlarmRulesJson$",
+                "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.normalizedClassificationNamesJson$",
+                "$activity.definition_activity_02XOKCY8L6Z820zkbWJAVwSy50BZ8mod5xP.output.script_queries.normalizedRulesOperator$",
+                "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.local.variable_workflow_02XOKCY8L728437wacgz9aFsTe55tDhBt8f$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "bodyStatus",
+                  "script_query_name": "bodyStatus",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "bodyStatusCode",
+                  "script_query_name": "bodyStatusCode",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "bodyMessage",
+                  "script_query_name": "bodyMessage",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "bodyResultJson",
+                  "script_query_name": "bodyResultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "requestBody",
+                  "script_query_name": "requestBody",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L6Z8U014uy4Nea61SnIaDLHML0p",
+            "name": "Condition Block",
+            "title": "Validate alarm suppression rule body",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Separates technical helper/output failure from business validation that can become stale before POST.",
+              "display_name": "Validate alarm suppression rule body",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L6Z8Q17mwf74zKtZTF50gDalSpe",
+                "name": "Condition Branch",
+                "title": "Request body helper failed",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles execution failure, caught helper-failure, unexpected status, or incomplete ready outputs before POST.",
+                  "display_name": "Request body helper failed",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L6Z8N7cqbUSYPfrQ7uVQUXeidfx.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L6Z8N7cqbUSYPfrQ7uVQUXeidfx.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": {
+                              "left_operand": {
+                                "left_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOKCY8L6Z8N7cqbUSYPfrQ7uVQUXeidfx.output.script_queries.bodyStatus$",
+                                  "operator": "eq",
+                                  "right_operand": "helper-failure"
+                                },
+                                "operator": "or",
+                                "right_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOKCY8L6Z8N7cqbUSYPfrQ7uVQUXeidfx.output.script_queries.bodyStatus$",
+                                  "operator": "mregex",
+                                  "right_operand": "^(?!(?:helper-failure|invalid|ready)$).*$"
+                                }
+                              },
+                              "operator": "or",
+                              "right_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L6Z8N7cqbUSYPfrQ7uVQUXeidfx.output.script_queries.bodyStatusCode$",
+                                "operator": "mregex",
+                                "right_operand": "^\\s*$"
+                              }
+                            },
+                            "operator": "or",
+                            "right_operand": {
+                              "left_operand": "$activity.definition_activity_02XOKCY8L6Z8N7cqbUSYPfrQ7uVQUXeidfx.output.script_queries.bodyMessage$",
+                              "operator": "mregex",
+                              "right_operand": "^\\s*$"
+                            }
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L6Z8N7cqbUSYPfrQ7uVQUXeidfx.output.script_queries.bodyResultJson$",
+                            "operator": "mregex",
+                            "right_operand": "^\\s*$"
+                          }
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L6Z8N7cqbUSYPfrQ7uVQUXeidfx.output.script_queries.bodyStatus$",
+                            "operator": "eq",
+                            "right_operand": "ready"
+                          },
+                          "operator": "and",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L6Z8N7cqbUSYPfrQ7uVQUXeidfx.output.script_queries.requestBody$",
+                            "operator": "mregex",
+                            "right_operand": "^\\s*$"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z8O6xfuh5Nc1XIyLhZWtn6vsh",
+                    "name": "Set Variables",
+                    "title": "Set request body helper failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for set request body helper failure outputs.",
+                      "display_name": "Set request body helper failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L727Z7Oi3ZNT5wTJdtfUITtwYxC$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L728150jzdCZ3523ZyjDwWEukDD$",
+                          "variable_value_new": "Alarm suppression rule body construction failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L72824tHa948qWAWWoFuD14zV1s$",
+                          "variable_value_new": "The body-construction helper failed or returned incomplete, inconsistent, or unexpected output. No create request was attempted."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L7280428sWPqlE2I2UETfriEt4L$",
+                          "variable_value_new": "{\"error\":\"Request body helper failed or returned unusable output\"}"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z8P2e4D1KvvOpQwWiXIsz26e3",
+                    "name": "Completed",
+                    "title": "Completed - Request body helper failed",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after completed - request body helper failed outputs are populated.",
+                      "display_name": "Completed - Request body helper failed",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "The create body could not be constructed safely."
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L6Z8T67pE2oDycCQLCZnQhHWsge",
+                "name": "Condition Branch",
+                "title": "Request body values are no longer valid",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Stops when dates or other inputs fail body-build-time revalidation.",
+                  "display_name": "Request body values are no longer valid",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L6Z8N7cqbUSYPfrQ7uVQUXeidfx.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L6Z8N7cqbUSYPfrQ7uVQUXeidfx.output.script_queries.bodyStatus$",
+                      "operator": "eq",
+                      "right_operand": "invalid"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z8R4OcjmvQYhBAR6vYobsZ76r",
+                    "name": "Set Variables",
+                    "title": "Set invalid request body outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for set invalid request body outputs.",
+                      "display_name": "Set invalid request body outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L727Z7Oi3ZNT5wTJdtfUITtwYxC$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z8N7cqbUSYPfrQ7uVQUXeidfx.output.script_queries.bodyStatusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L728150jzdCZ3523ZyjDwWEukDD$",
+                          "variable_value_new": "Alarm suppression rule body validation failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L72824tHa948qWAWWoFuD14zV1s$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z8N7cqbUSYPfrQ7uVQUXeidfx.output.script_queries.bodyMessage$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L7280428sWPqlE2I2UETfriEt4L$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z8N7cqbUSYPfrQ7uVQUXeidfx.output.script_queries.bodyResultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z8S36rpu4Qkw4lKTrKN0eKXHn",
+                    "name": "Completed",
+                    "title": "Completed - Invalid request body",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after completed - invalid request body outputs are populated.",
+                      "display_name": "Completed - Invalid request body",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "No POST was sent because body-build-time validation failed."
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "unique_name": "definition_activity_02XOKCY8L6Z815cxjRzBNsOH7fF6Epphs0l",
+        "name": "Group",
+        "title": "Create and validate alarm suppression rule",
+        "type": "logic.group",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "description": "Submits the sole POST, validates full HTTP 2xx, and verifies the created response identity and contents before success.",
+          "display_name": "Create and validate alarm suppression rule",
+          "skip_execution": false,
+          "display_as_suggestion": false
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_02XOKCY8L6Z8V6lWx4ymdetfY2Pg6RIVdff",
+            "name": "Generic API Request",
+            "title": "Create alarm suppression rule",
+            "type": "intersight.api_request",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Creates the validated rule-based cond.AlarmSuppression. HTTP 2xx proves resource creation response acceptance, while the response helper validates identity and contents; it does not prove the rule is currently active. A generic request is used because no purpose-built rule-creation atomic is present; replace it with a supported atomic if one becomes available.",
+              "display_name": "Create alarm suppression rule",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "api_method": "POST",
+              "api_url": "/api/v1/cond/AlarmSuppressions",
+              "content_type": "application/json",
+              "endpoint": {
+                "target_type": "intersight.endpoint"
+              },
+              "runtime_user": {
+                "target_default": true
+              },
+              "target": {
+                "use_workflow_target": true
+              },
+              "api_body": "$activity.definition_activity_02XOKCY8L6Z8N7cqbUSYPfrQ7uVQUXeidfx.output.script_queries.requestBody$"
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L6Z8Z6PQGXuVlEcrfcyF29ZPDDu",
+            "name": "Condition Block",
+            "title": "Validate alarm suppression rule create HTTP response",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Stops on execution failure or any status outside the full HTTP 2xx range and reports that create state may be indeterminate.",
+              "display_name": "Validate alarm suppression rule create HTTP response",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L6Z8Y4K8PeExdLMuUVmfcYC5S9m",
+                "name": "Condition Branch",
+                "title": "Create request failed or returned non-2xx",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles POST transport and HTTP failures after the request may have reached Cisco Intersight.",
+                  "display_name": "Create request failed or returned non-2xx",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L6Z8V6lWx4ymdetfY2Pg6RIVdff.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L6Z8V6lWx4ymdetfY2Pg6RIVdff.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L6Z8V6lWx4ymdetfY2Pg6RIVdff.output.status_code$",
+                          "operator": "lt",
+                          "right_operand": 200
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L6Z8V6lWx4ymdetfY2Pg6RIVdff.output.status_code$",
+                          "operator": "gte",
+                          "right_operand": 300
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z8W1Iv5ypdYkzKfAMtXVXws3U",
+                    "name": "Set Variables",
+                    "title": "Set create request HTTP failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for set create request http failure outputs.",
+                      "display_name": "Set create request HTTP failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L727Z7Oi3ZNT5wTJdtfUITtwYxC$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L728150jzdCZ3523ZyjDwWEukDD$",
+                          "variable_value_new": "Alarm suppression rule create request failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L72824tHa948qWAWWoFuD14zV1s$",
+                          "variable_value_new": "The POST failed or returned non-2xx. Creation state may be indeterminate; check for the exact Rule Name before retrying."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L7280428sWPqlE2I2UETfriEt4L$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z8V6lWx4ymdetfY2Pg6RIVdff.output.response_body$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z8X4UqYJIQXJ86YLPtj4olp9f",
+                    "name": "Completed",
+                    "title": "Completed - Create request HTTP failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after completed - create request http failure outputs are populated.",
+                      "display_name": "Completed - Create request HTTP failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "The create request did not return a validated HTTP 2xx response."
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L6Z904SwPjZe1wFuGFiJiggT487",
+            "name": "Execute Python Script",
+            "title": "Inspect created alarm suppression rule",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": true,
+              "description": "Revalidates the created resource Moid, discriminators, exact Name, Enabled, RulesOperator, rule operator/value contents, optional dates/description/classifications, and absence of Entity.",
+              "display_name": "Inspect created alarm suppression rule",
+              "skip_execution": false,
+              "action_timeout": 180,
+              "script": "import json\nimport re\nimport sys\nfrom datetime import datetime, timezone\n\ncreatedStatus = \"helper-failure\"\ncreatedStatusCode = \"500\"\ncreatedMessage = \"Created alarm-suppression rule inspection did not complete.\"\ncreatedResultJson = json.dumps({\"error\": createdMessage}, separators=(\",\", \":\"))\ncreatedMoid = \"\"\n\nALLOWED_RULE_OPERATORS = {\"eq\", \"contains\", \"in\"}\nRFC3339_PATTERN = re.compile(r\"^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$\")\n\ndef date_value(value):\n    if not isinstance(value, str) or not RFC3339_PATTERN.fullmatch(value):\n        raise ValueError(\"A returned date is not a complete RFC 3339 timestamp.\")\n    parsed = datetime.fromisoformat(value[:-1] + \"+00:00\" if value.endswith(\"Z\") else value)\n    if parsed.tzinfo is None or parsed.utcoffset() is None:\n        raise ValueError(\"A returned date is missing timezone information.\")\n    return parsed.astimezone(timezone.utc)\n\ndef validate_rules(raw):\n    if not isinstance(raw, list) or not raw:\n        raise ValueError(\"Created AlarmRules must be a nonempty array.\")\n    normalized = []\n    for index, rule in enumerate(raw):\n        if not isinstance(rule, dict):\n            raise ValueError(\"Created AlarmRules[%d] is not an object.\" % index)\n        if set(rule.keys()) != {\"ClassId\", \"ObjectType\", \"Property\", \"Operator\", \"Value\"}:\n            raise ValueError(\"Created AlarmRules[%d] fields do not match the exact contract.\" % index)\n        prop, operator, values = rule.get(\"Property\"), rule.get(\"Operator\"), rule.get(\"Value\")\n        if rule.get(\"ClassId\") != \"cond.AlarmRuleExpression\" or rule.get(\"ObjectType\") != \"cond.AlarmRuleExpression\":\n            raise ValueError(\"Created AlarmRules[%d] has invalid discriminators.\" % index)\n        if not isinstance(prop, str) or not prop.strip() or operator not in ALLOWED_RULE_OPERATORS:\n            raise ValueError(\"Created AlarmRules[%d] has an invalid Property or Operator.\" % index)\n        if not isinstance(values, list) or not values or any(not isinstance(value, str) for value in values):\n            raise ValueError(\"Created AlarmRules[%d].Value is invalid.\" % index)\n        if operator in (\"eq\", \"contains\") and len(values) != 1:\n            raise ValueError(\"Created AlarmRules[%d] violates operator/value cardinality.\" % index)\n        normalized.append(rule)\n    return normalized\n\ndef relationship_moids(raw):\n    if raw in (None, []):\n        return []\n    if not isinstance(raw, list):\n        raise ValueError(\"Created Classifications is not an array.\")\n    moids = []\n    for index, item in enumerate(raw):\n        if not isinstance(item, dict) or item.get(\"ObjectType\") != \"cond.AlarmClassification\" or item.get(\"ClassId\") not in (\"mo.MoRef\", \"cond.AlarmClassification\") or not isinstance(item.get(\"Moid\"), str) or not item.get(\"Moid\").strip():\n            raise ValueError(\"Created Classifications[%d] is not a usable classification relationship.\" % index)\n        if item[\"Moid\"] in moids:\n            raise ValueError(\"Created Classifications contains a duplicate Moid.\")\n        moids.append(item[\"Moid\"])\n    return moids\n\ntry:\n    payload = json.loads(sys.argv[1])\n    expected = json.loads(sys.argv[2])\n    if not isinstance(payload, dict) or not isinstance(expected, dict):\n        raise ValueError(\"The create response or expected request body is not a JSON object.\")\n    problems = []\n    moid = payload.get(\"Moid\")\n    if not isinstance(moid, str) or not moid.strip():\n        problems.append(\"The created resource response is missing a usable Moid.\")\n    if payload.get(\"ClassId\") != \"cond.AlarmSuppression\" or payload.get(\"ObjectType\") != \"cond.AlarmSuppression\":\n        problems.append(\"The created resource response has incorrect cond.AlarmSuppression discriminators.\")\n    if payload.get(\"Name\") != expected.get(\"Name\"):\n        problems.append(\"The created resource Name does not match Rule Name.\")\n    if payload.get(\"Enabled\") is not True:\n        problems.append(\"The created resource response does not report Enabled=true.\")\n    if payload.get(\"RulesOperator\") != expected.get(\"RulesOperator\"):\n        problems.append(\"The created RulesOperator does not match the request.\")\n    if payload.get(\"Entity\") not in (None, {}):\n        problems.append(\"The created rule-based suppression unexpectedly contains Entity.\")\n\n    try:\n        actualRules = validate_rules(payload.get(\"AlarmRules\"))\n        if actualRules != expected.get(\"AlarmRules\"):\n            problems.append(\"The created AlarmRules do not exactly match the validated request.\")\n    except Exception as exc:\n        problems.append(str(exc))\n\n    expectedDescription = expected.get(\"Description\")\n    actualDescription = payload.get(\"Description\")\n    if expectedDescription is None:\n        if actualDescription not in (None, \"\"):\n            problems.append(\"The created Description is unexpected.\")\n    elif actualDescription != expectedDescription:\n        problems.append(\"The created Description does not match the request.\")\n\n    for field in (\"StartDate\", \"EndDate\"):\n        expectedValue = expected.get(field)\n        actualValue = payload.get(field)\n        try:\n            if expectedValue is None:\n                if actualValue not in (None, \"\"):\n                    problems.append(\"The created %s is unexpected.\" % field)\n            elif actualValue is None or date_value(actualValue) != date_value(expectedValue):\n                problems.append(\"The created %s does not match the requested instant.\" % field)\n        except Exception as exc:\n            problems.append(\"%s validation failed: %s\" % (field, exc))\n\n    try:\n        expectedMoidSet = sorted(relationship_moids(expected.get(\"Classifications\")))\n        actualMoidSet = sorted(relationship_moids(payload.get(\"Classifications\")))\n        if actualMoidSet != expectedMoidSet:\n            problems.append(\"The created classification relationships do not match the resolved Moids.\")\n    except Exception as exc:\n        problems.append(str(exc))\n\n    if problems:\n        createdStatus = \"invalid-resource\"\n        createdStatusCode = \"502\"\n        createdMessage = \" \".join(problems)\n        createdResultJson = json.dumps({\"error\": \"Created alarm suppression response validation failed\", \"details\": problems, \"requestMayHaveSucceeded\": True}, separators=(\",\", \":\"))\n    else:\n        createdMoid = moid\n        createdStatus = \"ready\"\n        createdStatusCode = \"200\"\n        createdMessage = \"The rule-based alarm suppression was created with the expected identity and contents; current active state was not verified.\"\n        createdResultJson = json.dumps({\"Moid\": moid, \"Name\": payload.get(\"Name\"), \"Enabled\": True, \"RulesOperator\": payload.get(\"RulesOperator\"), \"AlarmRules\": payload.get(\"AlarmRules\"), \"Classifications\": payload.get(\"Classifications\") or [], \"StartDate\": payload.get(\"StartDate\"), \"EndDate\": payload.get(\"EndDate\"), \"EntityIncluded\": False, \"ActiveStateVerified\": False, \"ActiveStateNote\": \"Enabled=true does not prove the suppression is currently active; StartDate scheduling and service-managed system state also apply.\"}, separators=(\",\", \":\"))\nexcept Exception as exc:\n    createdStatus = \"helper-failure\"\n    createdStatusCode = \"500\"\n    createdMessage = str(exc)\n    createdResultJson = json.dumps({\"error\": \"Created alarm-suppression rule inspection failed\", \"detail\": createdMessage, \"requestMayHaveSucceeded\": True}, separators=(\",\", \":\"))",
+              "script_arguments": [
+                "$activity.definition_activity_02XOKCY8L6Z8V6lWx4ymdetfY2Pg6RIVdff.output.response_body$",
+                "$activity.definition_activity_02XOKCY8L6Z8N7cqbUSYPfrQ7uVQUXeidfx.output.script_queries.requestBody$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "createdStatus",
+                  "script_query_name": "createdStatus",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "createdStatusCode",
+                  "script_query_name": "createdStatusCode",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "createdMessage",
+                  "script_query_name": "createdMessage",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "createdResultJson",
+                  "script_query_name": "createdResultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "createdMoid",
+                  "script_query_name": "createdMoid",
+                  "script_query_type": "string"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L6Z9774IpRLl377fZKtDn6jUBVW",
+            "name": "Condition Block",
+            "title": "Validate created alarm suppression rule",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Separates technical response-inspection failure from a created resource whose returned identity or contents are inconsistent.",
+              "display_name": "Validate created alarm suppression rule",
+              "skip_execution": false,
+              "conditions": []
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_02XOKCY8L6Z9356Nb0stxv7kAwHbJmNNGp2",
+                "name": "Condition Branch",
+                "title": "Created response inspection helper failed",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles execution failure, caught helper-failure, unexpected status, or incomplete ready outputs after POST.",
+                  "display_name": "Created response inspection helper failed",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L6Z904SwPjZe1wFuGFiJiggT487.output.succeeded$",
+                      "operator": "ne",
+                      "right_operand": true
+                    },
+                    "operator": "or",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L6Z904SwPjZe1wFuGFiJiggT487.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "operator": "and",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": {
+                            "left_operand": {
+                              "left_operand": {
+                                "left_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOKCY8L6Z904SwPjZe1wFuGFiJiggT487.output.script_queries.createdStatus$",
+                                  "operator": "eq",
+                                  "right_operand": "helper-failure"
+                                },
+                                "operator": "or",
+                                "right_operand": {
+                                  "left_operand": "$activity.definition_activity_02XOKCY8L6Z904SwPjZe1wFuGFiJiggT487.output.script_queries.createdStatus$",
+                                  "operator": "mregex",
+                                  "right_operand": "^(?!(?:helper-failure|invalid-resource|ready)$).*$"
+                                }
+                              },
+                              "operator": "or",
+                              "right_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L6Z904SwPjZe1wFuGFiJiggT487.output.script_queries.createdStatusCode$",
+                                "operator": "mregex",
+                                "right_operand": "^\\s*$"
+                              }
+                            },
+                            "operator": "or",
+                            "right_operand": {
+                              "left_operand": "$activity.definition_activity_02XOKCY8L6Z904SwPjZe1wFuGFiJiggT487.output.script_queries.createdMessage$",
+                              "operator": "mregex",
+                              "right_operand": "^\\s*$"
+                            }
+                          },
+                          "operator": "or",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L6Z904SwPjZe1wFuGFiJiggT487.output.script_queries.createdResultJson$",
+                            "operator": "mregex",
+                            "right_operand": "^\\s*$"
+                          }
+                        },
+                        "operator": "or",
+                        "right_operand": {
+                          "left_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L6Z904SwPjZe1wFuGFiJiggT487.output.script_queries.createdStatus$",
+                            "operator": "eq",
+                            "right_operand": "ready"
+                          },
+                          "operator": "and",
+                          "right_operand": {
+                            "left_operand": "$activity.definition_activity_02XOKCY8L6Z904SwPjZe1wFuGFiJiggT487.output.script_queries.createdMoid$",
+                            "operator": "mregex",
+                            "right_operand": "^\\s*$"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z911L7ryrraYDVyEGUAqnC1fh",
+                    "name": "Set Variables",
+                    "title": "Set created response helper failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for set created response helper failure outputs.",
+                      "display_name": "Set created response helper failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L727Z7Oi3ZNT5wTJdtfUITtwYxC$",
+                          "variable_value_new": "500"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L728150jzdCZ3523ZyjDwWEukDD$",
+                          "variable_value_new": "Created alarm suppression inspection failed"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L72824tHa948qWAWWoFuD14zV1s$",
+                          "variable_value_new": "The response-inspection helper failed or returned incomplete, inconsistent, or unexpected output. The resource may exist; inspect the exact Rule Name before retrying."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L7280428sWPqlE2I2UETfriEt4L$",
+                          "variable_value_new": "{\"error\":\"Created response helper failed or returned unusable output\",\"requestMayHaveSucceeded\":true}"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z920b6IJ0S9T9QHiSEDfYADnf",
+                    "name": "Completed",
+                    "title": "Completed - Created response inspection helper failed",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after completed - created response inspection helper failed outputs are populated.",
+                      "display_name": "Completed - Created response inspection helper failed",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "The create response could not be validated safely."
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XOKCY8L6Z960ZNEaAHXzruhKbAkmFxrjt",
+                "name": "Condition Branch",
+                "title": "Created alarm suppression contents are invalid",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Fails closed when the POST response does not prove the expected created identity and rule contents.",
+                  "display_name": "Created alarm suppression contents are invalid",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L6Z904SwPjZe1wFuGFiJiggT487.output.succeeded$",
+                      "operator": "eq",
+                      "right_operand": true
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": "$activity.definition_activity_02XOKCY8L6Z904SwPjZe1wFuGFiJiggT487.output.script_queries.createdStatus$",
+                      "operator": "eq",
+                      "right_operand": "invalid-resource"
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z94697W3LClMd4aKKVoJ0bUxe",
+                    "name": "Set Variables",
+                    "title": "Set invalid created alarm suppression outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs for set invalid created alarm suppression outputs.",
+                      "display_name": "Set invalid created alarm suppression outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L727Z7Oi3ZNT5wTJdtfUITtwYxC$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z904SwPjZe1wFuGFiJiggT487.output.script_queries.createdStatusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L728150jzdCZ3523ZyjDwWEukDD$",
+                          "variable_value_new": "Created alarm suppression response is inconsistent"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L72824tHa948qWAWWoFuD14zV1s$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z904SwPjZe1wFuGFiJiggT487.output.script_queries.createdMessage$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L7280428sWPqlE2I2UETfriEt4L$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z904SwPjZe1wFuGFiJiggT487.output.script_queries.createdResultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L6Z952RA2g68gWyNN1wB2Wb2HaX",
+                    "name": "Completed",
+                    "title": "Completed - Invalid created alarm suppression response",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends the workflow after completed - invalid created alarm suppression response outputs are populated.",
+                      "display_name": "Completed - Invalid created alarm suppression response",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "The POST may have created a resource, but its response did not match the validated request."
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L6Z98142IhVlJjgDOcxCzvXPGTO",
+            "name": "Set Variables",
+            "title": "Set alarm suppression rule created outputs",
+            "type": "core.set_multiple_variables",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Populates all four standard outputs for set alarm suppression rule created outputs.",
+              "display_name": "Set alarm suppression rule created outputs",
+              "skip_execution": false,
+              "variables_to_update": [
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L727Z7Oi3ZNT5wTJdtfUITtwYxC$",
+                  "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z8V6lWx4ymdetfY2Pg6RIVdff.output.status_code$"
+                },
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L728150jzdCZ3523ZyjDwWEukDD$",
+                  "variable_value_new": "Alarm suppression rule created; current active state was not verified"
+                },
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L72824tHa948qWAWWoFuD14zV1s$",
+                  "variable_value_new": ""
+                },
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L72726CpguElRmsUCG4aIRbOlWL.output.variable_workflow_02XOKCY8L7280428sWPqlE2I2UETfriEt4L$",
+                  "variable_value_new": "$activity.definition_activity_02XOKCY8L6Z904SwPjZe1wFuGFiJiggT487.output.script_queries.createdResultJson$"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_02XOKCY8L6Z995G5OrFyRE4IGBSlum9CEQa",
+            "name": "Completed",
+            "title": "Completed - Alarm suppression rule created",
+            "type": "logic.completed",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Ends the workflow after completed - alarm suppression rule created outputs are populated.",
+              "display_name": "Completed - Alarm suppression rule created",
+              "skip_execution": false,
+              "completion_type": "succeeded",
+              "result_message": "The rule-based alarm suppression was created and validated; Enabled=true does not by itself prove current activity."
+            },
+            "object_type": "definition_activity"
+          }
+        ]
+      }
+    ],
+    "categories": [
+      "category_02XOKCY8L6Z5K2jm4aWXC4lwTD27TeF9NGI"
+    ]
+  },
+  "categories": {
+    "category_02XOKCY8L6Z5K2jm4aWXC4lwTD27TeF9NGI": {
+      "unique_name": "category_02XOKCY8L6Z5K2jm4aWXC4lwTD27TeF9NGI",
+      "name": "Cisco Intersight - Alarm Management",
+      "title": "Cisco Intersight - Alarm Management",
+      "type": "basic.category",
+      "base_type": "category",
+      "category_type": "custom",
+      "object_type": "category"
+    }
+  }
+}
