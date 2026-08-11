@@ -11,7 +11,7 @@
         "is_atomic": true
       },
       "delete_workflow_instance": false,
-      "description": "Starts a Cisco Repository firmware upgrade for one Server, UCS-X Chassis, or Domain, optionally with five polls. Select a target authorized to read organizations, inventory, firmware catalog/status and create the upgrade. It validates exact identity/cardinality, relationships, two distinct Domain Fabric Interconnects, image tags/placement, ExcludeComponentPidList, and switch WaitTimeOut. Final preflight blocks NONE/IN_PROGRESS but can race create. v1 accepts only Cisco Repository and no credentials. HTTP 200 means accepted, not complete, unless status is SUCCESSFUL; polling is limited to five attempts within 1-600 seconds. OpenAPI does not prove eCMC support, so that route fails closed. UCS-X tags and Domain FabricSwitch Release selection require live-tenant validation; softwarerepository.Release is deprecated with sunset 2027-02-20. Inspect before retrying an ambiguous result. The bounded poller is inlined in this standalone export; no embedded workflow import is required.",
+      "description": "Starts a Cisco Repository firmware upgrade for one Server, UCS-X Chassis, or IMM Domain, optionally with five bounded polls. It validates exact organization-scoped identity, relationships, catalog tags, model compatibility, UCS-X expander topology, and a Domain Fabric Interconnect A/B pair before mutation. Server SkipEstimateImpact is fixed false. Domain WaitTimeOut is fixed 0. UCS-X XFM behavior is derived from the expanded equipped topology: a healthy UCSX-FS-9516 pair uses partial-shutdown; excluded or absent XFM uses none and an explicit xfm exclusion. Final preflight blocks NONE/IN_PROGRESS but can race create. HTTP 200 means accepted, not complete, unless status is SUCCESSFUL. The workflow supports only Cisco Repository and never accepts repository credentials. Inspect ambiguous or failed results before retrying.",
       "display_name": "Cisco Intersight - Start firmware upgrade",
       "runtime_user": {
         "override_target_runtime_user": false,
@@ -32,7 +32,7 @@
           "scope": "input",
           "name": "Target Type",
           "type": "datatype.string",
-          "description": "Required exact target family: Domain, UCS-X Chassis, Unified Edge Chassis (eCMC), or Server. No production target is preselected.",
+          "description": "Required exact target family: Domain, UCS-X Chassis, or Server.",
           "is_required": true,
           "display_on_wizard": false,
           "is_invisible": false,
@@ -64,7 +64,7 @@
           "scope": "input",
           "name": "Target Name",
           "type": "datatype.string",
-          "description": "Exact organization-scoped server, UCS-X chassis, eCMC, or domain name. No production identity is prepopulated.",
+          "description": "Exact organization-scoped server, UCS-X chassis, or connected IMM domain target name. No production identity is prepopulated.",
           "is_required": true,
           "display_on_wizard": false,
           "is_invisible": false,
@@ -122,17 +122,17 @@
         "object_type": "variable_workflow"
       },
       {
-        "schema_id": "datatype.boolean",
+        "schema_id": "datatype.string",
         "properties": {
-          "value": false,
-          "scope": "input",
-          "name": "Skip Estimate Impact",
-          "type": "datatype.boolean",
-          "description": "Server-only option passed as SkipEstimateImpact. Other target types must keep false.",
+          "value": "{}",
+          "scope": "local",
+          "name": "Resolved Target JSON",
+          "type": "datatype.string",
+          "description": "Internal validated target contract shared across mutually exclusive target-resolution branches.",
           "is_required": false,
           "display_on_wizard": false,
-          "is_invisible": false,
-          "variable_string_format": ""
+          "is_invisible": true,
+          "variable_string_format": "json"
         },
         "unique_name": "variable_workflow_02XOKCY8L72F02a54ku4Z2cFczXQjyNFHag",
         "object_type": "variable_workflow"
@@ -144,7 +144,7 @@
           "scope": "input",
           "name": "Excluded Components",
           "type": "datatype.string",
-          "description": "Optional JSON string array. Server values: none, local-disk, drives-except-boot-drives, storage-controller, storage-sasexpander, storage-u2. UCS-X values: none, local-disk, psu, xfm. Domain/eCMC require empty input.",
+          "description": "Optional JSON string array. Server values: none, local-disk, drives-except-boot-drives, storage-controller, storage-sasexpander, storage-u2. UCS-X values: none, local-disk, psu, xfm. Domain requires empty input. For UCS-X, xfm is added automatically when no healthy equipped XFM pair will be upgraded.",
           "is_required": false,
           "display_on_wizard": false,
           "is_invisible": false,
@@ -172,14 +172,14 @@
       {
         "schema_id": "datatype.string",
         "properties": {
-          "value": "none",
-          "scope": "input",
-          "name": "XFM Upgrade Option",
+          "value": "",
+          "scope": "local",
+          "name": "Resolved Image API URL",
           "type": "datatype.string",
-          "description": "UCS-X chassis-only value: none, full-shutdown, or partial-shutdown. Other target types must keep none.",
+          "description": "Internal validated catalog URL shared across mutually exclusive target-resolution branches.",
           "is_required": false,
           "display_on_wizard": false,
-          "is_invisible": false,
+          "is_invisible": true,
           "variable_string_format": "text"
         },
         "unique_name": "variable_workflow_02XOKCY8L72F35sZOFCOIt2vobkwks7EhQs",
@@ -192,7 +192,7 @@
           "scope": "input",
           "name": "Enable Fabric Evacuation",
           "type": "datatype.boolean",
-          "description": "Domain/eCMC switch-upgrade option. Server and UCS-X chassis routes must keep true.",
+          "description": "Domain switch-upgrade option. Server and UCS-X chassis routes must keep true.",
           "is_required": false,
           "display_on_wizard": false,
           "is_invisible": false,
@@ -202,17 +202,17 @@
         "object_type": "variable_workflow"
       },
       {
-        "schema_id": "datatype.integer",
+        "schema_id": "datatype.string",
         "properties": {
-          "value": 0,
-          "scope": "input",
-          "name": "Switch Wait Timeout Minutes",
-          "type": "datatype.integer",
-          "description": "Domain/eCMC WaitTimeOut from -1 through 1000. The numeric default 0 is sent explicitly so the switch upgrade starts immediately; omission would invoke API default -1/manual acknowledgement.",
+          "value": "",
+          "scope": "local",
+          "name": "Resolved Active Upgrade API URL",
+          "type": "datatype.string",
+          "description": "Internal validated preflight URL shared across mutually exclusive target-resolution branches.",
           "is_required": false,
           "display_on_wizard": false,
-          "is_invisible": false,
-          "variable_string_format": ""
+          "is_invisible": true,
+          "variable_string_format": "text"
         },
         "unique_name": "variable_workflow_02XOKCY8L72F52X8BwPmMmSQJR3sI1UsD7O",
         "object_type": "variable_workflow"
@@ -224,7 +224,7 @@
           "scope": "input",
           "name": "Enable PSU Upgrade",
           "type": "datatype.boolean",
-          "description": "Domain/eCMC switch-upgrade option. Server and UCS-X chassis routes must keep false.",
+          "description": "Domain switch-upgrade option. Server and UCS-X chassis routes must keep false.",
           "is_required": false,
           "display_on_wizard": false,
           "is_invisible": false,
@@ -240,7 +240,7 @@
           "scope": "input",
           "name": "Enable PDB FPGA Upgrade",
           "type": "datatype.boolean",
-          "description": "Domain/eCMC switch-upgrade option. Server and UCS-X chassis routes must keep false.",
+          "description": "Domain switch-upgrade option. Server and UCS-X chassis routes must keep false.",
           "is_required": false,
           "display_on_wizard": false,
           "is_invisible": false,
@@ -256,7 +256,7 @@
           "scope": "input",
           "name": "Skip Wait for I/O Connectivity",
           "type": "datatype.boolean",
-          "description": "Domain/eCMC option mapped to OpenAPI field SkipWaitForIoPathConnectivity. Server and UCS-X chassis routes must keep false.",
+          "description": "Domain option mapped to OpenAPI field SkipWaitForIoPathConnectivity. Server and UCS-X chassis routes must keep false.",
           "is_required": false,
           "display_on_wizard": false,
           "is_invisible": false,
@@ -410,18 +410,18 @@
         "object_type": "definition_activity",
         "actions": [
           {
-            "unique_name": "definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F",
+            "unique_name": "definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar",
             "name": "Execute Python Script",
-            "title": "Validate inputs and prepare firmware routes",
+            "title": "Parse and validate supported firmware inputs",
             "type": "python3.script",
             "base_type": "activity",
             "properties": {
               "continue_on_failure": true,
-              "description": "Validates strict target-specific input compatibility, numeric defaults, documented enums, exact JSON exclusion shapes, Cisco Repository-only scope, bounded wait semantics, and doubles apostrophes in every OData string before any API call.",
-              "display_name": "Validate inputs and prepare firmware routes",
+              "description": "Validates the supported Server, UCS-X chassis, and IMM Domain inputs, applies fixed SkipEstimateImpact false and Domain WaitTimeOut zero semantics, and builds exact organization-scoped target routes.",
+              "display_name": "Parse and validate supported firmware inputs",
               "skip_execution": false,
               "action_timeout": 180,
-              "script": "import json\nimport sys\n\ntargetTypeRaw = sys.argv[1]\norganizationRaw = sys.argv[2]\ntargetNameRaw = sys.argv[3]\nfirmwareVersionRaw = sys.argv[4]\nimageSourceRaw = sys.argv[5]\nserverModeRaw = sys.argv[6]\nskipEstimateRaw = sys.argv[7]\nexcludedComponentsRaw = sys.argv[8]\nexcludedPidsRaw = sys.argv[9]\nxfmRaw = sys.argv[10]\nfabricEvacuationRaw = sys.argv[11]\nswitchWaitRaw = sys.argv[12]\npsuRaw = sys.argv[13]\npdbRaw = sys.argv[14]\nskipIoRaw = sys.argv[15]\nwaitRaw = sys.argv[16]\nwaitTimeoutRaw = sys.argv[17]\n\ntargetType = targetTypeRaw.strip()\norganizationName = organizationRaw.strip()\ntargetName = targetNameRaw.strip()\nfirmwareVersion = firmwareVersionRaw.strip()\nimageSource = imageSourceRaw.strip()\nserverUpgradeMode = serverModeRaw.strip()\nxfmUpgradeOption = xfmRaw.strip()\nexcludedComponentsText = excludedComponentsRaw.strip()\nexcludedPidsText = excludedPidsRaw.strip()\nerrors = []\n\nfor raw, clean, label in ((targetTypeRaw, targetType, \"Target Type\"), (organizationRaw, organizationName, \"Device Organization\"), (targetNameRaw, targetName, \"Target Name\"), (firmwareVersionRaw, firmwareVersion, \"Firmware Version\"), (imageSourceRaw, imageSource, \"Image Source\"), (serverModeRaw, serverUpgradeMode, \"Server Upgrade Mode\"), (xfmRaw, xfmUpgradeOption, \"XFM Upgrade Option\"), (excludedComponentsRaw, excludedComponentsText, \"Excluded Components\"), (excludedPidsRaw, excludedPidsText, \"Excluded Component PIDs\")):\n    if raw != clean:\n        errors.append(label + \" must not contain surrounding whitespace.\")\n\ndef strict_bool(value, label):\n    normalized = str(value).strip().lower()\n    if normalized not in (\"true\", \"false\"):\n        errors.append(label + \" must be a boolean.\")\n        return False\n    return normalized == \"true\"\n\ndef strict_int(value, label):\n    try:\n        parsed = int(value)\n    except Exception:\n        errors.append(label + \" must be an integer.\")\n        return 0\n    if str(parsed) != value and not (value == \"-0\" and parsed == 0):\n        errors.append(label + \" must use canonical integer syntax.\")\n    return parsed\n\nskipEstimateImpact = strict_bool(skipEstimateRaw, \"Skip Estimate Impact\")\nenableFabricEvacuation = strict_bool(fabricEvacuationRaw, \"Enable Fabric Evacuation\")\nenablePsuUpgrade = strict_bool(psuRaw, \"Enable PSU Upgrade\")\nenablePdbFpgaUpgrade = strict_bool(pdbRaw, \"Enable PDB FPGA Upgrade\")\nskipWaitForIo = strict_bool(skipIoRaw, \"Skip Wait for I/O Connectivity\")\nwaitForCompletion = strict_bool(waitRaw, \"Wait for Completion\")\nswitchWaitTimeout = strict_int(switchWaitRaw, \"Switch Wait Timeout Minutes\")\nwaitTimeoutSeconds = strict_int(waitTimeoutRaw, \"Wait Timeout Seconds\")\n\nallowedTargets = {\"Domain\", \"UCS-X Chassis\", \"Unified Edge Chassis (eCMC)\", \"Server\"}\nif targetType not in allowedTargets:\n    errors.append(\"Target Type must exactly match Domain, UCS-X Chassis, Unified Edge Chassis (eCMC), or Server.\")\nif imageSource != \"Cisco Repository\":\n    errors.append(\"Image Source must be exactly Cisco Repository; v1 does not accept local repository or network-share credentials.\")\n\ndef validate_odata(value, label, maximum):\n    if not value or len(value) > maximum or any(ord(ch) < 32 or ch in \"&?#%\" for ch in value):\n        errors.append(label + \" must contain 1-\" + str(maximum) + \" characters and must not contain control or URL query-delimiter characters.\")\n\nvalidate_odata(organizationName, \"Device Organization\", 64)\nvalidate_odata(targetName, \"Target Name\", 128)\nvalidate_odata(firmwareVersion, \"Firmware Version\", 128)\n\nexcludedComponents = []\nif excludedComponentsText:\n    try:\n        excludedComponents = json.loads(excludedComponentsText)\n    except Exception:\n        errors.append(\"Excluded Components must be valid JSON.\")\n        excludedComponents = []\n    if not isinstance(excludedComponents, list) or any(not isinstance(v, str) or not v for v in excludedComponents):\n        errors.append(\"Excluded Components must be a JSON array of non-empty strings.\")\n        excludedComponents = []\n    elif len(excludedComponents) != len(set(excludedComponents)):\n        errors.append(\"Excluded Components must not contain duplicates.\")\n\nexcludedPidObject = None\nif excludedPidsText:\n    try:\n        excludedPidObject = json.loads(excludedPidsText)\n    except Exception:\n        errors.append(\"Excluded Component PIDs must be valid JSON.\")\n    if excludedPidObject is not None:\n        allowedKeys = {\"ExcludeLocalDiskList\", \"ExcludeStorageControllerList\"}\n        if not isinstance(excludedPidObject, dict) or not excludedPidObject or set(excludedPidObject) - allowedKeys:\n            errors.append(\"Excluded Component PIDs must be a non-empty object containing only ExcludeLocalDiskList and/or ExcludeStorageControllerList.\")\n            excludedPidObject = None\n        else:\n            for key, values in excludedPidObject.items():\n                if not isinstance(values, list) or not values or any(not isinstance(v, str) or not v.strip() or v != v.strip() or len(v) > 128 for v in values) or len(values) != len(set(values)):\n                    errors.append(key + \" must be a non-empty array of unique, exact, non-empty strings no longer than 128 characters.\")\n                    excludedPidObject = None\n                    break\n\nserverAllowed = {\"none\", \"local-disk\", \"drives-except-boot-drives\", \"storage-controller\", \"storage-sasexpander\", \"storage-u2\"}\nchassisAllowed = {\"none\", \"local-disk\", \"psu\", \"xfm\"}\nif \"none\" in excludedComponents and len(excludedComponents) != 1:\n    errors.append(\"Excluded Components value none is mutually exclusive with every other component.\")\n\nswitchOptionsChanged = (enableFabricEvacuation is not True or switchWaitTimeout != 0 or enablePsuUpgrade or enablePdbFpgaUpgrade or skipWaitForIo)\nif targetType == \"Server\":\n    if serverUpgradeMode not in (\"Start Immediately\", \"Mount Only\"):\n        errors.append(\"Server Upgrade Mode must be Start Immediately or Mount Only for Server.\")\n    if any(v not in serverAllowed for v in excludedComponents):\n        errors.append(\"Excluded Components contains a value not supported by firmware.Upgrade.\")\n    if xfmUpgradeOption != \"none\":\n        errors.append(\"XFM Upgrade Option applies only to UCS-X Chassis and must remain none for Server.\")\n    if switchOptionsChanged:\n        errors.append(\"Switch-only evacuation, wait-timeout, PSU, PDB FPGA, and I/O-connectivity options must retain defaults for Server.\")\nelif targetType == \"UCS-X Chassis\":\n    if serverUpgradeMode != \"Start Immediately\" or skipEstimateImpact:\n        errors.append(\"Server Upgrade Mode and Skip Estimate Impact are server-only and must retain defaults for UCS-X Chassis.\")\n    if any(v not in chassisAllowed for v in excludedComponents):\n        errors.append(\"Excluded Components contains a value not supported by firmware.ChassisUpgrade.\")\n    if excludedPidObject is not None:\n        errors.append(\"Excluded Component PIDs is not supported by firmware.ChassisUpgrade.\")\n    if xfmUpgradeOption not in (\"none\", \"full-shutdown\", \"partial-shutdown\"):\n        errors.append(\"XFM Upgrade Option must be none, full-shutdown, or partial-shutdown.\")\n    if switchOptionsChanged:\n        errors.append(\"Switch-only evacuation, wait-timeout, PSU, PDB FPGA, and I/O-connectivity options must retain defaults for UCS-X Chassis.\")\nelif targetType in (\"Domain\", \"Unified Edge Chassis (eCMC)\"):\n    if serverUpgradeMode != \"Start Immediately\" or skipEstimateImpact or excludedComponents or excludedPidObject is not None or xfmUpgradeOption != \"none\":\n        errors.append(\"Server/chassis-only mode, estimate, exclusion, PID, and XFM options must retain defaults for Domain/eCMC.\")\n    if switchWaitTimeout < -1 or switchWaitTimeout > 1000:\n        errors.append(\"Switch Wait Timeout Minutes must be from -1 through 1000.\")\n\nif waitForCompletion:\n    if waitTimeoutSeconds < 1 or waitTimeoutSeconds > 600:\n        errors.append(\"Wait Timeout Seconds must be from 1 through 600 when Wait for Completion is true.\")\nelif waitTimeoutSeconds != 0:\n    errors.append(\"Wait Timeout Seconds must remain numeric 0 when Wait for Completion is false.\")\n\nescapedOrganizationName = organizationName.replace(\"'\", \"''\")\nescapedTargetName = targetName.replace(\"'\", \"''\")\nescapedFirmwareVersion = firmwareVersion.replace(\"'\", \"''\")\ntargetApiUrl = \"\"\nexpectedTargetObjectType = \"\"\nif targetType == \"Server\":\n    expectedTargetObjectType = \"compute.PhysicalSummary\"\n    targetApiUrl = \"/api/v1/compute/PhysicalSummaries?$filter=Name eq '\" + escapedTargetName + \"' and PermissionResources/any(t:t/Moid eq '{organizationMoid}')&$select=Moid,Name,Model,ManagementMode,SourceObjectType,ObjectType,ClassId,PermissionResources\"\nelif targetType == \"UCS-X Chassis\":\n    expectedTargetObjectType = \"equipment.Chassis\"\n    targetApiUrl = \"/api/v1/equipment/Chasses?$filter=Name eq '\" + escapedTargetName + \"' and PermissionResources/any(t:t/Moid eq '{organizationMoid}')&$select=Moid,Name,Model,PlatformType,ObjectType,ClassId,PermissionResources\"\nelif targetType == \"Unified Edge Chassis (eCMC)\":\n    expectedTargetObjectType = \"network.Element\"\n    targetApiUrl = \"/api/v1/network/Elements?$filter=Name eq '\" + escapedTargetName + \"' and SwitchType eq 'EdgeChassisManagementController' and PermissionResources/any(t:t/Moid eq '{organizationMoid}')&$select=Moid,Name,Model,PlatformType,SwitchId,SwitchType,ObjectType,ClassId,PermissionResources\"\nelif targetType == \"Domain\":\n    expectedTargetObjectType = \"top.System\"\n    targetApiUrl = \"/api/v1/top/Systems?$filter=Name eq '\" + escapedTargetName + \"' and PermissionResources/any(t:t/Moid eq '{organizationMoid}')&$select=Moid,Name,ObjectType,ClassId,PermissionResources&$expand=NetworkElements($select=Moid,Name,Model,SwitchId,SwitchType,ObjectType,ClassId)\"\n\npreparationStatus = \"invalid\" if errors else \"ready\"\npreparationMessage = \" \".join(errors) if errors else \"Inputs, cross-field routing, JSON shapes, enum values, and all OData string escaping were validated.\"\npreparationResultJson = json.dumps({\n    \"validated\": not errors,\n    \"errors\": errors,\n    \"targetType\": targetType,\n    \"deviceOrganization\": organizationName,\n    \"targetName\": targetName,\n    \"firmwareVersion\": firmwareVersion,\n    \"imageSource\": imageSource,\n    \"serverUpgradeMode\": serverUpgradeMode,\n    \"skipEstimateImpact\": skipEstimateImpact,\n    \"excludedComponents\": excludedComponents,\n    \"excludedComponentPids\": excludedPidObject,\n    \"xfmUpgradeOption\": xfmUpgradeOption,\n    \"enableFabricEvacuation\": enableFabricEvacuation,\n    \"switchWaitTimeoutMinutes\": switchWaitTimeout,\n    \"enablePsuUpgrade\": enablePsuUpgrade,\n    \"enablePdbFpgaUpgrade\": enablePdbFpgaUpgrade,\n    \"skipWaitForIoPathConnectivity\": skipWaitForIo,\n    \"waitForCompletion\": waitForCompletion,\n    \"waitTimeoutSeconds\": waitTimeoutSeconds,\n    \"acceptedVersusCompletedSemantics\": True,\n    \"ciscoRepositoryOnly\": True\n}, separators=(\",\", \":\"))\nhelperReady = preparationStatus in (\"invalid\", \"ready\") and bool(preparationMessage and preparationResultJson) and (preparationStatus != \"ready\" or bool(targetApiUrl and expectedTargetObjectType))",
+              "script": "import json\nimport sys\n\ntarget_type_raw = sys.argv[1]\norganization_raw = sys.argv[2]\ntarget_name_raw = sys.argv[3]\nversion_raw = sys.argv[4]\nimage_source_raw = sys.argv[5]\nserver_mode_raw = sys.argv[6]\nexcluded_components_raw = sys.argv[8]\nexcluded_pids_raw = sys.argv[9]\nfabric_evacuation_raw = sys.argv[11]\npsu_raw = sys.argv[13]\npdb_raw = sys.argv[14]\nskip_io_raw = sys.argv[15]\nwait_raw = sys.argv[16]\nwait_timeout_raw = sys.argv[17]\n\ntargetType = target_type_raw.strip()\norganizationName = organization_raw.strip()\ntargetName = target_name_raw.strip()\nfirmwareVersion = version_raw.strip()\nimage_source = image_source_raw.strip()\nserver_mode = server_mode_raw.strip()\nexcluded_components_text = excluded_components_raw.strip()\nexcluded_pids_text = excluded_pids_raw.strip()\nerrors = []\n\nfor raw, clean, label in ((target_type_raw, targetType, \"Target Type\"), (organization_raw, organizationName, \"Device Organization\"), (target_name_raw, targetName, \"Target Name\"), (version_raw, firmwareVersion, \"Firmware Version\"), (image_source_raw, image_source, \"Image Source\"), (server_mode_raw, server_mode, \"Server Upgrade Mode\"), (excluded_components_raw, excluded_components_text, \"Excluded Components\"), (excluded_pids_raw, excluded_pids_text, \"Excluded Component PIDs\")):\n    if raw != clean:\n        errors.append(label + \" must not contain surrounding whitespace.\")\n\ndef strict_bool(value, label):\n    normalized = str(value).strip().lower()\n    if normalized not in (\"true\", \"false\"):\n        errors.append(label + \" must be a boolean.\")\n        return False\n    return normalized == \"true\"\n\ndef strict_int(value, label):\n    try:\n        parsed = int(value)\n    except Exception:\n        errors.append(label + \" must be an integer.\")\n        return 0\n    if str(parsed) != str(value):\n        errors.append(label + \" must use canonical integer syntax.\")\n    return parsed\n\nenable_fabric_evacuation = strict_bool(fabric_evacuation_raw, \"Enable Fabric Evacuation\")\nenable_psu_upgrade = strict_bool(psu_raw, \"Enable PSU Upgrade\")\nenable_pdb_fpga_upgrade = strict_bool(pdb_raw, \"Enable PDB FPGA Upgrade\")\nskip_wait_for_io = strict_bool(skip_io_raw, \"Skip Wait for I/O Connectivity\")\nwaitForCompletion = strict_bool(wait_raw, \"Wait for Completion\")\nwaitTimeoutSeconds = strict_int(wait_timeout_raw, \"Wait Timeout Seconds\")\n\nif targetType not in {\"Server\", \"UCS-X Chassis\", \"Domain\"}:\n    errors.append(\"Target Type must exactly match Server, UCS-X Chassis, or Domain.\")\nif image_source != \"Cisco Repository\":\n    errors.append(\"Image Source must be exactly Cisco Repository.\")\n\ndef validate_odata(value, label, maximum):\n    if not value or len(value) > maximum or any(ord(char) < 32 or char in \"&?#%\" for char in value):\n        errors.append(label + \" must contain 1-\" + str(maximum) + \" characters and no control or URL query-delimiter characters.\")\n\nvalidate_odata(organizationName, \"Device Organization\", 64)\nvalidate_odata(targetName, \"Target Name\", 128)\nvalidate_odata(firmwareVersion, \"Firmware Version\", 128)\n\nexcluded_components = []\nif excluded_components_text:\n    try:\n        excluded_components = json.loads(excluded_components_text)\n    except Exception:\n        errors.append(\"Excluded Components must be valid JSON.\")\n        excluded_components = []\n    if not isinstance(excluded_components, list) or any(not isinstance(value, str) or not value or value != value.strip() for value in excluded_components):\n        errors.append(\"Excluded Components must be a JSON array of exact non-empty strings.\")\n        excluded_components = []\n    elif len(excluded_components) != len(set(excluded_components)):\n        errors.append(\"Excluded Components must not contain duplicates.\")\nif \"none\" in excluded_components and len(excluded_components) != 1:\n    errors.append(\"Excluded Components value none is mutually exclusive with other values.\")\n\nexcluded_pid_object = None\nif excluded_pids_text:\n    try:\n        excluded_pid_object = json.loads(excluded_pids_text)\n    except Exception:\n        errors.append(\"Excluded Component PIDs must be valid JSON.\")\n    allowed_keys = {\"ExcludeLocalDiskList\", \"ExcludeStorageControllerList\"}\n    if excluded_pid_object is not None:\n        if not isinstance(excluded_pid_object, dict) or not excluded_pid_object or set(excluded_pid_object) - allowed_keys:\n            errors.append(\"Excluded Component PIDs must contain only supported non-empty PID arrays.\")\n            excluded_pid_object = None\n        else:\n            for key, values in excluded_pid_object.items():\n                if not isinstance(values, list) or not values or any(not isinstance(value, str) or not value or value != value.strip() or len(value) > 128 for value in values) or len(values) != len(set(values)):\n                    errors.append(key + \" must be a non-empty array of unique exact strings no longer than 128 characters.\")\n                    excluded_pid_object = None\n                    break\n\ndomain_defaults_changed = enable_fabric_evacuation is not True or enable_psu_upgrade or enable_pdb_fpga_upgrade or skip_wait_for_io\nif targetType == \"Server\":\n    allowed = {\"none\", \"local-disk\", \"drives-except-boot-drives\", \"storage-controller\", \"storage-sasexpander\", \"storage-u2\"}\n    if server_mode not in (\"Start Immediately\", \"Mount Only\"):\n        errors.append(\"Server Upgrade Mode must be Start Immediately or Mount Only for Server.\")\n    if any(value not in allowed for value in excluded_components):\n        errors.append(\"Excluded Components contains a value not supported by firmware.Upgrade.\")\n    if domain_defaults_changed:\n        errors.append(\"Domain-only upgrade options must retain defaults for Server.\")\nelif targetType == \"UCS-X Chassis\":\n    allowed = {\"none\", \"local-disk\", \"psu\", \"xfm\"}\n    if server_mode != \"Start Immediately\":\n        errors.append(\"Server Upgrade Mode must retain Start Immediately for UCS-X Chassis.\")\n    if any(value not in allowed for value in excluded_components):\n        errors.append(\"Excluded Components contains a value not supported by firmware.ChassisUpgrade.\")\n    if excluded_pid_object is not None:\n        errors.append(\"Excluded Component PIDs is not supported by firmware.ChassisUpgrade.\")\n    if domain_defaults_changed:\n        errors.append(\"Domain-only upgrade options must retain defaults for UCS-X Chassis.\")\nelif targetType == \"Domain\":\n    if server_mode != \"Start Immediately\" or excluded_components or excluded_pid_object is not None:\n        errors.append(\"Server/chassis-only mode, exclusions, and PID options must retain defaults for Domain.\")\n\nif waitForCompletion:\n    if waitTimeoutSeconds < 1 or waitTimeoutSeconds > 600:\n        errors.append(\"Wait Timeout Seconds must be from 1 through 600 when Wait for Completion is true.\")\nelif waitTimeoutSeconds != 0:\n    errors.append(\"Wait Timeout Seconds must remain numeric 0 when Wait for Completion is false.\")\n\nescapedOrganizationName = organizationName.replace(\"'\", \"''\")\nescaped_name = targetName.replace(\"'\", \"''\")\nescapedFirmwareVersion = firmwareVersion.replace(\"'\", \"''\")\ntargetApiUrl = \"\"\nexpectedTargetObjectType = \"\"\nif targetType == \"Server\":\n    expectedTargetObjectType = \"compute.PhysicalSummary\"\n    targetApiUrl = \"/api/v1/compute/PhysicalSummaries?$filter=Name eq '\" + escaped_name + \"' and PermissionResources/any(t:t/Moid eq '{organizationMoid}')&$select=Moid,Name,Model,ManagementMode,SourceObjectType,ObjectType,ClassId,PermissionResources\"\nelif targetType == \"UCS-X Chassis\":\n    expectedTargetObjectType = \"equipment.Chassis\"\n    targetApiUrl = \"/api/v1/equipment/Chasses?$filter=Name eq '\" + escaped_name + \"' and PermissionResources/any(t:t/Moid eq '{organizationMoid}')&$select=Moid,Name,Model,PlatformType,ObjectType,ClassId,PermissionResources,ExpanderModules&$expand=ExpanderModules($select=Moid,Model,ModuleId,OperState,OperReason,Presence,InventoryReady,ObjectType,ClassId,EquipmentChassis)\"\nelif targetType == \"Domain\":\n    expectedTargetObjectType = \"asset.Target\"\n    targetApiUrl = \"/api/v1/asset/Targets?$filter=Name eq '\" + escaped_name + \"' and TargetType eq 'UCSFIISM' and Status eq 'Connected' and PermissionResources/any(t:t/Moid eq '{organizationMoid}')&$select=Moid,Name,TargetType,Status,RegisteredDevice,ObjectType,ClassId,PermissionResources\"\n\npreparationStatus = \"invalid\" if errors else \"ready\"\npreparationMessage = \" \".join(errors) if errors else \"Inputs, branch options, JSON shapes, and exact OData routes were validated.\"\npreparationResultJson = json.dumps({\"validated\":not errors,\"errors\":errors,\"targetType\":targetType,\"deviceOrganization\":organizationName,\"targetName\":targetName,\"firmwareVersion\":firmwareVersion,\"imageSource\":image_source,\"serverUpgradeMode\":server_mode,\"skipEstimateImpact\":False,\"excludedComponents\":excluded_components,\"excludedComponentPids\":excluded_pid_object,\"enableFabricEvacuation\":enable_fabric_evacuation,\"switchWaitTimeoutMinutes\":0,\"enablePsuUpgrade\":enable_psu_upgrade,\"enablePdbFpgaUpgrade\":enable_pdb_fpga_upgrade,\"skipWaitForIoPathConnectivity\":skip_wait_for_io,\"waitForCompletion\":waitForCompletion,\"waitTimeoutSeconds\":waitTimeoutSeconds,\"acceptedVersusCompletedSemantics\":True,\"ciscoRepositoryOnly\":True}, separators=(\",\", \":\"))\nhelperReady = preparationStatus in (\"invalid\", \"ready\") and bool(preparationMessage and preparationResultJson) and (preparationStatus != \"ready\" or bool(targetApiUrl and expectedTargetObjectType))\n",
               "script_arguments": [
                 "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72EU4Ct7gaVW8C4Pa5cMvhsQep$",
                 "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72EV4hVC2itz7f90bDXiyFWcjx$",
@@ -429,12 +429,12 @@
                 "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72EX1RkGpfzpo5bPLzLwO72huv$",
                 "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72EY16ebaEgWbOBKrtxoN1Vj77$",
                 "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72EZ5xHAMXofX8gFmlRDbvgLyo$",
-                "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72F02a54ku4Z2cFczXQjyNFHag$",
+                "false",
                 "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72F11FuIg9iLvGAKsBh8PwNKSO$",
                 "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72F21x4c2y8tMSdq7vU7LuBePF$",
-                "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72F35sZOFCOIt2vobkwks7EhQs$",
+                "none",
                 "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72F41ABnkoFXs3Tgpx64WaFykc$",
-                "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72F52X8BwPmMmSQJR3sI1UsD7O$",
+                "0",
                 "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72F65NtFQOcQHYPgBhSNMIbDgJ$",
                 "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72F76CTIQR4IHpG9nauQLScMPI$",
                 "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72F86veqdoyHUqzYOW3qzhK2NE$",
@@ -442,76 +442,15 @@
                 "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72FA05PnOX9UAX23LnJw2vlx3L$"
               ],
               "script_queries": [
-                {
-                  "script_query": "preparationStatus",
-                  "script_query_name": "preparationStatus",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "preparationMessage",
-                  "script_query_name": "preparationMessage",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "preparationResultJson",
-                  "script_query_name": "preparationResultJson",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "organizationName",
-                  "script_query_name": "organizationName",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "targetName",
-                  "script_query_name": "targetName",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "targetType",
-                  "script_query_name": "targetType",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "firmwareVersion",
-                  "script_query_name": "firmwareVersion",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "escapedOrganizationName",
-                  "script_query_name": "escapedOrganizationName",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "escapedFirmwareVersion",
-                  "script_query_name": "escapedFirmwareVersion",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "targetApiUrl",
-                  "script_query_name": "targetApiUrl",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "expectedTargetObjectType",
-                  "script_query_name": "expectedTargetObjectType",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "waitForCompletion",
-                  "script_query_name": "waitForCompletion",
-                  "script_query_type": "boolean"
-                },
-                {
-                  "script_query": "waitTimeoutSeconds",
-                  "script_query_name": "waitTimeoutSeconds",
-                  "script_query_type": "integer"
-                },
-                {
-                  "script_query": "helperReady",
-                  "script_query_name": "helperReady",
-                  "script_query_type": "boolean"
-                }
+                {"script_query":"preparationStatus","script_query_name":"preparationStatus","script_query_type":"string"},
+                {"script_query":"preparationMessage","script_query_name":"preparationMessage","script_query_type":"string"},
+                {"script_query":"preparationResultJson","script_query_name":"preparationResultJson","script_query_type":"string"},
+                {"script_query":"organizationName","script_query_name":"organizationName","script_query_type":"string"},
+                {"script_query":"escapedOrganizationName","script_query_name":"escapedOrganizationName","script_query_type":"string"},
+                {"script_query":"targetApiUrl","script_query_name":"targetApiUrl","script_query_type":"string"},
+                {"script_query":"waitForCompletion","script_query_name":"waitForCompletion","script_query_type":"boolean"},
+                {"script_query":"waitTimeoutSeconds","script_query_name":"waitTimeoutSeconds","script_query_type":"integer"},
+                {"script_query":"helperReady","script_query_name":"helperReady","script_query_type":"boolean"}
               ]
             },
             "object_type": "definition_activity"
@@ -544,20 +483,20 @@
                   "skip_execution": false,
                   "condition": {
                     "left_operand": {
-                      "left_operand": "$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.succeeded$",
+                      "left_operand": "$activity.definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar.output.succeeded$",
                       "operator": "ne",
                       "right_operand": true
                     },
                     "operator": "or",
                     "right_operand": {
                       "left_operand": {
-                        "left_operand": "$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.succeeded$",
+                        "left_operand": "$activity.definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar.output.succeeded$",
                         "operator": "eq",
                         "right_operand": true
                       },
                       "operator": "and",
                       "right_operand": {
-                        "left_operand": "$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.script_queries.helperReady$",
+                        "left_operand": "$activity.definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar.output.script_queries.helperReady$",
                         "operator": "ne",
                         "right_operand": true
                       }
@@ -645,7 +584,7 @@
                   "display_name": "Input validation failure",
                   "skip_execution": false,
                   "condition": {
-                    "left_operand": "$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.script_queries.preparationStatus$",
+                    "left_operand": "$activity.definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar.output.script_queries.preparationStatus$",
                     "operator": "eq",
                     "right_operand": "invalid"
                   }
@@ -674,11 +613,11 @@
                         },
                         {
                           "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FD6jGidJVfqHludVA351HjQE$",
-                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.script_queries.preparationMessage$"
+                          "variable_value_new": "$activity.definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar.output.script_queries.preparationMessage$"
                         },
                         {
                           "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
-                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.script_queries.preparationResultJson$"
+                          "variable_value_new": "$activity.definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar.output.script_queries.preparationResultJson$"
                         }
                       ]
                     },
@@ -733,7 +672,7 @@
               "skip_execution": false,
               "action_timeout": 180,
               "api_method": "GET",
-              "api_url": "/api/v1/organization/Organizations?$filter=Name eq '$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.script_queries.escapedOrganizationName$'&$select=Moid,Name,ObjectType,ClassId",
+              "api_url": "/api/v1/organization/Organizations?$filter=Name eq '$activity.definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar.output.script_queries.escapedOrganizationName$'&$select=Moid,Name,ObjectType,ClassId",
               "content_type": "application/json",
               "endpoint": "primary",
               "runtime_user": {
@@ -854,7 +793,7 @@
               "script": "import json\nimport re\nimport sys\npayload = json.loads(sys.argv[1])\nexpectedName = sys.argv[2]\nvalues = payload.get(\"Results\")\nif not isinstance(values, list):\n    raise ValueError(\"Organization response is missing a Results array\")\norganizationMoid = \"\"\nif len(values) == 0:\n    organizationStatus = \"not-found\"\n    organizationMessage = \"No exact organization matched Device Organization.\"\nelif len(values) > 1:\n    organizationStatus = \"ambiguous\"\n    organizationMessage = \"Multiple organizations matched Device Organization.\"\nelse:\n    item = values[0]\n    moid = str(item.get(\"Moid\") or \"\") if isinstance(item, dict) else \"\"\n    if not isinstance(item, dict) or item.get(\"Name\") != expectedName or item.get(\"ObjectType\") != \"organization.Organization\" or item.get(\"ClassId\") != \"organization.Organization\" or not re.fullmatch(r\"[A-Za-z0-9][A-Za-z0-9._~-]{0,127}\", moid):\n        organizationStatus = \"invalid\"\n        organizationMessage = \"The organization response has an invalid exact name, discriminator, or URL-safe Moid.\"\n    else:\n        organizationStatus = \"exact\"\n        organizationMoid = moid\n        organizationMessage = \"Exactly one organization identity was validated.\"\norganizationResultJson = json.dumps({\"status\": organizationStatus, \"message\": organizationMessage, \"organizationMoid\": organizationMoid or None}, separators=(\",\", \":\"))\nhelperReady = organizationStatus in (\"not-found\", \"ambiguous\", \"invalid\", \"exact\") and bool(organizationMessage and organizationResultJson) and (organizationStatus != \"exact\" or bool(organizationMoid))",
               "script_arguments": [
                 "$activity.definition_activity_02XOKCY8L71LR5Pk3GdSx3jokdu7jwPTfzg.output.response_body$",
-                "$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.script_queries.organizationName$"
+                "$activity.definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar.output.script_queries.organizationName$"
               ],
               "script_queries": [
                 {
@@ -1260,7 +1199,7 @@
               "action_timeout": 180,
               "script": "import sys\ntemplate = sys.argv[1]\norganizationMoid = sys.argv[2]\nif template.count(\"{organizationMoid}\") != 1:\n    raise ValueError(\"Target URL template must contain exactly one organization placeholder\")\ntargetApiUrl = template.replace(\"{organizationMoid}\", organizationMoid)\nhelperReady = bool(targetApiUrl and \"{\" not in targetApiUrl and \"}\" not in targetApiUrl and organizationMoid in targetApiUrl)",
               "script_arguments": [
-                "$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.script_queries.targetApiUrl$",
+                "$activity.definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar.output.script_queries.targetApiUrl$",
                 "$activity.definition_activity_02XOKCY8L71LS2nw7NKo45VlkXKtoGowZgY.output.script_queries.organizationMoid$"
               ],
               "script_queries": [
@@ -1388,7 +1327,7 @@
             "base_type": "activity",
             "properties": {
               "continue_on_failure": true,
-              "description": "Retrieves exactly one organization-scoped PhysicalSummary, UCS-X Chassis, eCMC network.Element, or top.System. The domain route expands NetworkElements for exact A/B validation. A generic request is used because no single target resolver covers all four families; replace it if an equivalent supported atomic becomes available.",
+              "description": "Retrieves exactly one organization-scoped server PhysicalSummary, UCS-X equipment.Chassis with expanded ExpanderModules, or connected IMM Domain asset.Target. A generic request is used because no single target resolver covers all three families.",
               "display_name": "Get exact firmware target",
               "skip_execution": false,
               "action_timeout": 180,
@@ -1502,24 +1441,20 @@
           {
             "unique_name": "definition_activity_02XOKCY8L71LV5iCP9l3w0leGg4aE6P3gy6",
             "name": "Execute Python Script",
-            "title": "Inspect exact firmware target and branch relationships",
+            "title": "Inspect supported firmware target and inventory relationships",
             "type": "python3.script",
             "base_type": "activity",
             "properties": {
               "continue_on_failure": true,
-              "description": "Validates exact target cardinality and organization relationship. Server uses PhysicalSummary SourceObjectType; Domain requires two distinct concrete Fabric Interconnect elements with A/B IDs; eCMC is resolved but blocked because current schema does not prove its SwitchUpgrade/image mapping.",
-              "display_name": "Inspect exact firmware target and branch relationships",
+              "description": "Validates Server or UCS-X inventory directly, derives UCS-X XFM behavior from expanded modules, or validates a connected IMM asset.Target and prepares its second-stage Fabric Interconnect lookup.",
+              "display_name": "Inspect supported firmware target and inventory relationships",
               "skip_execution": false,
               "action_timeout": 180,
-              "script": "import json\nimport re\nimport sys\npayload = json.loads(sys.argv[1])\ntargetType = sys.argv[2]\nexpectedName = sys.argv[3]\norganizationMoid = sys.argv[4]\nexpectedObjectType = sys.argv[5]\nfirmwareVersion = sys.argv[6]\nescapedFirmwareVersion = sys.argv[7]\nvalues = payload.get(\"Results\")\nif not isinstance(values, list):\n    raise ValueError(\"Target response is missing a Results array\")\n\ndef safe_moid(value):\n    return isinstance(value, str) and re.fullmatch(r\"[A-Za-z0-9][A-Za-z0-9._~-]{0,127}\", value) is not None\n\ndef relation_matches(rel, moid, objectType):\n    return isinstance(rel, dict) and rel.get(\"Moid\") == moid and rel.get(\"ObjectType\") == objectType and rel.get(\"ClassId\") in (None, \"mo.MoRef\", objectType)\n\ntargetMoid = \"\"\ntargetModel = \"\"\nsourceObjectType = \"\"\nmanagementMode = \"\"\ndistributableType = \"\"\nnetworkElements = []\nimageApiUrl = \"\"\nimageObjectType = \"\"\nactiveUpgradeApiUrl = \"\"\nreadinessCaveats = []\n\nif len(values) == 0:\n    targetStatus = \"not-found\"\n    targetMessage = \"No exact organization-scoped target matched Target Name.\"\nelif len(values) > 1:\n    targetStatus = \"ambiguous\"\n    targetMessage = \"Multiple organization-scoped targets matched Target Name.\"\nelse:\n    item = values[0]\n    problems = []\n    if not isinstance(item, dict):\n        problems.append(\"Target result is not an object.\")\n    else:\n        moid = str(item.get(\"Moid\") or \"\")\n        permissions = item.get(\"PermissionResources\")\n        matches = [r for r in permissions if relation_matches(r, organizationMoid, \"organization.Organization\")] if isinstance(permissions, list) else []\n        if not safe_moid(moid):\n            problems.append(\"Target Moid is missing or not URL-safe.\")\n        if item.get(\"Name\") != expectedName:\n            problems.append(\"Target Name does not exactly match the requested name.\")\n        if item.get(\"ObjectType\") != expectedObjectType or item.get(\"ClassId\") != expectedObjectType:\n            problems.append(\"Target discriminators do not match the selected target route.\")\n        if len(matches) != 1:\n            problems.append(\"Target must contain exactly one matching organization permission relationship.\")\n\n        if targetType == \"Server\":\n            model = item.get(\"Model\")\n            mode = item.get(\"ManagementMode\")\n            source = item.get(\"SourceObjectType\")\n            if not isinstance(model, str) or not model:\n                problems.append(\"PhysicalSummary Model is required for image compatibility.\")\n            if mode not in (\"Intersight\", \"IntersightStandalone\", \"UCSM\"):\n                problems.append(\"PhysicalSummary ManagementMode is not a documented server mode.\")\n            if source not in (\"compute.Blade\", \"compute.RackUnit\"):\n                problems.append(\"PhysicalSummary SourceObjectType must be concrete compute.Blade or compute.RackUnit.\")\n            if mode in (\"Intersight\", \"IntersightStandalone\"):\n                distributableType = \"IMMHOST\"\n            elif mode == \"UCSM\" and source == \"compute.Blade\":\n                distributableType = \"UMMBLADE\"\n            elif mode == \"UCSM\" and source == \"compute.RackUnit\":\n                distributableType = \"UMMRACK\"\n            targetModel = model or \"\"\n            managementMode = mode or \"\"\n            sourceObjectType = source or \"\"\n            imageObjectType = \"firmware.Distributable\"\n            imageApiUrl = \"/api/v1/firmware/Distributables?$filter=Version eq '\" + escapedFirmwareVersion + \"'&$select=Moid,Version,Model,SupportedModels,ImageType,PlatformType,Vendor,Origin,ObjectType,ClassId,Tags\"\n            activeUpgradeApiUrl = \"/api/v1/firmware/Upgrades?$filter=Server.Moid eq '\" + moid + \"'&$select=Moid,Status,ObjectType,ClassId,Server\"\n        elif targetType == \"UCS-X Chassis\":\n            model = item.get(\"Model\")\n            platform = item.get(\"PlatformType\")\n            if not isinstance(model, str) or not model.startswith(\"UCSX-\"):\n                problems.append(\"UCS-X Chassis requires an exact equipment.Chassis Model beginning UCSX-; schema does not expose a stronger UCS-X discriminator.\")\n            if platform is not None and not isinstance(platform, str):\n                problems.append(\"Chassis PlatformType must be a string when returned.\")\n            targetModel = model or \"\"\n            imageObjectType = \"firmware.Distributable\"\n            imageApiUrl = \"/api/v1/firmware/Distributables?$filter=Version eq '\" + escapedFirmwareVersion + \"'&$select=Moid,Version,Model,SupportedModels,ImageType,PlatformType,Vendor,Origin,ObjectType,ClassId,Tags\"\n            activeUpgradeApiUrl = \"/api/v1/firmware/ChassisUpgrades?$filter=Chassis.Moid eq '\" + moid + \"'&$select=Moid,Status,ObjectType,ClassId,Chassis\"\n            readinessCaveats.append(\"UCS-X chassis catalog tag vocabulary is not defined by OpenAPI and requires live-tenant validation; this workflow requires exact model compatibility and the Cisco cloud repository tag before mutation.\")\n        elif targetType == \"Unified Edge Chassis (eCMC)\":\n            model = item.get(\"Model\")\n            if not isinstance(model, str) or not model:\n                problems.append(\"eCMC Model is required for any future image compatibility mapping.\")\n            if item.get(\"SwitchType\") != \"EdgeChassisManagementController\":\n                problems.append(\"eCMC target must return SwitchType EdgeChassisManagementController.\")\n            targetModel = model or \"\"\n            readinessCaveats.append(\"The current OpenAPI describes firmware.SwitchUpgrade as a Fabric Interconnect operation and does not prove the eCMC image relationship. This branch intentionally fails closed before image lookup or mutation pending live-tenant validation.\")\n        elif targetType == \"Domain\":\n            expanded = item.get(\"NetworkElements\")\n            if not isinstance(expanded, list) or len(expanded) != 2:\n                problems.append(\"Domain must expand exactly two NetworkElements.\")\n            else:\n                seenMoids = set()\n                seenSwitchIds = set()\n                for element in expanded:\n                    if not isinstance(element, dict):\n                        problems.append(\"Every expanded domain NetworkElement must be an object.\")\n                        continue\n                    elementMoid = element.get(\"Moid\")\n                    elementModel = element.get(\"Model\")\n                    switchId = element.get(\"SwitchId\")\n                    if not safe_moid(elementMoid) or elementMoid in seenMoids:\n                        problems.append(\"Domain NetworkElements must have two distinct URL-safe Moids.\")\n                    if element.get(\"ObjectType\") != \"network.Element\" or element.get(\"ClassId\") != \"network.Element\":\n                        problems.append(\"Expanded domain NetworkElement discriminators are invalid.\")\n                    if element.get(\"SwitchType\") != \"FabricInterconnect\":\n                        problems.append(\"Both domain NetworkElements must be FabricInterconnect elements.\")\n                    if switchId not in (\"A\", \"B\") or switchId in seenSwitchIds:\n                        problems.append(\"Domain NetworkElements must identify distinct fabric A and B elements.\")\n                    if not isinstance(elementModel, str) or not elementModel:\n                        problems.append(\"Each domain NetworkElement requires Model for release compatibility.\")\n                    seenMoids.add(elementMoid)\n                    seenSwitchIds.add(switchId)\n                if seenSwitchIds != {\"A\", \"B\"}:\n                    problems.append(\"Domain must contain exactly fabric A and fabric B.\")\n                networkElements = sorted(expanded, key=lambda e: str(e.get(\"SwitchId\")))\n                targetModel = \",\".join(str(e.get(\"Model\") or \"\") for e in networkElements)\n                if len(networkElements) == 2 and all(safe_moid(e.get(\"Moid\")) for e in networkElements):\n                    activeUpgradeApiUrl = \"/api/v1/firmware/SwitchUpgrades?$filter=NetworkElements/any(n:n/Moid eq '\" + networkElements[0][\"Moid\"] + \"') and NetworkElements/any(n:n/Moid eq '\" + networkElements[1][\"Moid\"] + \"')&$select=Moid,Status,ObjectType,ClassId,NetworkElements\"\n            imageObjectType = \"softwarerepository.Release\"\n            imageApiUrl = \"/api/v1/softwarerepository/Releases?$filter=Version eq '\" + escapedFirmwareVersion + \"' and Type eq 'FabricSwitch'&$select=Moid,Version,Type,SupportedModels,ObjectType,ClassId\"\n            readinessCaveats.append(\"Domain Release-versus-Distributable selection requires live-tenant validation. This v1 uses only an exact model-compatible FabricSwitch Release and places it only in firmware.SwitchUpgrade.Release. softwarerepository.Release is deprecated with OpenAPI sunset 2027-02-20.\")\n\n    if problems:\n        targetStatus = \"invalid\"\n        targetMessage = \" \".join(problems)\n    elif targetType == \"Unified Edge Chassis (eCMC)\":\n        targetStatus = \"unsupported\"\n        targetMoid = item[\"Moid\"]\n        targetMessage = \"Exact eCMC target was validated, but the unproven eCMC SwitchUpgrade/image mapping is intentionally blocked before mutation.\"\n    else:\n        targetStatus = \"exact\"\n        targetMoid = item[\"Moid\"]\n        targetMessage = \"Exactly one organization-scoped firmware target and all branch-specific relationships were validated.\"\n\ntargetResultJson = json.dumps({\n    \"status\": targetStatus,\n    \"message\": targetMessage,\n    \"targetType\": targetType,\n    \"targetName\": expectedName,\n    \"targetMoid\": targetMoid or None,\n    \"targetObjectType\": expectedObjectType,\n    \"targetModel\": targetModel or None,\n    \"managementMode\": managementMode or None,\n    \"sourceObjectType\": sourceObjectType or None,\n    \"distributableType\": distributableType or None,\n    \"networkElements\": networkElements,\n    \"activeUpgradeApiUrl\": activeUpgradeApiUrl or None,\n    \"firmwareVersion\": firmwareVersion,\n    \"readinessCaveats\": readinessCaveats\n}, separators=(\",\", \":\"))\nhelperReady = targetStatus in (\"not-found\", \"ambiguous\", \"invalid\", \"unsupported\", \"exact\") and bool(targetMessage and targetResultJson) and (targetStatus not in (\"exact\", \"unsupported\") or bool(targetMoid)) and (targetStatus != \"exact\" or bool(imageApiUrl and imageObjectType and activeUpgradeApiUrl))",
+              "script": "import json\nimport re\nimport sys\n\npayload = json.loads(sys.argv[1])\nprepared = json.loads(sys.argv[2])\norganizationMoid = sys.argv[3]\ntargetType = str(prepared.get(\"targetType\") or \"\")\nexpectedName = str(prepared.get(\"targetName\") or \"\")\nexpectedObjectType = {\"Server\":\"compute.PhysicalSummary\",\"UCS-X Chassis\":\"equipment.Chassis\",\"Domain\":\"asset.Target\"}.get(targetType, \"\")\nfirmwareVersion = str(prepared.get(\"firmwareVersion\") or \"\")\nescapedFirmwareVersion = firmwareVersion.replace(\"'\", \"''\")\nvalues = payload.get(\"Results\")\nif not isinstance(values, list):\n    raise ValueError(\"Target response is missing a Results array\")\n\ndef safe_moid(value):\n    return isinstance(value, str) and re.fullmatch(r\"[0-9a-fA-F]{24}\", value) is not None\n\ndef relation_matches(rel, moid, objectType):\n    return isinstance(rel, dict) and rel.get(\"Moid\") == moid and rel.get(\"ObjectType\") == objectType and rel.get(\"ClassId\") in (None, \"mo.MoRef\", objectType)\n\ndef organization_matches(item):\n    permissions = item.get(\"PermissionResources\")\n    matches = [value for value in permissions if relation_matches(value, organizationMoid, \"organization.Organization\")] if isinstance(permissions, list) else []\n    return len(matches) == 1\n\ntargetMoid = \"\"\ntargetModel = \"\"\nsourceObjectType = \"\"\nmanagementMode = \"\"\ndistributableType = \"\"\nregisteredDeviceMoid = \"\"\nnetworkElements = []\nimageApiUrl = \"\"\nactiveUpgradeApiUrl = \"\"\ndomainElementsApiUrl = \"\"\nreadinessCaveats = []\nxfmUpgradeOption = \"none\"\nnormalizedExclusions = prepared.get(\"excludedComponents\") if isinstance(prepared.get(\"excludedComponents\"), list) else []\nxfmTopology = {\"supportedModel\":\"UCSX-FS-9516\",\"healthyPair\":False,\"modules\":[]}\n\nif len(values) == 0:\n    targetStatus = \"not-found\"\n    targetMessage = \"No exact organization-scoped target matched Target Name.\"\nelif len(values) > 1:\n    targetStatus = \"ambiguous\"\n    targetMessage = \"Multiple organization-scoped targets matched Target Name.\"\nelse:\n    item = values[0]\n    problems = []\n    if not isinstance(item, dict):\n        problems.append(\"Target result is not an object.\")\n    else:\n        moid = str(item.get(\"Moid\") or \"\")\n        if not safe_moid(moid):\n            problems.append(\"Target Moid must be a concrete 24-character hexadecimal identifier.\")\n        if item.get(\"Name\") != expectedName:\n            problems.append(\"Target Name does not exactly match the requested name.\")\n        if item.get(\"ObjectType\") != expectedObjectType or item.get(\"ClassId\") != expectedObjectType:\n            problems.append(\"Target discriminators do not match the selected target route.\")\n        if not organization_matches(item):\n            problems.append(\"Target must contain exactly one matching organization permission relationship.\")\n\n        if targetType == \"Server\":\n            model = item.get(\"Model\")\n            mode = item.get(\"ManagementMode\")\n            source = item.get(\"SourceObjectType\")\n            if not isinstance(model, str) or not model:\n                problems.append(\"PhysicalSummary Model is required for image compatibility.\")\n            if mode not in (\"Intersight\", \"IntersightStandalone\", \"UCSM\"):\n                problems.append(\"PhysicalSummary ManagementMode is not a documented server mode.\")\n            if source not in (\"compute.Blade\", \"compute.RackUnit\"):\n                problems.append(\"PhysicalSummary SourceObjectType must be compute.Blade or compute.RackUnit.\")\n            if mode in (\"Intersight\", \"IntersightStandalone\"):\n                distributableType = \"IMMHOST\"\n            elif mode == \"UCSM\" and source == \"compute.Blade\":\n                distributableType = \"UMMBLADE\"\n            elif mode == \"UCSM\" and source == \"compute.RackUnit\":\n                distributableType = \"UMMRACK\"\n            targetModel = model or \"\"\n            managementMode = mode or \"\"\n            sourceObjectType = source or \"\"\n            imageApiUrl = \"/api/v1/firmware/Distributables?$filter=Version eq '\" + escapedFirmwareVersion + \"'&$select=Moid,Version,Model,SupportedModels,ImageType,PlatformType,Vendor,Origin,ObjectType,ClassId,Tags\"\n            activeUpgradeApiUrl = \"/api/v1/firmware/Upgrades?$filter=Server.Moid eq '\" + moid + \"' and (Status eq 'NONE' or Status eq 'IN_PROGRESS')&$top=2&$select=Moid,Status,ObjectType,ClassId,Server\"\n        elif targetType == \"UCS-X Chassis\":\n            model = item.get(\"Model\")\n            if not isinstance(model, str) or not model.startswith(\"UCSX-\"):\n                problems.append(\"UCS-X Chassis requires an exact equipment.Chassis Model beginning UCSX-.\")\n            targetModel = model or \"\"\n            expanded = item.get(\"ExpanderModules\")\n            if not isinstance(expanded, list):\n                problems.append(\"UCS-X Chassis must expand ExpanderModules.\")\n                expanded = []\n            realModules = []\n            equippedBlanks = []\n            for module in expanded:\n                if not isinstance(module, dict):\n                    problems.append(\"Every expanded ExpanderModule must be an object.\")\n                    continue\n                moduleMoid = module.get(\"Moid\")\n                moduleModel = module.get(\"Model\")\n                presence = str(module.get(\"Presence\") or \"\").lower()\n                if not safe_moid(moduleMoid):\n                    problems.append(\"Every expanded ExpanderModule requires a concrete Moid.\")\n                if module.get(\"ObjectType\") != \"equipment.ExpanderModule\" or module.get(\"ClassId\") != \"equipment.ExpanderModule\":\n                    problems.append(\"Expanded ExpanderModule discriminators are invalid.\")\n                if not relation_matches(module.get(\"EquipmentChassis\"), moid, \"equipment.Chassis\"):\n                    problems.append(\"Every expanded ExpanderModule must relate to the selected chassis.\")\n                summary = {\"Moid\":moduleMoid,\"Model\":moduleModel,\"ModuleId\":module.get(\"ModuleId\"),\"Presence\":module.get(\"Presence\"),\"OperState\":module.get(\"OperState\"),\"InventoryReady\":module.get(\"InventoryReady\")}\n                xfmTopology[\"modules\"].append(summary)\n                if moduleModel == \"UCSX-FS-9516\":\n                    realModules.append(module)\n                elif presence == \"equipped\" and moduleModel == \"UCSX-9508-RBLK\":\n                    equippedBlanks.append(module)\n                elif presence == \"equipped\":\n                    problems.append(\"Unknown equipped ExpanderModule model \" + str(moduleModel) + \" is not in the proven XFM topology set.\")\n            if realModules and equippedBlanks:\n                problems.append(\"Mixed equipped XFM and rear-blank topology is not safe for automatic XFM upgrade.\")\n            if realModules:\n                if len(realModules) != 2 or {module.get(\"ModuleId\") for module in realModules} != {1, 2}:\n                    problems.append(\"Equipped UCSX-FS-9516 topology must contain exactly ModuleId 1 and 2.\")\n                for module in realModules:\n                    reasons = module.get(\"OperReason\")\n                    if str(module.get(\"Presence\") or \"\").lower() != \"equipped\" or module.get(\"OperState\") != \"OK\" or module.get(\"InventoryReady\") is not True or not isinstance(reasons, list) or any(reason not in (\"OK\",) for reason in reasons):\n                        problems.append(\"Both UCSX-FS-9516 modules must be equipped, inventory-ready, operationally OK, and free of health reasons.\")\n                        break\n                if not problems:\n                    xfmTopology[\"healthyPair\"] = True\n            normalizedExclusions = [] if normalizedExclusions == [\"none\"] else list(normalizedExclusions)\n            if xfmTopology[\"healthyPair\"] and \"xfm\" not in normalizedExclusions:\n                xfmUpgradeOption = \"partial-shutdown\"\n            else:\n                xfmUpgradeOption = \"none\"\n                if \"xfm\" not in normalizedExclusions:\n                    normalizedExclusions.append(\"xfm\")\n            imageApiUrl = \"/api/v1/firmware/Distributables?$filter=Version eq '\" + escapedFirmwareVersion + \"'&$select=Moid,Version,Model,SupportedModels,ImageType,PlatformType,Vendor,Origin,ObjectType,ClassId,Tags\"\n            activeUpgradeApiUrl = \"/api/v1/firmware/ChassisUpgrades?$filter=Chassis.Moid eq '\" + moid + \"' and (Status eq 'NONE' or Status eq 'IN_PROGRESS')&$top=2&$select=Moid,Status,ObjectType,ClassId,Chassis\"\n        elif targetType == \"Domain\":\n            if item.get(\"TargetType\") != \"UCSFIISM\":\n                problems.append(\"Domain asset.Target TargetType must be UCSFIISM.\")\n            if item.get(\"Status\") != \"Connected\":\n                problems.append(\"Domain asset.Target Status must be Connected.\")\n            registration = item.get(\"RegisteredDevice\")\n            if not isinstance(registration, dict) or not safe_moid(registration.get(\"Moid\")) or registration.get(\"ObjectType\") != \"asset.DeviceRegistration\" or registration.get(\"ClassId\") not in (None, \"mo.MoRef\", \"asset.DeviceRegistration\"):\n                problems.append(\"Domain asset.Target must expose a concrete RegisteredDevice relationship.\")\n            else:\n                registeredDeviceMoid = registration[\"Moid\"]\n                domainElementsApiUrl = \"/api/v1/network/Elements?$filter=RegisteredDevice/Moid eq '\" + registeredDeviceMoid + \"' and SwitchType eq 'FabricInterconnect' and PermissionResources/any(t:t/Moid eq '\" + organizationMoid + \"')&$select=Moid,Model,SwitchId,SwitchType,RegisteredDevice,ObjectType,ClassId,PermissionResources\"\n\n        if problems:\n            targetStatus = \"invalid\"\n            targetMessage = \" \".join(problems)\n        elif targetType == \"Domain\":\n            targetStatus = \"domain-pending\"\n            targetMoid = item[\"Moid\"]\n            targetMessage = \"Connected IMM domain identity was validated; resolving its exact Fabric Interconnect A/B pair.\"\n        else:\n            targetStatus = \"exact\"\n            targetMoid = item[\"Moid\"]\n            targetMessage = \"Exactly one organization-scoped firmware target and branch-specific inventory were validated.\"\n\ntargetResultJson = json.dumps({\"status\":targetStatus,\"message\":targetMessage,\"targetType\":targetType,\"targetName\":expectedName,\"targetMoid\":targetMoid or None,\"targetObjectType\":expectedObjectType,\"targetModel\":targetModel or None,\"managementMode\":managementMode or None,\"sourceObjectType\":sourceObjectType or None,\"distributableType\":distributableType or None,\"registeredDeviceMoid\":registeredDeviceMoid or None,\"networkElements\":networkElements,\"excludedComponents\":normalizedExclusions,\"xfmUpgradeOption\":xfmUpgradeOption,\"xfmTopology\":xfmTopology if targetType == \"UCS-X Chassis\" else None,\"activeUpgradeApiUrl\":activeUpgradeApiUrl or None,\"firmwareVersion\":firmwareVersion,\"readinessCaveats\":readinessCaveats}, separators=(\",\",\":\"))\nhelperReady = targetStatus in (\"not-found\",\"ambiguous\",\"invalid\",\"domain-pending\",\"exact\") and bool(targetMessage and targetResultJson) and (targetStatus not in (\"exact\",\"domain-pending\") or bool(targetMoid)) and (targetStatus != \"exact\" or bool(imageApiUrl and activeUpgradeApiUrl)) and (targetStatus != \"domain-pending\" or bool(domainElementsApiUrl and registeredDeviceMoid))",
               "script_arguments": [
                 "$activity.definition_activity_02XOKCY8L71LU7KvS4aZS2NTft3PrLUU5f6.output.response_body$",
-                "$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.script_queries.targetType$",
-                "$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.script_queries.targetName$",
-                "$activity.definition_activity_02XOKCY8L71LS2nw7NKo45VlkXKtoGowZgY.output.script_queries.organizationMoid$",
-                "$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.script_queries.expectedTargetObjectType$",
-                "$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.script_queries.firmwareVersion$",
-                "$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.script_queries.escapedFirmwareVersion$"
+                "$activity.definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar.output.script_queries.preparationResultJson$",
+                "$activity.definition_activity_02XOKCY8L71LS2nw7NKo45VlkXKtoGowZgY.output.script_queries.organizationMoid$"
               ],
               "script_queries": [
                 {
@@ -1545,6 +1480,11 @@
                 {
                   "script_query": "activeUpgradeApiUrl",
                   "script_query_name": "activeUpgradeApiUrl",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "domainElementsApiUrl",
+                  "script_query_name": "domainElementsApiUrl",
                   "script_query_type": "string"
                 },
                 {
@@ -1917,15 +1857,43 @@
             ]
           },
           {
+            "unique_name": "definition_activity_02XP8BHRGT4LC7mm8RVosEXmcpu3eJpDMhi",
+            "name": "Set Variables",
+            "title": "Store validated primary target contract",
+            "type": "core.set_multiple_variables",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "description": "Bridges the validated primary target outputs into workflow scope; the Domain second stage replaces these values only after validating its Fabric Interconnect pair.",
+              "display_name": "Store validated primary target contract",
+              "skip_execution": false,
+              "variables_to_update": [
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XOKCY8L72F02a54ku4Z2cFczXQjyNFHag$",
+                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71LV5iCP9l3w0leGg4aE6P3gy6.output.script_queries.targetResultJson$"
+                },
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XOKCY8L72F35sZOFCOIt2vobkwks7EhQs$",
+                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71LV5iCP9l3w0leGg4aE6P3gy6.output.script_queries.imageApiUrl$"
+                },
+                {
+                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XOKCY8L72F52X8BwPmMmSQJR3sI1UsD7O$",
+                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71LV5iCP9l3w0leGg4aE6P3gy6.output.script_queries.activeUpgradeApiUrl$"
+                }
+              ]
+            },
+            "object_type": "definition_activity"
+          },
+          {
             "unique_name": "definition_activity_02XOKCY8L71N642S4HRKUgLNG9hqb18nceX",
             "name": "Condition Block",
-            "title": "eCMC readiness block",
+            "title": "Resolve exact IMM Domain Fabric Interconnect pair",
             "type": "logic.if_else",
             "base_type": "activity",
             "properties": {
               "continue_on_failure": false,
-              "description": "Fails closed after exact eCMC resolution because current OpenAPI does not prove eCMC support through firmware.SwitchUpgrade or the image relationship.",
-              "display_name": "eCMC readiness block",
+              "description": "Runs only for a validated connected UCSFIISM asset.Target and resolves the exact organization-scoped Fabric Interconnect A/B pair through its RegisteredDevice.",
+              "display_name": "Resolve exact IMM Domain Fabric Interconnect pair",
               "skip_execution": false,
               "conditions": []
             },
@@ -1934,67 +1902,426 @@
               {
                 "unique_name": "definition_activity_02XOKCY8L71N71r3RGbHR7DcPcRhHC3lufy",
                 "name": "Condition Branch",
-                "title": "eCMC readiness block",
+                "title": "Resolve exact IMM Domain Fabric Interconnect pair",
                 "type": "logic.condition_block",
                 "base_type": "activity",
                 "properties": {
                   "continue_on_failure": false,
-                  "description": "Fails closed after exact eCMC resolution because current OpenAPI does not prove eCMC support through firmware.SwitchUpgrade or the image relationship.",
-                  "display_name": "eCMC readiness block",
+                  "description": "Runs only for the domain-pending target state and fails closed on API, cardinality, identity, relationship, model, or A/B conflicts.",
+                  "display_name": "Resolve exact IMM Domain Fabric Interconnect pair",
                   "skip_execution": false,
                   "condition": {
                     "left_operand": "$activity.definition_activity_02XOKCY8L71LV5iCP9l3w0leGg4aE6P3gy6.output.script_queries.targetStatus$",
                     "operator": "eq",
-                    "right_operand": "unsupported"
+                    "right_operand": "domain-pending"
                   }
                 },
                 "object_type": "definition_activity",
                 "actions": [
                   {
                     "unique_name": "definition_activity_02XOKCY8L71N40fcKtgNJtePoRTxjUUm4uN",
-                    "name": "Set Variables",
-                    "title": "Set ecmc readiness block outputs",
-                    "type": "core.set_multiple_variables",
+                    "name": "Generic Cisco Intersight API Request",
+                    "title": "Get exact Domain Fabric Interconnect pair",
+                    "type": "intersight.api_request",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": true,
+                      "description": "Retrieves the exact organization-scoped Fabric Interconnect elements associated with the validated connected IMM domain RegisteredDevice.",
+                      "display_name": "Get exact Domain Fabric Interconnect pair",
+                      "skip_execution": false,
+                      "action_timeout": 180,
+                      "api_method": "GET",
+                      "api_url": "$activity.definition_activity_02XOKCY8L71LV5iCP9l3w0leGg4aE6P3gy6.output.script_queries.domainElementsApiUrl$",
+                      "content_type": "application/json",
+                      "endpoint": "primary",
+                      "runtime_user": {
+                        "target_default": true
+                      },
+                      "target": {
+                        "use_workflow_target": true
+                      }
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XP8BHRGT4LC0P9zUiG3DzDF8fEr7YrZKE",
+                    "name": "Condition Block",
+                    "title": "Domain Fabric Interconnect API failure",
+                    "type": "logic.if_else",
                     "base_type": "activity",
                     "properties": {
                       "continue_on_failure": false,
-                      "description": "Populates all four standard outputs for ecmc readiness block.",
-                      "display_name": "Set ecmc readiness block outputs",
+                      "description": "Fails closed when the Domain Fabric Interconnect request does not execute successfully or return documented HTTP 200.",
+                      "display_name": "Domain Fabric Interconnect API failure",
                       "skip_execution": false,
-                      "variables_to_update": [
+                      "conditions": []
+                    },
+                    "object_type": "definition_activity",
+                    "blocks": [
+                      {
+                        "unique_name": "definition_activity_02XP8BHRGT4LC1QULXTkgk8GphmoRgnobsm",
+                        "name": "Condition Branch",
+                        "title": "Domain Fabric Interconnect API failure",
+                        "type": "logic.condition_block",
+                        "base_type": "activity",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "description": "Matches an execution failure or any HTTP status other than documented 200.",
+                          "display_name": "Domain Fabric Interconnect API failure",
+                          "skip_execution": false,
+                          "condition": {
+                            "left_operand": {
+                              "left_operand": "$activity.definition_activity_02XOKCY8L71N40fcKtgNJtePoRTxjUUm4uN.output.succeeded$",
+                              "operator": "ne",
+                              "right_operand": true
+                            },
+                            "operator": "or",
+                            "right_operand": {
+                              "left_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L71N40fcKtgNJtePoRTxjUUm4uN.output.succeeded$",
+                                "operator": "eq",
+                                "right_operand": true
+                              },
+                              "operator": "and",
+                              "right_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L71N40fcKtgNJtePoRTxjUUm4uN.output.status_code$",
+                                "operator": "ne",
+                                "right_operand": 200
+                              }
+                            }
+                          }
+                        },
+                        "object_type": "definition_activity",
+                        "actions": [
+                          {
+                            "unique_name": "definition_activity_02XP8BHRGT4LC2bDmCAgA3ut2TJiWRc7265",
+                            "name": "Set Variables",
+                            "title": "Set Domain Fabric Interconnect API failure outputs",
+                            "type": "core.set_multiple_variables",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Populates all standard outputs for a Domain Fabric Interconnect API failure.",
+                              "display_name": "Set Domain Fabric Interconnect API failure outputs",
+                              "skip_execution": false,
+                              "variables_to_update": [
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FB2SWbHrLitH1r33pOWfN8gq$",
+                                  "variable_value_new": "502"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FC5jxSq28zDsRALUWd6rcj9a$",
+                                  "variable_value_new": "Domain Fabric Interconnect lookup failed"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FD6jGidJVfqHludVA351HjQE$",
+                                  "variable_value_new": "The organization-scoped Domain Fabric Interconnect request did not complete with documented HTTP 200. Inspect the request details before retrying."
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
+                                  "variable_value_new": "{\"status\":\"api-failure\",\"requestAccepted\":false,\"retryRequiresInspection\":true}"
+                                }
+                              ]
+                            },
+                            "object_type": "definition_activity"
+                          },
+                          {
+                            "unique_name": "definition_activity_02XP8BHRGT4LC3v2gO8Yo8BvG8dLXyLTV4S",
+                            "name": "Completed",
+                            "title": "Completed - Domain Fabric Interconnect API failure",
+                            "type": "logic.completed",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Ends this terminal path after all standard outputs are populated.",
+                              "display_name": "Completed - Domain Fabric Interconnect API failure",
+                              "skip_execution": false,
+                              "completion_type": "failed-completed",
+                              "result_message": "Domain Fabric Interconnect lookup failed"
+                            },
+                            "object_type": "definition_activity"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L71N507EXK3mgFpko84BA3zp2zp",
+                    "name": "Execute Python Script",
+                    "title": "Inspect exact Domain Fabric Interconnect pair",
+                    "type": "python3.script",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": true,
+                      "description": "Validates API transport, exact A/B cardinality, concrete FI identity, RegisteredDevice and organization relationships, and model compatibility before exposing the Domain mutation contract.",
+                      "display_name": "Inspect exact Domain Fabric Interconnect pair",
+                      "skip_execution": false,
+                      "action_timeout": 180,
+                      "script": "import json\nimport re\nimport sys\n\ndef safe_moid(value):\n    return isinstance(value, str) and re.fullmatch(r\"[0-9a-fA-F]{24}\", value) is not None\n\ndef relation_matches(rel, moid, objectType):\n    return isinstance(rel, dict) and rel.get(\"Moid\") == moid and rel.get(\"ObjectType\") == objectType and rel.get(\"ClassId\") in (None, \"mo.MoRef\", objectType)\n\ntargetStatus = \"invalid\"\ntargetStatusCode = \"502\"\ntargetStatusMessage = \"Domain Fabric Interconnect lookup failed\"\ntargetErrorMessage = \"Domain Fabric Interconnect inspection did not complete.\"\ntargetResultJson = json.dumps({\"status\":targetStatus,\"message\":targetErrorMessage}, separators=(\",\",\":\"))\nimageApiUrl = \"\"\nactiveUpgradeApiUrl = \"\"\nhelperReady = False\ntry:\n    apiSucceeded = str(sys.argv[2]).strip().lower() == \"true\"\n    try:\n        apiStatusCode = int(sys.argv[3])\n    except Exception:\n        apiStatusCode = 0\n    provisional = json.loads(sys.argv[4])\n    organizationMoid = sys.argv[5]\n    if not isinstance(provisional, dict) or provisional.get(\"status\") != \"domain-pending\" or provisional.get(\"targetType\") != \"Domain\":\n        raise ValueError(\"Primary Domain target contract is not domain-pending.\")\n    targetMoid = provisional.get(\"targetMoid\")\n    registeredDeviceMoid = provisional.get(\"registeredDeviceMoid\")\n    firmwareVersion = str(provisional.get(\"firmwareVersion\") or \"\")\n    if not safe_moid(targetMoid) or not safe_moid(registeredDeviceMoid) or not safe_moid(organizationMoid) or not firmwareVersion:\n        raise ValueError(\"Primary Domain target identifiers or Firmware Version are invalid.\")\n    if not apiSucceeded or apiStatusCode != 200:\n        targetStatus = \"api-failure\"\n        targetStatusCode = \"502\"\n        targetStatusMessage = \"Domain Fabric Interconnect lookup API failed\"\n        targetErrorMessage = \"The organization-scoped network.Element request did not complete with documented HTTP 200.\"\n    else:\n        payload = json.loads(sys.argv[1])\n        values = payload.get(\"Results\") if isinstance(payload, dict) else None\n        if not isinstance(values, list):\n            raise ValueError(\"Domain Fabric Interconnect response is missing a Results array.\")\n        if len(values) == 0:\n            targetStatus = \"not-found\"\n            targetStatusCode = \"404\"\n            targetStatusMessage = \"Domain Fabric Interconnect pair not found\"\n            targetErrorMessage = \"No organization-scoped Fabric Interconnect elements matched the connected Domain RegisteredDevice.\"\n        elif len(values) > 2:\n            targetStatus = \"ambiguous\"\n            targetStatusCode = \"409\"\n            targetStatusMessage = \"Domain Fabric Interconnect lookup is ambiguous\"\n            targetErrorMessage = \"More than two organization-scoped Fabric Interconnect elements matched the connected Domain RegisteredDevice.\"\n        elif len(values) != 2:\n            targetStatus = \"invalid\"\n            targetStatusCode = \"409\"\n            targetStatusMessage = \"Domain Fabric Interconnect pair is incomplete\"\n            targetErrorMessage = \"A connected IMM Domain must resolve exactly two Fabric Interconnect elements.\"\n        else:\n            problems = []\n            seenMoids = set()\n            seenSwitchIds = set()\n            networkElements = []\n            for element in values:\n                if not isinstance(element, dict):\n                    problems.append(\"Every Domain Fabric Interconnect result must be an object.\")\n                    continue\n                moid = element.get(\"Moid\")\n                switchId = element.get(\"SwitchId\")\n                model = element.get(\"Model\")\n                permissions = element.get(\"PermissionResources\")\n                organizationMatches = [rel for rel in permissions if relation_matches(rel, organizationMoid, \"organization.Organization\")] if isinstance(permissions, list) else []\n                if not safe_moid(moid) or moid in seenMoids:\n                    problems.append(\"Domain Fabric Interconnects must have two distinct concrete Moids.\")\n                if element.get(\"ObjectType\") != \"network.Element\" or element.get(\"ClassId\") != \"network.Element\":\n                    problems.append(\"Domain Fabric Interconnect discriminators are invalid.\")\n                if element.get(\"SwitchType\") != \"FabricInterconnect\":\n                    problems.append(\"Both Domain network elements must be FabricInterconnect.\")\n                if switchId not in (\"A\", \"B\") or switchId in seenSwitchIds:\n                    problems.append(\"Domain Fabric Interconnects must identify distinct fabric A and B.\")\n                if not isinstance(model, str) or not model:\n                    problems.append(\"Each Domain Fabric Interconnect requires Model for catalog compatibility.\")\n                if not relation_matches(element.get(\"RegisteredDevice\"), registeredDeviceMoid, \"asset.DeviceRegistration\"):\n                    problems.append(\"Each Domain Fabric Interconnect must relate to the validated RegisteredDevice.\")\n                if len(organizationMatches) != 1:\n                    problems.append(\"Each Domain Fabric Interconnect must contain exactly one matching organization relationship.\")\n                seenMoids.add(moid)\n                seenSwitchIds.add(switchId)\n                networkElements.append({\"Moid\":moid,\"Model\":model,\"SwitchId\":switchId,\"SwitchType\":\"FabricInterconnect\",\"ObjectType\":\"network.Element\",\"ClassId\":\"network.Element\"})\n            if seenSwitchIds != {\"A\", \"B\"}:\n                problems.append(\"Domain must contain exactly fabric A and fabric B.\")\n            if problems:\n                targetStatus = \"invalid\"\n                targetStatusCode = \"409\"\n                targetStatusMessage = \"Domain Fabric Interconnect identity conflict\"\n                targetErrorMessage = \" \".join(problems)\n            else:\n                networkElements = sorted(networkElements, key=lambda value: value[\"SwitchId\"])\n                escapedFirmwareVersion = firmwareVersion.replace(\"'\", \"''\")\n                imageApiUrl = \"/api/v1/firmware/Distributables?$filter=Version eq '\" + escapedFirmwareVersion + \"'&$select=Moid,Version,Model,SupportedModels,ImageType,PlatformType,Vendor,Origin,ObjectType,ClassId,Tags\"\n                activeUpgradeApiUrl = \"/api/v1/firmware/SwitchUpgrades?$filter=NetworkElements/any(n:n/Moid eq '\" + networkElements[0][\"Moid\"] + \"') and NetworkElements/any(n:n/Moid eq '\" + networkElements[1][\"Moid\"] + \"') and (Status eq 'NONE' or Status eq 'IN_PROGRESS')&$top=2&$select=Moid,Status,ObjectType,ClassId,NetworkElements\"\n                finalResult = dict(provisional)\n                finalResult.update({\"status\":\"exact\",\"message\":\"Connected IMM Domain and exact Fabric Interconnect A/B pair were validated.\",\"targetModel\":\",\".join(element[\"Model\"] for element in networkElements),\"distributableType\":\"IMMFABRIC\",\"networkElements\":networkElements,\"activeUpgradeApiUrl\":activeUpgradeApiUrl,\"imageObjectType\":\"firmware.Distributable\"})\n                targetStatus = \"exact\"\n                targetStatusCode = \"200\"\n                targetStatusMessage = \"Domain Fabric Interconnect pair validated\"\n                targetErrorMessage = \"\"\n                targetResultJson = json.dumps(finalResult, separators=(\",\",\":\"))\n    if targetStatus != \"exact\":\n        failureResult = dict(provisional)\n        failureResult.update({\"status\":targetStatus,\"message\":targetErrorMessage,\"networkElements\":[]})\n        targetResultJson = json.dumps(failureResult, separators=(\",\",\":\"))\n    helperReady = targetStatus in (\"api-failure\",\"not-found\",\"ambiguous\",\"invalid\",\"exact\") and bool(targetStatusCode and targetStatusMessage and targetResultJson) and (targetStatus != \"exact\" or bool(imageApiUrl and activeUpgradeApiUrl))\nexcept Exception as exc:\n    targetStatus = \"invalid\"\n    targetStatusCode = \"502\"\n    targetStatusMessage = \"Domain Fabric Interconnect response is invalid\"\n    targetErrorMessage = str(exc)\n    targetResultJson = json.dumps({\"status\":targetStatus,\"message\":targetErrorMessage}, separators=(\",\",\":\"))\n    helperReady = bool(targetErrorMessage and targetResultJson)",
+                      "script_arguments": [
+                        "$activity.definition_activity_02XOKCY8L71N40fcKtgNJtePoRTxjUUm4uN.output.response_body$",
+                        "$activity.definition_activity_02XOKCY8L71N40fcKtgNJtePoRTxjUUm4uN.output.succeeded$",
+                        "$activity.definition_activity_02XOKCY8L71N40fcKtgNJtePoRTxjUUm4uN.output.status_code$",
+                        "$activity.definition_activity_02XOKCY8L71LV5iCP9l3w0leGg4aE6P3gy6.output.script_queries.targetResultJson$",
+                        "$activity.definition_activity_02XOKCY8L71LS2nw7NKo45VlkXKtoGowZgY.output.script_queries.organizationMoid$"
+                      ],
+                      "script_queries": [
                         {
-                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FB2SWbHrLitH1r33pOWfN8gq$",
-                          "variable_value_new": "422"
+                          "script_query": "targetStatus",
+                          "script_query_name": "targetStatus",
+                          "script_query_type": "string"
                         },
                         {
-                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FC5jxSq28zDsRALUWd6rcj9a$",
-                          "variable_value_new": "eCMC firmware upgrade is not ready for mutation"
+                          "script_query": "targetStatusCode",
+                          "script_query_name": "targetStatusCode",
+                          "script_query_type": "string"
                         },
                         {
-                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FD6jGidJVfqHludVA351HjQE$",
-                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71LV5iCP9l3w0leGg4aE6P3gy6.output.script_queries.targetMessage$"
+                          "script_query": "targetStatusMessage",
+                          "script_query_name": "targetStatusMessage",
+                          "script_query_type": "string"
                         },
                         {
-                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
-                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71LV5iCP9l3w0leGg4aE6P3gy6.output.script_queries.targetResultJson$"
+                          "script_query": "targetErrorMessage",
+                          "script_query_name": "targetErrorMessage",
+                          "script_query_type": "string"
+                        },
+                        {
+                          "script_query": "targetResultJson",
+                          "script_query_name": "targetResultJson",
+                          "script_query_type": "string"
+                        },
+                        {
+                          "script_query": "imageApiUrl",
+                          "script_query_name": "imageApiUrl",
+                          "script_query_type": "string"
+                        },
+                        {
+                          "script_query": "activeUpgradeApiUrl",
+                          "script_query_name": "activeUpgradeApiUrl",
+                          "script_query_type": "string"
+                        },
+                        {
+                          "script_query": "helperReady",
+                          "script_query_name": "helperReady",
+                          "script_query_type": "boolean"
                         }
                       ]
                     },
                     "object_type": "definition_activity"
                   },
                   {
-                    "unique_name": "definition_activity_02XOKCY8L71N507EXK3mgFpko84BA3zp2zp",
-                    "name": "Completed",
-                    "title": "Completed - ecmc readiness block",
-                    "type": "logic.completed",
+                    "unique_name": "definition_activity_02XP8BHRGT4LC0Et9WLPsYt5iAbDyp5XHCt",
+                    "name": "Condition Block",
+                    "title": "Domain Fabric Interconnect resolution failure",
+                    "type": "logic.if_else",
                     "base_type": "activity",
                     "properties": {
                       "continue_on_failure": false,
-                      "description": "Ends this terminal path after all four standard outputs are populated.",
-                      "display_name": "Completed - ecmc readiness block",
+                      "description": "Separately terminates helper execution failures and validated non-exact Domain resolution outcomes.",
+                      "display_name": "Domain Fabric Interconnect resolution failure",
                       "skip_execution": false,
-                      "completion_type": "failed-completed",
-                      "result_message": "eCMC firmware upgrade is not ready for mutation"
+                      "conditions": []
+                    },
+                    "object_type": "definition_activity",
+                    "blocks": [
+                      {
+                        "unique_name": "definition_activity_02XP8BHRGT4LC1P9zUiG3DzDF8fEr7YrZKE",
+                        "name": "Condition Branch",
+                        "title": "Domain inspection helper failure",
+                        "type": "logic.condition_block",
+                        "base_type": "activity",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "description": "Fails closed if the Domain inspection helper does not return its complete typed contract.",
+                          "display_name": "Domain inspection helper failure",
+                          "skip_execution": false,
+                          "condition": {
+                            "left_operand": {
+                              "left_operand": "$activity.definition_activity_02XOKCY8L71N507EXK3mgFpko84BA3zp2zp.output.succeeded$",
+                              "operator": "ne",
+                              "right_operand": true
+                            },
+                            "operator": "or",
+                            "right_operand": {
+                              "left_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L71N507EXK3mgFpko84BA3zp2zp.output.succeeded$",
+                                "operator": "eq",
+                                "right_operand": true
+                              },
+                              "operator": "and",
+                              "right_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L71N507EXK3mgFpko84BA3zp2zp.output.script_queries.helperReady$",
+                                "operator": "ne",
+                                "right_operand": true
+                              }
+                            }
+                          }
+                        },
+                        "object_type": "definition_activity",
+                        "actions": [
+                          {
+                            "unique_name": "definition_activity_02XP8BHRGT4LC2rOC895GvW17fcUZwcgZwy",
+                            "name": "Set Variables",
+                            "title": "Set Domain helper failure outputs",
+                            "type": "core.set_multiple_variables",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Populates all standard outputs for a Domain inspection helper execution failure.",
+                              "display_name": "Set Domain helper failure outputs",
+                              "skip_execution": false,
+                              "variables_to_update": [
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FB2SWbHrLitH1r33pOWfN8gq$",
+                                  "variable_value_new": "502"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FC5jxSq28zDsRALUWd6rcj9a$",
+                                  "variable_value_new": "Domain target inspection helper failed"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FD6jGidJVfqHludVA351HjQE$",
+                                  "variable_value_new": "The Domain Fabric Interconnect inspection helper failed before returning a validated contract."
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
+                                  "variable_value_new": "{\"status\":\"helper-failure\",\"requestAccepted\":false,\"retryRequiresInspection\":true}"
+                                }
+                              ]
+                            },
+                            "object_type": "definition_activity"
+                          },
+                          {
+                            "unique_name": "definition_activity_02XP8BHRGT4LC32IsxZvloouRVfBhhoEgZz",
+                            "name": "Completed",
+                            "title": "Completed - Domain helper failure",
+                            "type": "logic.completed",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Ends this terminal path after all standard outputs are populated.",
+                              "display_name": "Completed - Domain helper failure",
+                              "skip_execution": false,
+                              "completion_type": "failed-completed",
+                              "result_message": "Domain target inspection helper failed"
+                            },
+                            "object_type": "definition_activity"
+                          }
+                        ]
+                      },
+                      {
+                        "unique_name": "definition_activity_02XP8BHRGT4LC4wTBJKbDBKChhQqHZCbIl4",
+                        "name": "Condition Branch",
+                        "title": "Domain target is not exact",
+                        "type": "logic.condition_block",
+                        "base_type": "activity",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "description": "Stops every validated API, identity, relationship, cardinality, or model failure before catalog lookup.",
+                          "display_name": "Domain target is not exact",
+                          "skip_execution": false,
+                          "condition": {
+                            "left_operand": {
+                              "left_operand": "$activity.definition_activity_02XOKCY8L71N507EXK3mgFpko84BA3zp2zp.output.succeeded$",
+                              "operator": "eq",
+                              "right_operand": true
+                            },
+                            "operator": "and",
+                            "right_operand": {
+                              "left_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L71N507EXK3mgFpko84BA3zp2zp.output.script_queries.helperReady$",
+                                "operator": "eq",
+                                "right_operand": true
+                              },
+                              "operator": "and",
+                              "right_operand": {
+                                "left_operand": "$activity.definition_activity_02XOKCY8L71N507EXK3mgFpko84BA3zp2zp.output.script_queries.targetStatus$",
+                                "operator": "ne",
+                                "right_operand": "exact"
+                              }
+                            }
+                          }
+                        },
+                        "object_type": "definition_activity",
+                        "actions": [
+                          {
+                            "unique_name": "definition_activity_02XP8BHRGT4LC5kODWsrEY2FN3Ai0VGjMF3",
+                            "name": "Set Variables",
+                            "title": "Set Domain resolution failure outputs",
+                            "type": "core.set_multiple_variables",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Populates all standard outputs from the validated Domain failure contract.",
+                              "display_name": "Set Domain resolution failure outputs",
+                              "skip_execution": false,
+                              "variables_to_update": [
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FB2SWbHrLitH1r33pOWfN8gq$",
+                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71N507EXK3mgFpko84BA3zp2zp.output.script_queries.targetStatusCode$"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FC5jxSq28zDsRALUWd6rcj9a$",
+                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71N507EXK3mgFpko84BA3zp2zp.output.script_queries.targetStatusMessage$"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FD6jGidJVfqHludVA351HjQE$",
+                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71N507EXK3mgFpko84BA3zp2zp.output.script_queries.targetErrorMessage$"
+                                },
+                                {
+                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
+                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71N507EXK3mgFpko84BA3zp2zp.output.script_queries.targetResultJson$"
+                                }
+                              ]
+                            },
+                            "object_type": "definition_activity"
+                          },
+                          {
+                            "unique_name": "definition_activity_02XP8BHRGT4LC6J0uesNfuBnkP9Qh2oZ8Ro",
+                            "name": "Completed",
+                            "title": "Completed - Domain resolution failure",
+                            "type": "logic.completed",
+                            "base_type": "activity",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "description": "Ends this terminal path after all standard outputs are populated.",
+                              "display_name": "Completed - Domain resolution failure",
+                              "skip_execution": false,
+                              "completion_type": "failed-completed",
+                              "result_message": "Domain Fabric Interconnect resolution failed"
+                            },
+                            "object_type": "definition_activity"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "unique_name": "definition_activity_02XP8BHRGT4LC7b5ElDuXgSUa5SMZ7nH709",
+                    "name": "Set Variables",
+                    "title": "Store exact Domain target contract",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Replaces the provisional Domain bridge values only after the exact Fabric Interconnect A/B contract is validated.",
+                      "display_name": "Store exact Domain target contract",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XOKCY8L72F02a54ku4Z2cFczXQjyNFHag$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71N507EXK3mgFpko84BA3zp2zp.output.script_queries.targetResultJson$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XOKCY8L72F35sZOFCOIt2vobkwks7EhQs$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71N507EXK3mgFpko84BA3zp2zp.output.script_queries.imageApiUrl$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XOKCY8L72F52X8BwPmMmSQJR3sI1UsD7O$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71N507EXK3mgFpko84BA3zp2zp.output.script_queries.activeUpgradeApiUrl$"
+                        }
+                      ]
                     },
                     "object_type": "definition_activity"
                   }
@@ -2026,12 +2353,12 @@
             "base_type": "activity",
             "properties": {
               "continue_on_failure": true,
-              "description": "Retrieves the exact version from firmware.Distributables for Server/UCS-X or from deprecated softwarerepository.Releases Type FabricSwitch for Domain. Compatibility, repository tags, and exact cardinality are validated locally before mutation. A generic request is used because no one catalog resolver covers both resource types; replace it if an equivalent supported atomic becomes available.",
+              "description": "Retrieves the exact version from firmware.Distributables for Server, UCS-X chassis, or IMM Domain. Compatibility, Cisco cloud repository tags, route-specific distributable tags, and exact cardinality are validated locally before mutation.",
               "display_name": "Get exact compatible Cisco firmware image",
               "skip_execution": false,
               "action_timeout": 180,
               "api_method": "GET",
-              "api_url": "$activity.definition_activity_02XOKCY8L71LV5iCP9l3w0leGg4aE6P3gy6.output.script_queries.imageApiUrl$",
+              "api_url": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XOKCY8L72F35sZOFCOIt2vobkwks7EhQs$",
               "content_type": "application/json",
               "endpoint": "primary",
               "runtime_user": {
@@ -2140,72 +2467,32 @@
           {
             "unique_name": "definition_activity_02XOKCY8L71NA2ToNfwXMbi4MzYGbQ0NoT7",
             "name": "Execute Python Script",
-            "title": "Inspect image compatibility and build typed upgrade request",
+            "title": "Inspect exact Distributable and build typed upgrade request",
             "type": "python3.script",
             "base_type": "activity",
             "properties": {
               "continue_on_failure": true,
-              "description": "Requires exactly one compatible image. Server enforces model plus documented distributable/repository tags; UCS-X enforces model plus Cisco cloud repository tag and records its tenant catalog-tag caveat; Domain enforces one FabricSwitch Release supporting both FI models. It builds exact discriminators, relationships, DirectDownload enums, Release-versus-Distributable placement, PID object shape, and explicitly includes WaitTimeOut including numeric 0.",
-              "display_name": "Inspect image compatibility and build typed upgrade request",
+              "description": "Requires exactly one compatible Cisco cloud firmware.Distributable. It enforces the branch-specific catalog tags and model compatibility, then builds the documented Server, UCS-X chassis, or IMM Domain request with fixed safety values and inventory-derived XFM behavior.",
+              "display_name": "Inspect exact Distributable and build typed upgrade request",
               "skip_execution": false,
               "action_timeout": 180,
-              "script": "import json\nimport re\nimport sys\npayload = json.loads(sys.argv[1])\ntarget = json.loads(sys.argv[2])\nprepared = json.loads(sys.argv[3])\nvalues = payload.get(\"Results\")\nif not isinstance(values, list):\n    raise ValueError(\"Firmware image response is missing a Results array\")\n\ndef safe_moid(value):\n    return isinstance(value, str) and re.fullmatch(r\"[A-Za-z0-9][A-Za-z0-9._~-]{0,127}\", value) is not None\n\ndef tag_pairs(item):\n    tags = item.get(\"Tags\")\n    if not isinstance(tags, list):\n        return set()\n    return {(tag.get(\"Key\"), tag.get(\"Value\")) for tag in tags if isinstance(tag, dict) and isinstance(tag.get(\"Key\"), str) and isinstance(tag.get(\"Value\"), str)}\n\ntargetType = prepared.get(\"targetType\")\nfirmwareVersion = prepared.get(\"firmwareVersion\")\ntargetMoid = target.get(\"targetMoid\")\ntargetModel = target.get(\"targetModel\")\ntargetObjectType = target.get(\"targetObjectType\")\nsourceObjectType = target.get(\"sourceObjectType\")\ncompatible = []\nschemaProblems = []\nfor index, item in enumerate(values):\n    if not isinstance(item, dict):\n        schemaProblems.append(\"Catalog result \" + str(index) + \" is not an object.\")\n        continue\n    moid = item.get(\"Moid\")\n    if not safe_moid(moid):\n        schemaProblems.append(\"Catalog result \" + str(index) + \" has an invalid Moid.\")\n        continue\n    if item.get(\"Version\") != firmwareVersion:\n        schemaProblems.append(\"Catalog result \" + str(index) + \" does not exactly match Firmware Version.\")\n        continue\n    if targetType in (\"Server\", \"UCS-X Chassis\"):\n        if item.get(\"ObjectType\") != \"firmware.Distributable\" or item.get(\"ClassId\") != \"firmware.Distributable\":\n            schemaProblems.append(\"Distributable result \" + str(index) + \" has invalid discriminators.\")\n            continue\n        supported = item.get(\"SupportedModels\")\n        modelCompatible = item.get(\"Model\") == targetModel or (isinstance(supported, list) and targetModel in supported)\n        pairs = tag_pairs(item)\n        cloudCompatible = (\"cisco.meta.repositorytype\", \"IntersightCloud\") in pairs\n        if targetType == \"Server\":\n            typeCompatible = (\"cisco.meta.distributabletype\", target.get(\"distributableType\")) in pairs\n        else:\n            typeCompatible = True\n        if modelCompatible and cloudCompatible and typeCompatible:\n            compatible.append(item)\n    elif targetType == \"Domain\":\n        if item.get(\"ObjectType\") != \"softwarerepository.Release\" or item.get(\"ClassId\") != \"softwarerepository.Release\" or item.get(\"Type\") != \"FabricSwitch\":\n            schemaProblems.append(\"FabricSwitch Release result \" + str(index) + \" has invalid type or discriminators.\")\n            continue\n        supported = item.get(\"SupportedModels\")\n        requiredModels = [entry.get(\"Model\") for entry in target.get(\"networkElements\", []) if isinstance(entry, dict)]\n        if isinstance(supported, list) and requiredModels and all(model in supported for model in requiredModels):\n            compatible.append(item)\n\nimageMoid = \"\"\nimageObjectType = \"\"\nrequestJson = \"\"\nsubmitApiUrl = \"\"\ncreatedResourceUrl = \"\"\nsubmitObjectType = \"\"\nif schemaProblems:\n    imageStatus = \"invalid\"\n    imageMessage = \" \".join(schemaProblems)\nelif len(compatible) == 0:\n    imageStatus = \"not-found\"\n    if targetType == \"Server\":\n        imageMessage = \"No exact version/model Cisco cloud Distributable matched required tags cisco.meta.distributabletype=\" + str(target.get(\"distributableType\")) + \" and cisco.meta.repositorytype=IntersightCloud.\"\n    elif targetType == \"UCS-X Chassis\":\n        imageMessage = \"No exact version/model Cisco cloud Distributable matched cisco.meta.repositorytype=IntersightCloud. UCS-X catalog type tags remain a live-tenant readiness caveat.\"\n    else:\n        imageMessage = \"No exact FabricSwitch Release supported both validated domain Fabric Interconnect models.\"\nelif len(compatible) > 1:\n    imageStatus = \"ambiguous\"\n    imageMessage = \"Multiple compatible Cisco firmware images matched the exact requested version and target compatibility contract.\"\nelse:\n    image = compatible[0]\n    imageStatus = \"exact\"\n    imageMessage = \"Exactly one compatible Cisco repository firmware image was validated.\"\n    imageMoid = image[\"Moid\"]\n    imageObjectType = image[\"ObjectType\"]\n    directDownload = {\"ObjectType\": \"firmware.DirectDownload\", \"ClassId\": \"firmware.DirectDownload\", \"ImageSource\": \"cisco\"}\n    if targetType == \"Server\":\n        submitObjectType = \"firmware.Upgrade\"\n        submitApiUrl = \"/api/v1/firmware/Upgrades\"\n        createdResourceUrl = submitApiUrl\n        directDownload[\"Upgradeoption\"] = \"upgrade_full\" if prepared.get(\"serverUpgradeMode\") == \"Start Immediately\" else \"upgrade_mount_only\"\n        request = {\n            \"ObjectType\": submitObjectType,\n            \"ClassId\": submitObjectType,\n            \"UpgradeType\": \"direct_upgrade\",\n            \"DirectDownload\": directDownload,\n            \"Distributable\": {\"Moid\": imageMoid, \"ObjectType\": \"firmware.Distributable\", \"ClassId\": \"mo.MoRef\"},\n            \"Server\": {\"Moid\": targetMoid, \"ObjectType\": sourceObjectType, \"ClassId\": \"mo.MoRef\"},\n            \"SkipEstimateImpact\": bool(prepared.get(\"skipEstimateImpact\"))\n        }\n        exclusions = prepared.get(\"excludedComponents\")\n        if exclusions:\n            request[\"ExcludeComponentList\"] = exclusions\n        pidObject = prepared.get(\"excludedComponentPids\")\n        if pidObject:\n            typedPidObject = {\"ObjectType\": \"firmware.ExcludeComponentPidListType\", \"ClassId\": \"firmware.ExcludeComponentPidListType\"}\n            if \"ExcludeLocalDiskList\" in pidObject:\n                typedPidObject[\"ExcludeLocalDiskList\"] = pidObject[\"ExcludeLocalDiskList\"]\n            if \"ExcludeStorageControllerList\" in pidObject:\n                typedPidObject[\"ExcludeStorageControllerList\"] = pidObject[\"ExcludeStorageControllerList\"]\n            request[\"ExcludeComponentPidList\"] = typedPidObject\n    elif targetType == \"UCS-X Chassis\":\n        submitObjectType = \"firmware.ChassisUpgrade\"\n        submitApiUrl = \"/api/v1/firmware/ChassisUpgrades\"\n        createdResourceUrl = submitApiUrl\n        directDownload[\"Upgradeoption\"] = \"chassis_upgrade_full\"\n        request = {\n            \"ObjectType\": submitObjectType,\n            \"ClassId\": submitObjectType,\n            \"UpgradeType\": \"direct_upgrade\",\n            \"DirectDownload\": directDownload,\n            \"Distributable\": {\"Moid\": imageMoid, \"ObjectType\": \"firmware.Distributable\", \"ClassId\": \"mo.MoRef\"},\n            \"Chassis\": {\"Moid\": targetMoid, \"ObjectType\": \"equipment.Chassis\", \"ClassId\": \"mo.MoRef\"},\n            \"XfmUpgradeOption\": prepared.get(\"xfmUpgradeOption\")\n        }\n        exclusions = prepared.get(\"excludedComponents\")\n        if exclusions:\n            request[\"ExcludeComponentList\"] = exclusions\n    elif targetType == \"Domain\":\n        submitObjectType = \"firmware.SwitchUpgrade\"\n        submitApiUrl = \"/api/v1/firmware/SwitchUpgrades\"\n        createdResourceUrl = submitApiUrl\n        directDownload[\"Upgradeoption\"] = \"chassis_upgrade_full\"\n        networkRefs = [{\"Moid\": element[\"Moid\"], \"ObjectType\": \"network.Element\", \"ClassId\": \"mo.MoRef\"} for element in target.get(\"networkElements\", [])]\n        request = {\n            \"ObjectType\": submitObjectType,\n            \"ClassId\": submitObjectType,\n            \"UpgradeType\": \"direct_upgrade\",\n            \"DirectDownload\": directDownload,\n            \"Release\": {\"Moid\": imageMoid, \"ObjectType\": \"softwarerepository.Release\", \"ClassId\": \"mo.MoRef\"},\n            \"NetworkElements\": networkRefs,\n            \"EnableFabricEvacuation\": bool(prepared.get(\"enableFabricEvacuation\")),\n            \"WaitTimeOut\": int(prepared.get(\"switchWaitTimeoutMinutes\")),\n            \"EnablePsuUpgrade\": bool(prepared.get(\"enablePsuUpgrade\")),\n            \"EnablePdbFpgaUpgrade\": bool(prepared.get(\"enablePdbFpgaUpgrade\")),\n            \"SkipWaitForIoPathConnectivity\": bool(prepared.get(\"skipWaitForIoPathConnectivity\"))\n        }\n    requestJson = json.dumps(request, separators=(\",\", \":\"))\n\nreadinessCaveats = target.get(\"readinessCaveats\") if isinstance(target.get(\"readinessCaveats\"), list) else []\nimageResultJson = json.dumps({\n    \"status\": imageStatus,\n    \"message\": imageMessage,\n    \"targetType\": targetType,\n    \"firmwareVersion\": firmwareVersion,\n    \"imageMoid\": imageMoid or None,\n    \"imageObjectType\": imageObjectType or None,\n    \"compatibleCandidateCount\": len(compatible),\n    \"submittedImageField\": \"Release\" if targetType == \"Domain\" and imageStatus == \"exact\" else (\"Distributable\" if imageStatus == \"exact\" else None),\n    \"releaseNeverPlacedInDistributable\": True,\n    \"switchWaitTimeOutExplicitlyIncluded\": targetType == \"Domain\" and imageStatus == \"exact\",\n    \"ciscoRepositoryOnly\": True,\n    \"readinessCaveats\": readinessCaveats\n}, separators=(\",\", \":\"))\nhelperReady = imageStatus in (\"not-found\", \"ambiguous\", \"invalid\", \"exact\") and bool(imageMessage and imageResultJson) and (imageStatus != \"exact\" or bool(imageMoid and imageObjectType and requestJson and submitApiUrl and createdResourceUrl and submitObjectType))",
+              "script": "import json\nimport re\nimport sys\n\npayload = json.loads(sys.argv[1])\ntarget = json.loads(sys.argv[2])\nprepared = json.loads(sys.argv[3])\nvalues = payload.get(\"Results\") if isinstance(payload, dict) else None\nif not isinstance(values, list):\n    raise ValueError(\"Firmware image response is missing a Results array.\")\n\ndef safe_moid(value):\n    return isinstance(value, str) and re.fullmatch(r\"[0-9a-fA-F]{24}\", value) is not None\n\ndef tag_pairs(item):\n    tags = item.get(\"Tags\")\n    if not isinstance(tags, list):\n        return set()\n    return {(tag.get(\"Key\"), tag.get(\"Value\")) for tag in tags if isinstance(tag, dict)}\n\ndef models_match(item, required):\n    supported = item.get(\"SupportedModels\")\n    supported = supported if isinstance(supported, list) else []\n    catalog_model = item.get(\"Model\")\n    return bool(required) and all(isinstance(model, str) and model and (catalog_model == model or model in supported) for model in required)\n\ntarget_type = prepared.get(\"targetType\")\nversion = prepared.get(\"firmwareVersion\")\ntarget_moid = target.get(\"targetMoid\")\ncompatible = []\nschema_problems = []\nfor index, item in enumerate(values):\n    if not isinstance(item, dict):\n        schema_problems.append(\"Catalog result \" + str(index) + \" is not an object.\")\n        continue\n    if not safe_moid(item.get(\"Moid\")):\n        schema_problems.append(\"Catalog result \" + str(index) + \" has an invalid Moid.\")\n        continue\n    if item.get(\"Version\") != version:\n        schema_problems.append(\"Catalog result \" + str(index) + \" does not exactly match Firmware Version.\")\n        continue\n    if item.get(\"ObjectType\") != \"firmware.Distributable\" or item.get(\"ClassId\") != \"firmware.Distributable\":\n        schema_problems.append(\"Catalog result \" + str(index) + \" is not a concrete firmware.Distributable.\")\n        continue\n    pairs = tag_pairs(item)\n    if (\"cisco.meta.repositorytype\", \"IntersightCloud\") not in pairs:\n        continue\n    if target_type == \"Server\":\n        required_models = [target.get(\"targetModel\")]\n        required_type = target.get(\"distributableType\")\n        if (\"cisco.meta.distributabletype\", required_type) in pairs and models_match(item, required_models):\n            compatible.append(item)\n    elif target_type == \"UCS-X Chassis\":\n        if (\"cisco.meta.distributabletype\", \"IMMFABRIC\") in pairs and models_match(item, [target.get(\"targetModel\")]):\n            compatible.append(item)\n    elif target_type == \"Domain\":\n        elements = target.get(\"networkElements\")\n        required_models = [entry.get(\"Model\") for entry in elements if isinstance(entry, dict)] if isinstance(elements, list) else []\n        if len(required_models) == 2 and (\"cisco.meta.distributabletype\", \"IMMFABRIC\") in pairs and models_match(item, required_models):\n            compatible.append(item)\n    else:\n        schema_problems.append(\"Unsupported target route reached the image builder.\")\n\nimage_moid = \"\"\nimage_object_type = \"\"\nrequest_json = \"\"\nsubmit_api_url = \"\"\ncreated_resource_url = \"\"\nsubmit_object_type = \"\"\nif schema_problems:\n    image_status = \"invalid\"\n    image_message = \" \".join(schema_problems)\nelif len(compatible) == 0:\n    image_status = \"not-found\"\n    if target_type == \"Server\":\n        image_message = \"No exact version/model Cisco cloud Distributable matched the required server distributable type.\"\n    elif target_type == \"UCS-X Chassis\":\n        image_message = \"No exact version/model Cisco cloud Distributable matched the validated UCS-X chassis.\"\n    else:\n        image_message = \"No exact IMMFABRIC/IntersightCloud Distributable supported both validated Domain Fabric Interconnect models.\"\nelif len(compatible) > 1:\n    image_status = \"ambiguous\"\n    image_message = \"Multiple compatible Cisco firmware Distributables matched the exact requested version and target contract.\"\nelse:\n    image = compatible[0]\n    image_status = \"exact\"\n    image_message = \"Exactly one compatible Cisco repository firmware Distributable was validated.\"\n    image_moid = image[\"Moid\"]\n    image_object_type = \"firmware.Distributable\"\n    direct_download = {\"ObjectType\":\"firmware.DirectDownload\",\"ClassId\":\"firmware.DirectDownload\",\"ImageSource\":\"cisco\"}\n    image_ref = {\"Moid\":image_moid,\"ObjectType\":\"firmware.Distributable\",\"ClassId\":\"mo.MoRef\"}\n    if target_type == \"Server\":\n        submit_object_type = \"firmware.Upgrade\"\n        submit_api_url = \"/api/v1/firmware/Upgrades\"\n        direct_download[\"Upgradeoption\"] = \"upgrade_full\" if prepared.get(\"serverUpgradeMode\") == \"Start Immediately\" else \"upgrade_mount_only\"\n        request = {\n            \"ObjectType\":submit_object_type,\n            \"ClassId\":submit_object_type,\n            \"UpgradeType\":\"direct_upgrade\",\n            \"DirectDownload\":direct_download,\n            \"Distributable\":image_ref,\n            \"Server\":{\"Moid\":target_moid,\"ObjectType\":target.get(\"sourceObjectType\"),\"ClassId\":\"mo.MoRef\"},\n            \"SkipEstimateImpact\":False\n        }\n        exclusions = prepared.get(\"excludedComponents\")\n        if isinstance(exclusions, list) and exclusions:\n            request[\"ExcludeComponentList\"] = exclusions\n        pid_object = prepared.get(\"excludedComponentPids\")\n        if isinstance(pid_object, dict) and pid_object:\n            typed_pid = {\"ObjectType\":\"firmware.ExcludeComponentPidListType\",\"ClassId\":\"firmware.ExcludeComponentPidListType\"}\n            for key in (\"ExcludeLocalDiskList\", \"ExcludeStorageControllerList\"):\n                if key in pid_object:\n                    typed_pid[key] = pid_object[key]\n            request[\"ExcludeComponentPidList\"] = typed_pid\n    elif target_type == \"UCS-X Chassis\":\n        submit_object_type = \"firmware.ChassisUpgrade\"\n        submit_api_url = \"/api/v1/firmware/ChassisUpgrades\"\n        direct_download[\"Upgradeoption\"] = \"upgrade_full\"\n        exclusions = target.get(\"excludedComponents\")\n        xfm_option = target.get(\"xfmUpgradeOption\")\n        topology = target.get(\"xfmTopology\")\n        if xfm_option not in (\"none\", \"partial-shutdown\") or not isinstance(exclusions, list):\n            raise ValueError(\"Validated UCS-X XFM contract is incomplete.\")\n        if xfm_option == \"partial-shutdown\" and (\"xfm\" in exclusions or not isinstance(topology, dict) or topology.get(\"healthyPair\") is not True):\n            raise ValueError(\"partial-shutdown requires the validated healthy UCSX-FS-9516 pair and no xfm exclusion.\")\n        if xfm_option == \"none\" and \"xfm\" not in exclusions:\n            raise ValueError(\"A non-upgraded XFM topology must explicitly exclude xfm.\")\n        request = {\n            \"ObjectType\":submit_object_type,\n            \"ClassId\":submit_object_type,\n            \"UpgradeType\":\"direct_upgrade\",\n            \"DirectDownload\":direct_download,\n            \"Distributable\":image_ref,\n            \"Chassis\":{\"Moid\":target_moid,\"ObjectType\":\"equipment.Chassis\",\"ClassId\":\"mo.MoRef\"},\n            \"XfmUpgradeOption\":xfm_option,\n            \"ExcludeComponentList\":exclusions\n        }\n    else:\n        submit_object_type = \"firmware.SwitchUpgrade\"\n        submit_api_url = \"/api/v1/firmware/SwitchUpgrades\"\n        direct_download[\"Upgradeoption\"] = \"sd_upgrade_only\"\n        elements = target.get(\"networkElements\")\n        if not isinstance(elements, list) or len(elements) != 2:\n            raise ValueError(\"Validated Domain Fabric Interconnect pair is incomplete.\")\n        network_refs = [{\"Moid\":entry[\"Moid\"],\"ObjectType\":\"network.Element\",\"ClassId\":\"mo.MoRef\"} for entry in elements]\n        request = {\n            \"ObjectType\":submit_object_type,\n            \"ClassId\":submit_object_type,\n            \"UpgradeType\":\"direct_upgrade\",\n            \"DirectDownload\":direct_download,\n            \"Distributable\":image_ref,\n            \"NetworkElements\":network_refs,\n            \"EnableFabricEvacuation\":bool(prepared.get(\"enableFabricEvacuation\")),\n            \"WaitTimeOut\":0,\n            \"EnablePsuUpgrade\":bool(prepared.get(\"enablePsuUpgrade\")),\n            \"EnablePdbFpgaUpgrade\":bool(prepared.get(\"enablePdbFpgaUpgrade\")),\n            \"SkipWaitForIoPathConnectivity\":bool(prepared.get(\"skipWaitForIoPathConnectivity\"))\n        }\n    created_resource_url = submit_api_url\n    request_json = json.dumps(request, separators=(\",\", \":\"))\n\nreadiness_caveats = target.get(\"readinessCaveats\") if isinstance(target.get(\"readinessCaveats\"), list) else []\nimage_result_json = json.dumps({\n    \"status\":image_status,\n    \"message\":image_message,\n    \"targetType\":target_type,\n    \"firmwareVersion\":version,\n    \"imageMoid\":image_moid or None,\n    \"imageObjectType\":image_object_type or None,\n    \"compatibleCandidateCount\":len(compatible),\n    \"submittedImageField\":\"Distributable\" if image_status == \"exact\" else None,\n    \"releaseAbsent\":image_status == \"exact\",\n    \"switchWaitTimeOutFixedAtZero\":target_type == \"Domain\" and image_status == \"exact\",\n    \"serverSkipEstimateImpactFixedFalse\":target_type == \"Server\" and image_status == \"exact\",\n    \"ciscoRepositoryOnly\":True,\n    \"readinessCaveats\":readiness_caveats\n}, separators=(\",\", \":\"))\nimageStatus = image_status\nimageMessage = image_message\nimageResultJson = image_result_json\nimageMoid = image_moid\nimageObjectType = image_object_type\nrequestJson = request_json\nsubmitApiUrl = submit_api_url\ncreatedResourceUrl = created_resource_url\nsubmitObjectType = submit_object_type\nhelperReady = image_status in (\"not-found\", \"ambiguous\", \"invalid\", \"exact\") and bool(image_message and image_result_json) and (image_status != \"exact\" or bool(image_moid and image_object_type and request_json and submit_api_url and created_resource_url and submit_object_type))\n",
               "script_arguments": [
                 "$activity.definition_activity_02XOKCY8L71N929NEQ4ov4odUR7jmWmvnMs.output.response_body$",
-                "$activity.definition_activity_02XOKCY8L71LV5iCP9l3w0leGg4aE6P3gy6.output.script_queries.targetResultJson$",
-                "$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.script_queries.preparationResultJson$"
+                "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XOKCY8L72F02a54ku4Z2cFczXQjyNFHag$",
+                "$activity.definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar.output.script_queries.preparationResultJson$"
               ],
               "script_queries": [
-                {
-                  "script_query": "imageStatus",
-                  "script_query_name": "imageStatus",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "imageMessage",
-                  "script_query_name": "imageMessage",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "imageResultJson",
-                  "script_query_name": "imageResultJson",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "imageMoid",
-                  "script_query_name": "imageMoid",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "imageObjectType",
-                  "script_query_name": "imageObjectType",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "requestJson",
-                  "script_query_name": "requestJson",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "submitApiUrl",
-                  "script_query_name": "submitApiUrl",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "createdResourceUrl",
-                  "script_query_name": "createdResourceUrl",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "submitObjectType",
-                  "script_query_name": "submitObjectType",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "helperReady",
-                  "script_query_name": "helperReady",
-                  "script_query_type": "boolean"
-                }
+                {"script_query": "imageStatus", "script_query_name": "imageStatus", "script_query_type": "string"},
+                {"script_query": "imageMessage", "script_query_name": "imageMessage", "script_query_type": "string"},
+                {"script_query": "imageResultJson", "script_query_name": "imageResultJson", "script_query_type": "string"},
+                {"script_query": "imageMoid", "script_query_name": "imageMoid", "script_query_type": "string"},
+                {"script_query": "imageObjectType", "script_query_name": "imageObjectType", "script_query_type": "string"},
+                {"script_query": "requestJson", "script_query_name": "requestJson", "script_query_type": "string"},
+                {"script_query": "submitApiUrl", "script_query_name": "submitApiUrl", "script_query_type": "string"},
+                {"script_query": "createdResourceUrl", "script_query_name": "createdResourceUrl", "script_query_type": "string"},
+                {"script_query": "submitObjectType", "script_query_name": "submitObjectType", "script_query_type": "string"},
+                {"script_query": "helperReady", "script_query_name": "helperReady", "script_query_type": "boolean"}
               ]
             },
             "object_type": "definition_activity"
@@ -2599,7 +2886,7 @@
               "skip_execution": false,
               "action_timeout": 180,
               "api_method": "GET",
-              "api_url": "$activity.definition_activity_02XOKCY8L71LV5iCP9l3w0leGg4aE6P3gy6.output.script_queries.activeUpgradeApiUrl$",
+              "api_url": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XOKCY8L72F52X8BwPmMmSQJR3sI1UsD7O$",
               "content_type": "application/json",
               "endpoint": "primary",
               "runtime_user": {
@@ -2720,8 +3007,8 @@
               "script": "import json\nimport re\nimport sys\npayload = json.loads(sys.argv[1])\ntarget = json.loads(sys.argv[2])\nprepared = json.loads(sys.argv[3])\nvalues = payload.get(\"Results\")\nif not isinstance(values, list):\n    raise ValueError(\"Active firmware response is missing a Results array\")\n\ndef safe_moid(value):\n    return isinstance(value, str) and re.fullmatch(r\"[A-Za-z0-9][A-Za-z0-9._~-]{0,127}\", value) is not None\n\ndef relation_matches(rel, moid, objectType):\n    return isinstance(rel, dict) and rel.get(\"Moid\") == moid and rel.get(\"ObjectType\") == objectType and rel.get(\"ClassId\") in (None, \"mo.MoRef\", objectType)\n\ntargetType = prepared.get(\"targetType\")\nexpectedType = {\"Server\": \"firmware.Upgrade\", \"UCS-X Chassis\": \"firmware.ChassisUpgrade\", \"Domain\": \"firmware.SwitchUpgrade\"}.get(targetType)\nproblems = []\nactive = []\nfor index, item in enumerate(values):\n    if not isinstance(item, dict):\n        problems.append(\"Existing firmware result \" + str(index) + \" is not an object.\")\n        continue\n    if not safe_moid(item.get(\"Moid\")) or item.get(\"ObjectType\") != expectedType or item.get(\"ClassId\") != expectedType:\n        problems.append(\"Existing firmware result \" + str(index) + \" has invalid identity or discriminators.\")\n        continue\n    status = item.get(\"Status\")\n    if status not in (\"NONE\", \"IN_PROGRESS\", \"SUCCESSFUL\", \"FAILED\", \"TERMINATED\"):\n        problems.append(\"Existing firmware result \" + str(index) + \" has an undocumented Status.\")\n        continue\n    if targetType == \"Server\":\n        if not relation_matches(item.get(\"Server\"), target.get(\"targetMoid\"), target.get(\"sourceObjectType\")):\n            problems.append(\"Existing server firmware result does not match the validated concrete server relationship.\")\n            continue\n    elif targetType == \"UCS-X Chassis\":\n        if not relation_matches(item.get(\"Chassis\"), target.get(\"targetMoid\"), \"equipment.Chassis\"):\n            problems.append(\"Existing chassis firmware result does not match the validated chassis relationship.\")\n            continue\n    elif targetType == \"Domain\":\n        expectedMoids = {entry.get(\"Moid\") for entry in target.get(\"networkElements\", []) if isinstance(entry, dict)}\n        returned = item.get(\"NetworkElements\")\n        returnedMoids = {entry.get(\"Moid\") for entry in returned if isinstance(entry, dict) and relation_matches(entry, entry.get(\"Moid\"), \"network.Element\")} if isinstance(returned, list) else set()\n        if not isinstance(returned, list) or len(returned) != 2 or returnedMoids != expectedMoids:\n            problems.append(\"Existing switch firmware result does not exactly match the two validated domain FI relationships.\")\n            continue\n    if status in (\"NONE\", \"IN_PROGRESS\"):\n        active.append({\"Moid\": item[\"Moid\"], \"Status\": status, \"ObjectType\": expectedType})\n\nif problems:\n    preflightStatus = \"invalid\"\n    preflightMessage = \" \".join(problems)\nelif active:\n    preflightStatus = \"conflict\"\n    preflightMessage = \"The exact target already has \" + str(len(active)) + \" active NONE/IN_PROGRESS firmware resource(s); no duplicate create was submitted.\"\nelse:\n    preflightStatus = \"clear\"\n    preflightMessage = \"No exact active firmware resource blocks this create. The read-before-create duplicate race remains and is documented.\"\npreflightResultJson = json.dumps({\n    \"status\": preflightStatus,\n    \"message\": preflightMessage,\n    \"targetType\": targetType,\n    \"targetMoid\": target.get(\"targetMoid\"),\n    \"activeResources\": active,\n    \"bestEffortIdempotencyGuard\": True,\n    \"duplicateRaceRemains\": True,\n    \"requestAccepted\": False\n}, separators=(\",\", \":\"))\nhelperReady = preflightStatus in (\"invalid\", \"conflict\", \"clear\") and bool(preflightMessage and preflightResultJson)",
               "script_arguments": [
                 "$activity.definition_activity_02XOKCY8L71NW3MLORHH0BHlGfFYeA2S6Py.output.response_body$",
-                "$activity.definition_activity_02XOKCY8L71LV5iCP9l3w0leGg4aE6P3gy6.output.script_queries.targetResultJson$",
-                "$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.script_queries.preparationResultJson$"
+                "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XOKCY8L72F02a54ku4Z2cFczXQjyNFHag$",
+                "$activity.definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar.output.script_queries.preparationResultJson$"
               ],
               "script_queries": [
                 {
@@ -3116,7 +3403,7 @@
                         },
                         {
                           "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
-                          "variable_value_new": "{\"error\":\"API activity failed or returned unexpected HTTP status\",\"activity\":\"Submit typed firmware upgrade\",\"requestAccepted\":false,\"retryRequiresInspection\":true}"
+                          "variable_value_new": "{\"error\":\"API activity failed or returned unexpected HTTP status\",\"activity\":\"Submit typed firmware upgrade\",\"requestAccepted\":null,\"acceptanceUnknown\":true,\"retryRequiresInspection\":true}"
                         }
                       ]
                     },
@@ -3145,22 +3432,22 @@
           {
             "unique_name": "definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m",
             "name": "Execute Python Script",
-            "title": "Inspect accepted firmware resource identity",
+            "title": "Inspect accepted firmware.Distributable resource identity",
             "type": "python3.script",
             "base_type": "activity",
             "properties": {
               "continue_on_failure": true,
-              "description": "Requires documented POST HTTP 200, exact created-resource type/Moid, returned target and image relationships, correct Release-versus-Distributable placement, documented uppercase Status, and either a valid UpgradeStatus relationship or an exact created-resource fallback poll URL.",
-              "display_name": "Inspect accepted firmware resource identity",
+              "description": "Requires documented POST HTTP 200, the exact concrete created-resource identity, target relationships, a matching firmware.Distributable relationship with Release absent, documented uppercase Status, and a validated polling identity.",
+              "display_name": "Inspect accepted firmware.Distributable resource identity",
               "skip_execution": false,
               "action_timeout": 180,
-              "script": "import json\nimport re\nimport sys\npayload = json.loads(sys.argv[1])\nstatusCode = int(sys.argv[2])\ntarget = json.loads(sys.argv[3])\nimage = json.loads(sys.argv[4])\nprepared = json.loads(sys.argv[5])\nsubmitObjectType = sys.argv[6]\nimageMoid = sys.argv[7]\nimageObjectType = sys.argv[8]\ncreatedCollection = sys.argv[9]\npreflight = json.loads(sys.argv[10])\n\ndef safe_moid(value):\n    return isinstance(value, str) and re.fullmatch(r\"[A-Za-z0-9][A-Za-z0-9._~-]{0,127}\", value) is not None\n\ndef relation_matches(rel, moid, objectType):\n    return isinstance(rel, dict) and rel.get(\"Moid\") == moid and rel.get(\"ObjectType\") == objectType and rel.get(\"ClassId\") in (None, \"mo.MoRef\", objectType)\n\nproblems = []\ncreatedMoid = \"\"\nupgradeStatusMoid = \"\"\npollMode = \"\"\npollApiUrl = \"\"\nif statusCode != 200:\n    problems.append(\"Firmware create response status is not documented HTTP 200.\")\nif not isinstance(payload, dict):\n    problems.append(\"Firmware create response is not an object.\")\nelse:\n    createdMoid = str(payload.get(\"Moid\") or \"\")\n    if not safe_moid(createdMoid):\n        problems.append(\"Created firmware resource Moid is missing or not URL-safe.\")\n    if payload.get(\"ObjectType\") != submitObjectType or payload.get(\"ClassId\") != submitObjectType:\n        problems.append(\"Created firmware resource discriminators do not match the submitted concrete type.\")\n    targetType = prepared.get(\"targetType\")\n    if targetType == \"Server\":\n        if not relation_matches(payload.get(\"Server\"), target.get(\"targetMoid\"), target.get(\"sourceObjectType\")):\n            problems.append(\"Returned Server relationship does not match the validated concrete Blade/RackUnit target.\")\n        if not relation_matches(payload.get(\"Distributable\"), imageMoid, \"firmware.Distributable\"):\n            problems.append(\"Returned Distributable relationship does not match the validated server image.\")\n        if payload.get(\"Release\") not in (None, {}):\n            problems.append(\"Server response unexpectedly contains Release.\")\n    elif targetType == \"UCS-X Chassis\":\n        if not relation_matches(payload.get(\"Chassis\"), target.get(\"targetMoid\"), \"equipment.Chassis\"):\n            problems.append(\"Returned Chassis relationship does not match the validated UCS-X target.\")\n        if not relation_matches(payload.get(\"Distributable\"), imageMoid, \"firmware.Distributable\"):\n            problems.append(\"Returned Distributable relationship does not match the validated chassis image.\")\n        if payload.get(\"Release\") not in (None, {}):\n            problems.append(\"Chassis response unexpectedly contains Release.\")\n    elif targetType == \"Domain\":\n        returnedElements = payload.get(\"NetworkElements\")\n        expectedElements = {entry.get(\"Moid\") for entry in target.get(\"networkElements\", []) if isinstance(entry, dict)}\n        returnedMoids = {entry.get(\"Moid\") for entry in returnedElements if isinstance(entry, dict) and relation_matches(entry, entry.get(\"Moid\"), \"network.Element\")} if isinstance(returnedElements, list) else set()\n        if not isinstance(returnedElements, list) or len(returnedElements) != 2 or returnedMoids != expectedElements:\n            problems.append(\"Returned NetworkElements do not exactly match the two validated domain FI A/B elements.\")\n        if not relation_matches(payload.get(\"Release\"), imageMoid, \"softwarerepository.Release\"):\n            problems.append(\"Returned Release relationship does not match the validated FabricSwitch Release.\")\n        if payload.get(\"Distributable\") not in (None, {}):\n            problems.append(\"Domain response unexpectedly populated Distributable; Release must never be placed there.\")\n\n    status = payload.get(\"Status\")\n    if status not in (\"NONE\", \"IN_PROGRESS\", \"SUCCESSFUL\", \"FAILED\", \"TERMINATED\"):\n        problems.append(\"Created firmware resource Status is not a documented uppercase enum.\")\n    upgradeStatus = payload.get(\"UpgradeStatus\")\n    if upgradeStatus not in (None, {}):\n        if not isinstance(upgradeStatus, dict) or not safe_moid(upgradeStatus.get(\"Moid\")) or upgradeStatus.get(\"ObjectType\") != \"firmware.UpgradeStatus\" or upgradeStatus.get(\"ClassId\") not in (None, \"mo.MoRef\", \"firmware.UpgradeStatus\"):\n            problems.append(\"UpgradeStatus relationship is malformed.\")\n        else:\n            upgradeStatusMoid = upgradeStatus[\"Moid\"]\n\nif problems:\n    submissionStatus = \"invalid\"\n    submissionMessage = \" \".join(problems)\nelif payload.get(\"Status\") in (\"FAILED\", \"TERMINATED\"):\n    submissionStatus = \"failed\"\n    submissionMessage = \"The firmware resource was created but immediately returned terminal Status \" + payload.get(\"Status\") + \".\"\nelif payload.get(\"Status\") == \"SUCCESSFUL\":\n    submissionStatus = \"completed\"\n    submissionMessage = \"The firmware resource was created and already reports Status SUCCESSFUL.\"\nelse:\n    submissionStatus = \"accepted\"\n    submissionMessage = \"The firmware upgrade resource was accepted with documented HTTP 200; completion is not yet confirmed.\"\n\nif submissionStatus in (\"accepted\", \"completed\", \"failed\"):\n    if upgradeStatusMoid:\n        pollMode = \"upgrade-status\"\n        pollApiUrl = \"/api/v1/firmware/UpgradeStatuses/\" + upgradeStatusMoid\n        pollMoid = upgradeStatusMoid\n    else:\n        pollMode = \"created-resource\"\n        pollApiUrl = createdCollection + \"/\" + createdMoid\n        pollMoid = createdMoid\nelse:\n    pollMoid = \"\"\n\nsubmissionResultJson = json.dumps({\n    \"status\": submissionStatus,\n    \"message\": submissionMessage,\n    \"requestAccepted\": statusCode == 200,\n    \"completed\": submissionStatus == \"completed\",\n    \"targetType\": prepared.get(\"targetType\"),\n    \"targetName\": target.get(\"targetName\"),\n    \"targetMoid\": target.get(\"targetMoid\"),\n    \"imageMoid\": imageMoid,\n    \"imageObjectType\": imageObjectType,\n    \"createdMoid\": createdMoid or None,\n    \"createdObjectType\": submitObjectType,\n    \"upgradeStatusMoid\": upgradeStatusMoid or None,\n    \"pollMode\": pollMode or None,\n    \"waitRequested\": bool(prepared.get(\"waitForCompletion\")),\n    \"acceptedVersusCompletedSemantics\": True,\n    \"retryRequiresInspection\": submissionStatus in (\"invalid\", \"failed\"),\n    \"readinessCaveats\": target.get(\"readinessCaveats\", []),\n    \"preflight\": preflight\n}, separators=(\",\", \":\"))\nhelperReady = submissionStatus in (\"invalid\", \"failed\", \"accepted\", \"completed\") and bool(submissionMessage and submissionResultJson) and (submissionStatus == \"invalid\" or bool(createdMoid and pollMode and pollApiUrl and pollMoid))",
+              "script": "import json\nimport re\nimport sys\n\npayload = json.loads(sys.argv[1])\nstatus_code = int(sys.argv[2])\ntarget = json.loads(sys.argv[3])\nimage = json.loads(sys.argv[4])\nprepared = json.loads(sys.argv[5])\nsubmit_object_type = sys.argv[6]\nimage_moid = sys.argv[7]\nimage_object_type = sys.argv[8]\ncreated_collection = sys.argv[9]\npreflight = json.loads(sys.argv[10])\n\ndef safe_moid(value):\n    return isinstance(value, str) and re.fullmatch(r\"[0-9a-fA-F]{24}\", value) is not None\n\ndef relation_matches(rel, moid, object_type):\n    return isinstance(rel, dict) and rel.get(\"Moid\") == moid and rel.get(\"ObjectType\") == object_type and rel.get(\"ClassId\") in (None, \"mo.MoRef\", object_type)\n\nproblems = []\ncreated_moid = \"\"\nupgrade_status_moid = \"\"\npoll_mode = \"\"\npoll_api_url = \"\"\npoll_moid = \"\"\ntarget_type = prepared.get(\"targetType\")\nexpected_submit_type = {\"Server\":\"firmware.Upgrade\",\"UCS-X Chassis\":\"firmware.ChassisUpgrade\",\"Domain\":\"firmware.SwitchUpgrade\"}.get(target_type)\nexpected_collection = {\"Server\":\"/api/v1/firmware/Upgrades\",\"UCS-X Chassis\":\"/api/v1/firmware/ChassisUpgrades\",\"Domain\":\"/api/v1/firmware/SwitchUpgrades\"}.get(target_type)\nif status_code != 200:\n    problems.append(\"Firmware create response status is not documented HTTP 200.\")\nif submit_object_type != expected_submit_type or created_collection != expected_collection:\n    problems.append(\"Submission type or created-resource collection does not match the validated target route.\")\nif not safe_moid(image_moid) or image_object_type != \"firmware.Distributable\" or image.get(\"imageMoid\") != image_moid or image.get(\"imageObjectType\") != \"firmware.Distributable\":\n    problems.append(\"Validated firmware.Distributable identity is incomplete or inconsistent.\")\nif not isinstance(payload, dict):\n    problems.append(\"Firmware create response is not an object.\")\nelse:\n    created_moid = str(payload.get(\"Moid\") or \"\")\n    if not safe_moid(created_moid):\n        problems.append(\"Created firmware resource Moid is missing or invalid.\")\n    if payload.get(\"ObjectType\") != submit_object_type or payload.get(\"ClassId\") != submit_object_type:\n        problems.append(\"Created firmware resource discriminators do not match the submitted concrete type.\")\n    if target_type == \"Server\":\n        if not relation_matches(payload.get(\"Server\"), target.get(\"targetMoid\"), target.get(\"sourceObjectType\")):\n            problems.append(\"Returned Server relationship does not match the validated target.\")\n    elif target_type == \"UCS-X Chassis\":\n        if not relation_matches(payload.get(\"Chassis\"), target.get(\"targetMoid\"), \"equipment.Chassis\"):\n            problems.append(\"Returned Chassis relationship does not match the validated UCS-X target.\")\n    elif target_type == \"Domain\":\n        returned = payload.get(\"NetworkElements\")\n        expected = {entry.get(\"Moid\") for entry in target.get(\"networkElements\", []) if isinstance(entry, dict)}\n        returned_moids = {entry.get(\"Moid\") for entry in returned if isinstance(entry, dict) and relation_matches(entry, entry.get(\"Moid\"), \"network.Element\")} if isinstance(returned, list) else set()\n        if len(expected) != 2 or not isinstance(returned, list) or len(returned) != 2 or returned_moids != expected:\n            problems.append(\"Returned NetworkElements do not exactly match the validated Domain FI A/B pair.\")\n    else:\n        problems.append(\"Unsupported target route reached submission inspection.\")\n    if not relation_matches(payload.get(\"Distributable\"), image_moid, \"firmware.Distributable\"):\n        problems.append(\"Returned Distributable relationship does not match the validated image.\")\n    if payload.get(\"Release\") not in (None, {}):\n        problems.append(\"Returned firmware resource unexpectedly contains Release.\")\n    status = payload.get(\"Status\")\n    if status not in (\"NONE\", \"IN_PROGRESS\", \"SUCCESSFUL\", \"FAILED\", \"TERMINATED\"):\n        problems.append(\"Created firmware resource Status is not a documented uppercase enum.\")\n    upgrade_status = payload.get(\"UpgradeStatus\")\n    if upgrade_status not in (None, {}):\n        if not isinstance(upgrade_status, dict) or not safe_moid(upgrade_status.get(\"Moid\")) or upgrade_status.get(\"ObjectType\") != \"firmware.UpgradeStatus\" or upgrade_status.get(\"ClassId\") not in (None, \"mo.MoRef\", \"firmware.UpgradeStatus\"):\n            problems.append(\"UpgradeStatus relationship is malformed.\")\n        else:\n            upgrade_status_moid = upgrade_status[\"Moid\"]\n\nif problems:\n    submission_status = \"invalid\"\n    submission_message = \" \".join(problems)\nelif payload.get(\"Status\") in (\"FAILED\", \"TERMINATED\"):\n    submission_status = \"failed\"\n    submission_message = \"The firmware resource was created but immediately returned terminal Status \" + payload.get(\"Status\") + \".\"\nelif payload.get(\"Status\") == \"SUCCESSFUL\":\n    submission_status = \"completed\"\n    submission_message = \"The firmware resource was created and already reports Status SUCCESSFUL.\"\nelse:\n    submission_status = \"accepted\"\n    submission_message = \"The firmware upgrade resource was accepted with documented HTTP 200; completion is not yet confirmed.\"\n\nif submission_status in (\"accepted\", \"completed\", \"failed\"):\n    if upgrade_status_moid:\n        poll_mode = \"upgrade-status\"\n        poll_api_url = \"/api/v1/firmware/UpgradeStatuses/\" + upgrade_status_moid\n        poll_moid = upgrade_status_moid\n    else:\n        poll_mode = \"created-resource\"\n        poll_api_url = created_collection + \"/\" + created_moid\n        poll_moid = created_moid\n\nsubmission_result_json = json.dumps({\n    \"status\":submission_status,\n    \"message\":submission_message,\n    \"requestAccepted\":status_code == 200,\n    \"completed\":submission_status == \"completed\",\n    \"targetType\":target_type,\n    \"targetName\":target.get(\"targetName\"),\n    \"targetMoid\":target.get(\"targetMoid\"),\n    \"imageMoid\":image_moid,\n    \"imageObjectType\":image_object_type,\n    \"createdMoid\":created_moid or None,\n    \"createdObjectType\":submit_object_type,\n    \"upgradeStatusMoid\":upgrade_status_moid or None,\n    \"pollMode\":poll_mode or None,\n    \"waitRequested\":bool(prepared.get(\"waitForCompletion\")),\n    \"acceptedVersusCompletedSemantics\":True,\n    \"releaseAbsent\":payload.get(\"Release\") in (None, {}) if isinstance(payload, dict) else False,\n    \"retryRequiresInspection\":submission_status in (\"invalid\", \"failed\"),\n    \"readinessCaveats\":target.get(\"readinessCaveats\", []),\n    \"preflight\":preflight\n}, separators=(\",\", \":\"))\ninspection_required_result = json.loads(submission_result_json)\ninspection_required_result.update({\n    \"status\":\"inspection-required\",\n    \"message\":\"The firmware upgrade request was accepted, but subsequent orchestration failed. Inspect the tracked firmware resource before retrying.\",\n    \"requestAccepted\":True,\n    \"completed\":False,\n    \"retryRequiresInspection\":True\n})\nsubmission_inspection_required_result_json = json.dumps(inspection_required_result, separators=(\",\", \":\"))\nsubmissionStatus = submission_status\nsubmissionMessage = submission_message\nsubmissionResultJson = submission_result_json\nsubmissionInspectionRequiredResultJson = submission_inspection_required_result_json\npollMode = poll_mode\npollApiUrl = poll_api_url\npollMoid = poll_moid\nhelperReady = submission_status in (\"invalid\", \"failed\", \"accepted\", \"completed\") and bool(submission_message and submission_result_json and submission_inspection_required_result_json) and (submission_status == \"invalid\" or bool(created_moid and poll_mode and poll_api_url and poll_moid))\n",
               "script_arguments": [
                 "$activity.definition_activity_02XOKCY8L71NY1QnPrXeiBllIj0oZ0gOP0p.output.response_body$",
                 "$activity.definition_activity_02XOKCY8L71NY1QnPrXeiBllIj0oZ0gOP0p.output.status_code$",
-                "$activity.definition_activity_02XOKCY8L71LV5iCP9l3w0leGg4aE6P3gy6.output.script_queries.targetResultJson$",
+                "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XOKCY8L72F02a54ku4Z2cFczXQjyNFHag$",
                 "$activity.definition_activity_02XOKCY8L71NA2ToNfwXMbi4MzYGbQ0NoT7.output.script_queries.imageResultJson$",
-                "$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.script_queries.preparationResultJson$",
+                "$activity.definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar.output.script_queries.preparationResultJson$",
                 "$activity.definition_activity_02XOKCY8L71NA2ToNfwXMbi4MzYGbQ0NoT7.output.script_queries.submitObjectType$",
                 "$activity.definition_activity_02XOKCY8L71NA2ToNfwXMbi4MzYGbQ0NoT7.output.script_queries.imageMoid$",
                 "$activity.definition_activity_02XOKCY8L71NA2ToNfwXMbi4MzYGbQ0NoT7.output.script_queries.imageObjectType$",
@@ -3168,41 +3455,14 @@
                 "$activity.definition_activity_02XOKCY8L71NX4T7ZPtLiiGbfYKLKKxZCUv.output.script_queries.preflightResultJson$"
               ],
               "script_queries": [
-                {
-                  "script_query": "submissionStatus",
-                  "script_query_name": "submissionStatus",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "submissionMessage",
-                  "script_query_name": "submissionMessage",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "submissionResultJson",
-                  "script_query_name": "submissionResultJson",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "pollMode",
-                  "script_query_name": "pollMode",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "pollApiUrl",
-                  "script_query_name": "pollApiUrl",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "pollMoid",
-                  "script_query_name": "pollMoid",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "helperReady",
-                  "script_query_name": "helperReady",
-                  "script_query_type": "boolean"
-                }
+                {"script_query": "submissionStatus", "script_query_name": "submissionStatus", "script_query_type": "string"},
+                {"script_query": "submissionMessage", "script_query_name": "submissionMessage", "script_query_type": "string"},
+                {"script_query": "submissionResultJson", "script_query_name": "submissionResultJson", "script_query_type": "string"},
+                {"script_query": "submissionInspectionRequiredResultJson", "script_query_name": "submissionInspectionRequiredResultJson", "script_query_type": "string"},
+                {"script_query": "pollMode", "script_query_name": "pollMode", "script_query_type": "string"},
+                {"script_query": "pollApiUrl", "script_query_name": "pollApiUrl", "script_query_type": "string"},
+                {"script_query": "pollMoid", "script_query_name": "pollMoid", "script_query_type": "string"},
+                {"script_query": "helperReady", "script_query_name": "helperReady", "script_query_type": "boolean"}
               ]
             },
             "object_type": "definition_activity"
@@ -3283,7 +3543,7 @@
                         },
                         {
                           "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
-                          "variable_value_new": "{\"error\":\"Helper failed or returned unusable output\",\"activity\":\"Inspect accepted firmware resource identity\",\"requestAccepted\":false}"
+                          "variable_value_new": "{\"status\":\"inspection-required\",\"message\":\"The firmware create returned documented HTTP 200, but the response identity could not be validated. Inspect the target before retrying.\",\"requestAccepted\":true,\"completed\":false,\"acceptanceUnknown\":false,\"resourceIdentifiersAvailable\":false,\"retryRequiresInspection\":true}"
                         }
                       ]
                     },
@@ -3515,7 +3775,7 @@
                     },
                     "operator": "and",
                     "right_operand": {
-                      "left_operand": "$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.script_queries.waitForCompletion$",
+                      "left_operand": "$activity.definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar.output.script_queries.waitForCompletion$",
                       "operator": "eq",
                       "right_operand": false
                     }
@@ -3691,7 +3951,7 @@
               "action_timeout": 180,
               "script": "import json\nimport sys\nimport time\ntimeout = int(sys.argv[1])\nif timeout < 1 or timeout > 600:\n    raise ValueError(\"Wait timeout must be between 1 and 600 seconds\")\nnow = time.time()\ninitialDelay = min(2.0, max(0.25, timeout / 20.0))\npollInterval = max(1.0, max(0.0, timeout - initialDelay) / 4.0)\nif initialDelay >= 180.0 or pollInterval >= 180.0:\n    raise ValueError(\"Derived delays exceed the helper action timeout\")\ndeadlineEpoch = \"%.6f\" % (now + timeout)\ninitialDelaySeconds = \"%.6f\" % initialDelay\npollIntervalSeconds = \"%.6f\" % pollInterval\npollingResultJson = json.dumps({\"waitTimeoutSeconds\": timeout, \"initialDelaySeconds\": initialDelay, \"pollIntervalSeconds\": pollInterval, \"maximumPollAttempts\": 5}, separators=(\",\", \":\"))\nhelperReady = bool(deadlineEpoch and initialDelaySeconds and pollIntervalSeconds and pollingResultJson)",
               "script_arguments": [
-                "$activity.definition_activity_02XOKCY8L71LH0ZUluwh4qTibEuUBtgjO3F.output.script_queries.waitTimeoutSeconds$"
+                "$activity.definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar.output.script_queries.waitTimeoutSeconds$"
               ],
               "script_queries": [
                 {
@@ -3794,7 +4054,7 @@
                         },
                         {
                           "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
-                          "variable_value_new": "{\"error\":\"Helper failed or returned unusable output\",\"activity\":\"Initialize bounded firmware polling\",\"requestAccepted\":false}"
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.submissionInspectionRequiredResultJson$"
                         }
                       ]
                     },
@@ -3865,12 +4125,13 @@
                       "display_name": "Wait before firmware upgrade polling attempt",
                       "skip_execution": false,
                       "action_timeout": 180,
-                      "script": "import json\nimport sys\nimport time\n\ndeadline = float(sys.argv[1])\ninitialDelay = float(sys.argv[2])\npollInterval = float(sys.argv[3])\nattempt = int(sys.argv[4])\nif attempt < 1 or attempt > 5:\n    raise ValueError(\"Polling attempt must be from 1 through 5\")\nrequestedDelay = initialDelay if attempt == 1 else pollInterval\nif requestedDelay < 0 or requestedDelay >= 180:\n    raise ValueError(\"Polling delay is outside safe helper bound\")\nstage = \"firmware upgrade poll \" + str(attempt)\nremaining = deadline - time.time()\nif remaining <= 0:\n    waitStatus = \"timeout\"\n    waitMessage = \"The firmware upgrade wait deadline was reached before \" + stage + \".\"\n    waitResultJson = json.dumps({\"requestAccepted\":True,\"completed\":False,\"timeout\":True,\"stage\":stage,\"attempt\":attempt}, separators=(\",\", \":\"))\nelse:\n    actualDelay = min(requestedDelay, remaining)\n    time.sleep(actualDelay)\n    waitStatus = \"ready\"\n    waitMessage = \"The bounded delay before \" + stage + \" completed.\"\n    waitResultJson = json.dumps({\"stage\":stage,\"attempt\":attempt,\"requestedDelaySeconds\":requestedDelay,\"actualDelaySeconds\":actualDelay}, separators=(\",\", \":\"))\nhelperReady = waitStatus in (\"ready\",\"timeout\") and bool(waitMessage and waitResultJson)",
+                      "script": "import json\nimport sys\nimport time\n\ndeadline = float(sys.argv[1])\ninitialDelay = float(sys.argv[2])\npollInterval = float(sys.argv[3])\nattempt = int(sys.argv[4])\nsubmission = json.loads(sys.argv[5])\nif attempt < 1 or attempt > 5:\n    raise ValueError(\"Polling attempt must be from 1 through 5\")\nif not isinstance(submission, dict) or submission.get(\"requestAccepted\") is not True:\n    raise ValueError(\"Validated accepted submission contract is required\")\npreservedKeys = (\n    \"targetType\",\n    \"targetName\",\n    \"targetMoid\",\n    \"imageMoid\",\n    \"imageObjectType\",\n    \"createdMoid\",\n    \"createdObjectType\",\n    \"upgradeStatusMoid\",\n    \"pollMode\",\n    \"readinessCaveats\",\n    \"retryRequiresInspection\"\n)\nif any(key not in submission for key in preservedKeys):\n    raise ValueError(\"Accepted submission contract is missing terminal identity fields\")\nrequestedDelay = initialDelay if attempt == 1 else pollInterval\nif requestedDelay < 0 or requestedDelay >= 180:\n    raise ValueError(\"Polling delay is outside safe helper bound\")\nstage = \"firmware upgrade poll \" + str(attempt)\nremaining = deadline - time.time()\nif remaining <= 0:\n    waitStatus = \"timeout\"\n    waitMessage = \"The firmware upgrade wait deadline was reached before \" + stage + \".\"\n    timeoutResult = {key: submission.get(key) for key in preservedKeys}\n    timeoutResult.update({\n        \"requestAccepted\": True,\n        \"completed\": False,\n        \"timeout\": True,\n        \"stage\": stage,\n        \"attempt\": attempt\n    })\n    waitResultJson = json.dumps(timeoutResult, separators=(\",\", \":\"))\nelse:\n    actualDelay = min(requestedDelay, remaining)\n    time.sleep(actualDelay)\n    waitStatus = \"ready\"\n    waitMessage = \"The bounded delay before \" + stage + \" completed.\"\n    waitResultJson = json.dumps({\"stage\":stage,\"attempt\":attempt,\"requestedDelaySeconds\":requestedDelay,\"actualDelaySeconds\":actualDelay}, separators=(\",\", \":\"))\nhelperReady = waitStatus in (\"ready\", \"timeout\") and bool(waitMessage and waitResultJson)\n",
                       "script_arguments": [
                         "$activity.definition_activity_02XOKCY8L71P57eNzmSt2cSsuFUjMrIwIf5.output.script_queries.deadlineEpoch$",
                         "$activity.definition_activity_02XOKCY8L71P57eNzmSt2cSsuFUjMrIwIf5.output.script_queries.initialDelaySeconds$",
                         "$activity.definition_activity_02XOKCY8L71P57eNzmSt2cSsuFUjMrIwIf5.output.script_queries.pollIntervalSeconds$",
-                        "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XOLEHO2G5EH6jNlL6gH9kQpqPUTwwDQUE$"
+                        "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XOLEHO2G5EH6jNlL6gH9kQpqPUTwwDQUE$",
+                        "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.submissionResultJson$"
                       ],
                       "script_queries": [
                         {
@@ -3973,7 +4234,7 @@
                                 },
                                 {
                                   "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
-                                  "variable_value_new": "{\"error\":\"Helper failed or returned unusable output\",\"activity\":\"Wait before firmware polling attempt\",\"requestAccepted\":false}"
+                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.submissionInspectionRequiredResultJson$"
                                 }
                               ]
                             },
@@ -4161,7 +4422,7 @@
                                 },
                                 {
                                   "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
-                                  "variable_value_new": "{\"error\":\"API activity failed or returned unexpected HTTP status\",\"activity\":\"Get firmware status (current attempt)\",\"requestAccepted\":false,\"retryRequiresInspection\":true}"
+                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.submissionInspectionRequiredResultJson$"
                                 }
                               ]
                             },
@@ -4315,7 +4576,7 @@
                                 },
                                 {
                                   "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
-                                  "variable_value_new": "{\"error\":\"Helper failed or returned unusable output\",\"activity\":\"Inspect firmware status (current attempt)\",\"requestAccepted\":false}"
+                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.submissionInspectionRequiredResultJson$"
                                 }
                               ]
                             },
