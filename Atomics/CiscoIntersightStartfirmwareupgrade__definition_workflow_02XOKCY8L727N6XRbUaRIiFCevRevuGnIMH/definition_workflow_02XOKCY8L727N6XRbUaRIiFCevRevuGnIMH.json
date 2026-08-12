@@ -11,7 +11,7 @@
         "is_atomic": true
       },
       "delete_workflow_instance": false,
-      "description": "Starts a Cisco Repository firmware upgrade for one Server, UCS-X Chassis, or IMM Domain, optionally with five bounded polls. It validates exact organization-scoped identity, relationships, catalog tags, model compatibility, UCS-X expander topology, and a Domain Fabric Interconnect A/B pair before mutation. Server SkipEstimateImpact is fixed false. Domain WaitTimeOut is fixed 0. UCS-X XFM behavior is derived from the expanded equipped topology: a healthy UCSX-FS-9516 pair uses partial-shutdown; excluded or absent XFM uses none and an explicit xfm exclusion. Final preflight blocks NONE/IN_PROGRESS but can race create. HTTP 200 means accepted, not complete, unless status is SUCCESSFUL. The workflow supports only Cisco Repository and never accepts repository credentials. Inspect ambiguous or failed results before retrying.",
+      "description": "Starts a Cisco Repository firmware upgrade for one Server, UCS-X Chassis, or IMM Domain and returns as soon as Intersight validates and creates the concrete upgrade resource. It validates exact organization-scoped identity, relationships, catalog tags, model compatibility, UCS-X expander topology, and a Domain Fabric Interconnect A/B pair before mutation. Server SkipEstimateImpact is fixed false; Domain WaitTimeOut is fixed 0. UCS-X XFM behavior is derived from equipped topology. Final preflight blocks active upgrades but can race create. A valid nonterminal create response returns 202 accepted; only an immediate SUCCESSFUL response returns 200 completed. This atomic does not poll or monitor completion. Inspect ambiguous or failed results before retrying.",
       "display_name": "Cisco Intersight - Start firmware upgrade",
       "runtime_user": {
         "override_target_runtime_user": false,
@@ -266,45 +266,13 @@
         "object_type": "variable_workflow"
       },
       {
-        "schema_id": "datatype.boolean",
-        "properties": {
-          "value": false,
-          "scope": "input",
-          "name": "Wait for Completion",
-          "type": "datatype.boolean",
-          "description": "When false, report the documented HTTP 200 accepted resource without claiming upgrade completion. When true, poll a validated UpgradeStatus or created resource at most five times.",
-          "is_required": false,
-          "display_on_wizard": false,
-          "is_invisible": false,
-          "variable_string_format": ""
-        },
-        "unique_name": "variable_workflow_02XOKCY8L72F90jHIBV6230oPiJD1whSniP",
-        "object_type": "variable_workflow"
-      },
-      {
-        "schema_id": "datatype.integer",
-        "properties": {
-          "value": 0,
-          "scope": "input",
-          "name": "Wait Timeout Seconds",
-          "type": "datatype.integer",
-          "description": "Required from 1 through 600 when Wait for Completion is true; otherwise must remain numeric 0.",
-          "is_required": false,
-          "display_on_wizard": false,
-          "is_invisible": false,
-          "variable_string_format": ""
-        },
-        "unique_name": "variable_workflow_02XOKCY8L72FA05PnOX9UAX23LnJw2vlx3L",
-        "object_type": "variable_workflow"
-      },
-      {
         "schema_id": "datatype.string",
         "properties": {
           "value": "",
           "scope": "output",
           "name": "Status Code",
           "type": "datatype.string",
-          "description": "HTTP-style final status. Documented successful firmware create and completed wait paths use 200; validation/lookup/readiness failures use 4xx; helper/API/polling failures use 5xx.",
+          "description": "HTTP-style final status. A validated nonterminal create response uses 202; an immediately successful create response uses 200; validated request rejections preserve their 4xx status; ambiguous or internal failures use 5xx.",
           "is_required": false,
           "display_on_wizard": false,
           "is_invisible": false,
@@ -320,7 +288,7 @@
           "scope": "output",
           "name": "Status Message",
           "type": "datatype.string",
-          "description": "Human-readable outcome distinguishing an accepted firmware resource from a confirmed completed upgrade.",
+          "description": "Human-readable submission outcome distinguishing an accepted firmware resource from an immediately completed resource or a rejected request.",
           "is_required": false,
           "display_on_wizard": false,
           "is_invisible": false,
@@ -336,7 +304,7 @@
           "scope": "output",
           "name": "Error Message",
           "type": "datatype.string",
-          "description": "Actionable failure detail. Empty only for a validated accepted or completed result.",
+          "description": "Actionable submission failure detail. Empty only when the Intersight create response and concrete resource identity were validated.",
           "is_required": false,
           "display_on_wizard": false,
           "is_invisible": false,
@@ -352,45 +320,13 @@
           "scope": "output",
           "name": "Result",
           "type": "datatype.string",
-          "description": "Structured JSON with exact organization, target, image, submitted resource, accepted-versus-completed state, and explicit tenant-readiness caveats.",
+          "description": "Structured JSON preserving the upstream submission status, organization, target, image, concrete created resource, immediate observed status, accepted-versus-completed state, and retry guidance. Completion is not monitored.",
           "is_required": false,
           "display_on_wizard": false,
           "is_invisible": false,
           "variable_string_format": "json"
         },
         "unique_name": "variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw",
-        "object_type": "variable_workflow"
-      },
-      {
-        "schema_id": "datatype.integer",
-        "properties": {
-          "value": 1,
-          "scope": "local",
-          "name": "Polling Attempt",
-          "type": "datatype.integer",
-          "description": "Tracks the current bounded firmware upgrade status poll from 1 through 5.",
-          "is_required": false,
-          "display_on_wizard": false,
-          "is_invisible": false,
-          "variable_string_format": ""
-        },
-        "unique_name": "variable_workflow_02XOLEHO2G5EH6jNlL6gH9kQpqPUTwwDQUE",
-        "object_type": "variable_workflow"
-      },
-      {
-        "schema_id": "datatype.string",
-        "properties": {
-          "value": "{}",
-          "scope": "local",
-          "name": "Last Firmware Poll Result",
-          "type": "datatype.string",
-          "description": "Caches the latest validated nonterminal firmware poll result for the exhaustion path outside the bounded loop.",
-          "is_required": false,
-          "display_on_wizard": false,
-          "is_invisible": false,
-          "variable_string_format": "json"
-        },
-        "unique_name": "variable_workflow_02XP2I0CDTFP2701mzfprxNpan8qkjRnAtT",
         "object_type": "variable_workflow"
       }
     ],
@@ -421,7 +357,7 @@
               "display_name": "Parse and validate supported firmware inputs",
               "skip_execution": false,
               "action_timeout": 180,
-              "script": "import json\nimport sys\n\ntarget_type_raw = sys.argv[1]\norganization_raw = sys.argv[2]\ntarget_name_raw = sys.argv[3]\nversion_raw = sys.argv[4]\nimage_source_raw = sys.argv[5]\nserver_mode_raw = sys.argv[6]\nexcluded_components_raw = sys.argv[8]\nexcluded_pids_raw = sys.argv[9]\nfabric_evacuation_raw = sys.argv[11]\npsu_raw = sys.argv[13]\npdb_raw = sys.argv[14]\nskip_io_raw = sys.argv[15]\nwait_raw = sys.argv[16]\nwait_timeout_raw = sys.argv[17]\n\ntargetType = target_type_raw.strip()\norganizationName = organization_raw.strip()\ntargetName = target_name_raw.strip()\nfirmwareVersion = version_raw.strip()\nimage_source = image_source_raw.strip()\nserver_mode = server_mode_raw.strip()\nexcluded_components_text = excluded_components_raw.strip()\nexcluded_pids_text = excluded_pids_raw.strip()\nerrors = []\n\nfor raw, clean, label in ((target_type_raw, targetType, \"Target Type\"), (organization_raw, organizationName, \"Device Organization\"), (target_name_raw, targetName, \"Target Name\"), (version_raw, firmwareVersion, \"Firmware Version\"), (image_source_raw, image_source, \"Image Source\"), (server_mode_raw, server_mode, \"Server Upgrade Mode\"), (excluded_components_raw, excluded_components_text, \"Excluded Components\"), (excluded_pids_raw, excluded_pids_text, \"Excluded Component PIDs\")):\n    if raw != clean:\n        errors.append(label + \" must not contain surrounding whitespace.\")\n\ndef strict_bool(value, label):\n    normalized = str(value).strip().lower()\n    if normalized not in (\"true\", \"false\"):\n        errors.append(label + \" must be a boolean.\")\n        return False\n    return normalized == \"true\"\n\ndef strict_int(value, label):\n    try:\n        parsed = int(value)\n    except Exception:\n        errors.append(label + \" must be an integer.\")\n        return 0\n    if str(parsed) != str(value):\n        errors.append(label + \" must use canonical integer syntax.\")\n    return parsed\n\nenable_fabric_evacuation = strict_bool(fabric_evacuation_raw, \"Enable Fabric Evacuation\")\nenable_psu_upgrade = strict_bool(psu_raw, \"Enable PSU Upgrade\")\nenable_pdb_fpga_upgrade = strict_bool(pdb_raw, \"Enable PDB FPGA Upgrade\")\nskip_wait_for_io = strict_bool(skip_io_raw, \"Skip Wait for I/O Connectivity\")\nwaitForCompletion = strict_bool(wait_raw, \"Wait for Completion\")\nwaitTimeoutSeconds = strict_int(wait_timeout_raw, \"Wait Timeout Seconds\")\n\nif targetType not in {\"Server\", \"UCS-X Chassis\", \"Domain\"}:\n    errors.append(\"Target Type must exactly match Server, UCS-X Chassis, or Domain.\")\nif image_source != \"Cisco Repository\":\n    errors.append(\"Image Source must be exactly Cisco Repository.\")\n\ndef validate_odata(value, label, maximum):\n    if not value or len(value) > maximum or any(ord(char) < 32 or char in \"&?#%\" for char in value):\n        errors.append(label + \" must contain 1-\" + str(maximum) + \" characters and no control or URL query-delimiter characters.\")\n\nvalidate_odata(organizationName, \"Device Organization\", 64)\nvalidate_odata(targetName, \"Target Name\", 128)\nvalidate_odata(firmwareVersion, \"Firmware Version\", 128)\n\nexcluded_components = []\nif excluded_components_text:\n    try:\n        excluded_components = json.loads(excluded_components_text)\n    except Exception:\n        errors.append(\"Excluded Components must be valid JSON.\")\n        excluded_components = []\n    if not isinstance(excluded_components, list) or any(not isinstance(value, str) or not value or value != value.strip() for value in excluded_components):\n        errors.append(\"Excluded Components must be a JSON array of exact non-empty strings.\")\n        excluded_components = []\n    elif len(excluded_components) != len(set(excluded_components)):\n        errors.append(\"Excluded Components must not contain duplicates.\")\nif \"none\" in excluded_components and len(excluded_components) != 1:\n    errors.append(\"Excluded Components value none is mutually exclusive with other values.\")\n\nexcluded_pid_object = None\nif excluded_pids_text:\n    try:\n        excluded_pid_object = json.loads(excluded_pids_text)\n    except Exception:\n        errors.append(\"Excluded Component PIDs must be valid JSON.\")\n    allowed_keys = {\"ExcludeLocalDiskList\", \"ExcludeStorageControllerList\"}\n    if excluded_pid_object is not None:\n        if not isinstance(excluded_pid_object, dict) or not excluded_pid_object or set(excluded_pid_object) - allowed_keys:\n            errors.append(\"Excluded Component PIDs must contain only supported non-empty PID arrays.\")\n            excluded_pid_object = None\n        else:\n            for key, values in excluded_pid_object.items():\n                if not isinstance(values, list) or not values or any(not isinstance(value, str) or not value or value != value.strip() or len(value) > 128 for value in values) or len(values) != len(set(values)):\n                    errors.append(key + \" must be a non-empty array of unique exact strings no longer than 128 characters.\")\n                    excluded_pid_object = None\n                    break\n\ndomain_defaults_changed = enable_fabric_evacuation is not True or enable_psu_upgrade or enable_pdb_fpga_upgrade or skip_wait_for_io\nif targetType == \"Server\":\n    allowed = {\"none\", \"local-disk\", \"drives-except-boot-drives\", \"storage-controller\", \"storage-sasexpander\", \"storage-u2\"}\n    if server_mode not in (\"Start Immediately\", \"Mount Only\"):\n        errors.append(\"Server Upgrade Mode must be Start Immediately or Mount Only for Server.\")\n    if any(value not in allowed for value in excluded_components):\n        errors.append(\"Excluded Components contains a value not supported by firmware.Upgrade.\")\n    if domain_defaults_changed:\n        errors.append(\"Domain-only upgrade options must retain defaults for Server.\")\nelif targetType == \"UCS-X Chassis\":\n    allowed = {\"none\", \"local-disk\", \"psu\", \"xfm\"}\n    if server_mode != \"Start Immediately\":\n        errors.append(\"Server Upgrade Mode must retain Start Immediately for UCS-X Chassis.\")\n    if any(value not in allowed for value in excluded_components):\n        errors.append(\"Excluded Components contains a value not supported by firmware.ChassisUpgrade.\")\n    if excluded_pid_object is not None:\n        errors.append(\"Excluded Component PIDs is not supported by firmware.ChassisUpgrade.\")\n    if domain_defaults_changed:\n        errors.append(\"Domain-only upgrade options must retain defaults for UCS-X Chassis.\")\nelif targetType == \"Domain\":\n    if server_mode != \"Start Immediately\" or excluded_components or excluded_pid_object is not None:\n        errors.append(\"Server/chassis-only mode, exclusions, and PID options must retain defaults for Domain.\")\n\nif waitForCompletion:\n    if waitTimeoutSeconds < 1 or waitTimeoutSeconds > 600:\n        errors.append(\"Wait Timeout Seconds must be from 1 through 600 when Wait for Completion is true.\")\nelif waitTimeoutSeconds != 0:\n    errors.append(\"Wait Timeout Seconds must remain numeric 0 when Wait for Completion is false.\")\n\nescapedOrganizationName = organizationName.replace(\"'\", \"''\")\nescaped_name = targetName.replace(\"'\", \"''\")\nescapedFirmwareVersion = firmwareVersion.replace(\"'\", \"''\")\ntargetApiUrl = \"\"\nexpectedTargetObjectType = \"\"\nif targetType == \"Server\":\n    expectedTargetObjectType = \"compute.PhysicalSummary\"\n    targetApiUrl = \"/api/v1/compute/PhysicalSummaries?$filter=Name eq '\" + escaped_name + \"' and PermissionResources/any(t:t/Moid eq '{organizationMoid}')&$select=Moid,Name,Model,ManagementMode,SourceObjectType,ObjectType,ClassId,PermissionResources\"\nelif targetType == \"UCS-X Chassis\":\n    expectedTargetObjectType = \"equipment.Chassis\"\n    targetApiUrl = \"/api/v1/equipment/Chasses?$filter=Name eq '\" + escaped_name + \"' and PermissionResources/any(t:t/Moid eq '{organizationMoid}')&$select=Moid,Name,Model,PlatformType,ObjectType,ClassId,PermissionResources,ExpanderModules&$expand=ExpanderModules($select=Moid,Model,ModuleId,OperState,OperReason,Presence,InventoryReady,ObjectType,ClassId,EquipmentChassis)\"\nelif targetType == \"Domain\":\n    expectedTargetObjectType = \"asset.Target\"\n    targetApiUrl = \"/api/v1/asset/Targets?$filter=Name eq '\" + escaped_name + \"' and TargetType eq 'UCSFIISM' and Status eq 'Connected' and PermissionResources/any(t:t/Moid eq '{organizationMoid}')&$select=Moid,Name,TargetType,Status,RegisteredDevice,ObjectType,ClassId,PermissionResources\"\n\npreparationStatus = \"invalid\" if errors else \"ready\"\npreparationMessage = \" \".join(errors) if errors else \"Inputs, branch options, JSON shapes, and exact OData routes were validated.\"\npreparationResultJson = json.dumps({\"validated\":not errors,\"errors\":errors,\"targetType\":targetType,\"deviceOrganization\":organizationName,\"targetName\":targetName,\"firmwareVersion\":firmwareVersion,\"imageSource\":image_source,\"serverUpgradeMode\":server_mode,\"skipEstimateImpact\":False,\"excludedComponents\":excluded_components,\"excludedComponentPids\":excluded_pid_object,\"enableFabricEvacuation\":enable_fabric_evacuation,\"switchWaitTimeoutMinutes\":0,\"enablePsuUpgrade\":enable_psu_upgrade,\"enablePdbFpgaUpgrade\":enable_pdb_fpga_upgrade,\"skipWaitForIoPathConnectivity\":skip_wait_for_io,\"waitForCompletion\":waitForCompletion,\"waitTimeoutSeconds\":waitTimeoutSeconds,\"acceptedVersusCompletedSemantics\":True,\"ciscoRepositoryOnly\":True}, separators=(\",\", \":\"))\nhelperReady = preparationStatus in (\"invalid\", \"ready\") and bool(preparationMessage and preparationResultJson) and (preparationStatus != \"ready\" or bool(targetApiUrl and expectedTargetObjectType))\n",
+              "script": "import json\nimport sys\n\ntarget_type_raw = sys.argv[1]\norganization_raw = sys.argv[2]\ntarget_name_raw = sys.argv[3]\nversion_raw = sys.argv[4]\nimage_source_raw = sys.argv[5]\nserver_mode_raw = sys.argv[6]\nexcluded_components_raw = sys.argv[8]\nexcluded_pids_raw = sys.argv[9]\nfabric_evacuation_raw = sys.argv[11]\npsu_raw = sys.argv[13]\npdb_raw = sys.argv[14]\nskip_io_raw = sys.argv[15]\n\ntargetType = target_type_raw.strip()\norganizationName = organization_raw.strip()\ntargetName = target_name_raw.strip()\nfirmwareVersion = version_raw.strip()\nimage_source = image_source_raw.strip()\nserver_mode = server_mode_raw.strip()\nexcluded_components_text = excluded_components_raw.strip()\nexcluded_pids_text = excluded_pids_raw.strip()\nerrors = []\n\nfor raw, clean, label in ((target_type_raw, targetType, \"Target Type\"), (organization_raw, organizationName, \"Device Organization\"), (target_name_raw, targetName, \"Target Name\"), (version_raw, firmwareVersion, \"Firmware Version\"), (image_source_raw, image_source, \"Image Source\"), (server_mode_raw, server_mode, \"Server Upgrade Mode\"), (excluded_components_raw, excluded_components_text, \"Excluded Components\"), (excluded_pids_raw, excluded_pids_text, \"Excluded Component PIDs\")):\n    if raw != clean:\n        errors.append(label + \" must not contain surrounding whitespace.\")\n\ndef strict_bool(value, label):\n    normalized = str(value).strip().lower()\n    if normalized not in (\"true\", \"false\"):\n        errors.append(label + \" must be a boolean.\")\n        return False\n    return normalized == \"true\"\n\nenable_fabric_evacuation = strict_bool(fabric_evacuation_raw, \"Enable Fabric Evacuation\")\nenable_psu_upgrade = strict_bool(psu_raw, \"Enable PSU Upgrade\")\nenable_pdb_fpga_upgrade = strict_bool(pdb_raw, \"Enable PDB FPGA Upgrade\")\nskip_wait_for_io = strict_bool(skip_io_raw, \"Skip Wait for I/O Connectivity\")\n\nif targetType not in {\"Server\", \"UCS-X Chassis\", \"Domain\"}:\n    errors.append(\"Target Type must exactly match Server, UCS-X Chassis, or Domain.\")\nif image_source != \"Cisco Repository\":\n    errors.append(\"Image Source must be exactly Cisco Repository.\")\n\ndef validate_odata(value, label, maximum):\n    if not value or len(value) > maximum or any(ord(char) < 32 or char in \"&?#%\" for char in value):\n        errors.append(label + \" must contain 1-\" + str(maximum) + \" characters and no control or URL query-delimiter characters.\")\n\nvalidate_odata(organizationName, \"Device Organization\", 64)\nvalidate_odata(targetName, \"Target Name\", 128)\nvalidate_odata(firmwareVersion, \"Firmware Version\", 128)\n\nexcluded_components = []\nif excluded_components_text:\n    try:\n        excluded_components = json.loads(excluded_components_text)\n    except Exception:\n        errors.append(\"Excluded Components must be valid JSON.\")\n        excluded_components = []\n    if not isinstance(excluded_components, list) or any(not isinstance(value, str) or not value or value != value.strip() for value in excluded_components):\n        errors.append(\"Excluded Components must be a JSON array of exact non-empty strings.\")\n        excluded_components = []\n    elif len(excluded_components) != len(set(excluded_components)):\n        errors.append(\"Excluded Components must not contain duplicates.\")\nif \"none\" in excluded_components and len(excluded_components) != 1:\n    errors.append(\"Excluded Components value none is mutually exclusive with other values.\")\n\nexcluded_pid_object = None\nif excluded_pids_text:\n    try:\n        excluded_pid_object = json.loads(excluded_pids_text)\n    except Exception:\n        errors.append(\"Excluded Component PIDs must be valid JSON.\")\n    allowed_keys = {\"ExcludeLocalDiskList\", \"ExcludeStorageControllerList\"}\n    if excluded_pid_object is not None:\n        if not isinstance(excluded_pid_object, dict) or not excluded_pid_object or set(excluded_pid_object) - allowed_keys:\n            errors.append(\"Excluded Component PIDs must contain only supported non-empty PID arrays.\")\n            excluded_pid_object = None\n        else:\n            for key, values in excluded_pid_object.items():\n                if not isinstance(values, list) or not values or any(not isinstance(value, str) or not value or value != value.strip() or len(value) > 128 for value in values) or len(values) != len(set(values)):\n                    errors.append(key + \" must be a non-empty array of unique exact strings no longer than 128 characters.\")\n                    excluded_pid_object = None\n                    break\n\ndomain_defaults_changed = enable_fabric_evacuation is not True or enable_psu_upgrade or enable_pdb_fpga_upgrade or skip_wait_for_io\nif targetType == \"Server\":\n    allowed = {\"none\", \"local-disk\", \"drives-except-boot-drives\", \"storage-controller\", \"storage-sasexpander\", \"storage-u2\"}\n    if server_mode not in (\"Start Immediately\", \"Mount Only\"):\n        errors.append(\"Server Upgrade Mode must be Start Immediately or Mount Only for Server.\")\n    if any(value not in allowed for value in excluded_components):\n        errors.append(\"Excluded Components contains a value not supported by firmware.Upgrade.\")\n    if domain_defaults_changed:\n        errors.append(\"Domain-only upgrade options must retain defaults for Server.\")\nelif targetType == \"UCS-X Chassis\":\n    allowed = {\"none\", \"local-disk\", \"psu\", \"xfm\"}\n    if server_mode != \"Start Immediately\":\n        errors.append(\"Server Upgrade Mode must retain Start Immediately for UCS-X Chassis.\")\n    if any(value not in allowed for value in excluded_components):\n        errors.append(\"Excluded Components contains a value not supported by firmware.ChassisUpgrade.\")\n    if excluded_pid_object is not None:\n        errors.append(\"Excluded Component PIDs is not supported by firmware.ChassisUpgrade.\")\n    if domain_defaults_changed:\n        errors.append(\"Domain-only upgrade options must retain defaults for UCS-X Chassis.\")\nelif targetType == \"Domain\":\n    if server_mode != \"Start Immediately\" or excluded_components or excluded_pid_object is not None:\n        errors.append(\"Server/chassis-only mode, exclusions, and PID options must retain defaults for Domain.\")\n\nescapedOrganizationName = organizationName.replace(\"'\", \"''\")\nescaped_name = targetName.replace(\"'\", \"''\")\nescapedFirmwareVersion = firmwareVersion.replace(\"'\", \"''\")\ntargetApiUrl = \"\"\nexpectedTargetObjectType = \"\"\nif targetType == \"Server\":\n    expectedTargetObjectType = \"compute.PhysicalSummary\"\n    targetApiUrl = \"/api/v1/compute/PhysicalSummaries?$filter=Name eq '\" + escaped_name + \"' and PermissionResources/any(t:t/Moid eq '{organizationMoid}')&$select=Moid,Name,Model,ManagementMode,SourceObjectType,ObjectType,ClassId,PermissionResources\"\nelif targetType == \"UCS-X Chassis\":\n    expectedTargetObjectType = \"equipment.Chassis\"\n    targetApiUrl = \"/api/v1/equipment/Chasses?$filter=Name eq '\" + escaped_name + \"' and PermissionResources/any(t:t/Moid eq '{organizationMoid}')&$select=Moid,Name,Model,PlatformType,ObjectType,ClassId,PermissionResources,ExpanderModules&$expand=ExpanderModules($select=Moid,Model,ModuleId,OperState,OperReason,Presence,InventoryReady,ObjectType,ClassId,EquipmentChassis)\"\nelif targetType == \"Domain\":\n    expectedTargetObjectType = \"asset.Target\"\n    targetApiUrl = \"/api/v1/asset/Targets?$filter=Name eq '\" + escaped_name + \"' and TargetType eq 'UCSFIISM' and Status eq 'Connected' and PermissionResources/any(t:t/Moid eq '{organizationMoid}')&$select=Moid,Name,TargetType,Status,RegisteredDevice,ObjectType,ClassId,PermissionResources\"\n\npreparationStatus = \"invalid\" if errors else \"ready\"\npreparationMessage = \" \".join(errors) if errors else \"Inputs, branch options, JSON shapes, and exact OData routes were validated.\"\npreparationResultJson = json.dumps({\"validated\":not errors,\"errors\":errors,\"targetType\":targetType,\"deviceOrganization\":organizationName,\"targetName\":targetName,\"firmwareVersion\":firmwareVersion,\"imageSource\":image_source,\"serverUpgradeMode\":server_mode,\"skipEstimateImpact\":False,\"excludedComponents\":excluded_components,\"excludedComponentPids\":excluded_pid_object,\"enableFabricEvacuation\":enable_fabric_evacuation,\"switchWaitTimeoutMinutes\":0,\"enablePsuUpgrade\":enable_psu_upgrade,\"enablePdbFpgaUpgrade\":enable_pdb_fpga_upgrade,\"skipWaitForIoPathConnectivity\":skip_wait_for_io,\"monitoringPerformed\":False,\"acceptedVersusCompletedSemantics\":True,\"ciscoRepositoryOnly\":True}, separators=(\",\", \":\"))\nhelperReady = preparationStatus in (\"invalid\", \"ready\") and bool(preparationMessage and preparationResultJson) and (preparationStatus != \"ready\" or bool(targetApiUrl and expectedTargetObjectType))\n",
               "script_arguments": [
                 "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72EU4Ct7gaVW8C4Pa5cMvhsQep$",
                 "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72EV4hVC2itz7f90bDXiyFWcjx$",
@@ -437,20 +373,44 @@
                 "0",
                 "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72F65NtFQOcQHYPgBhSNMIbDgJ$",
                 "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72F76CTIQR4IHpG9nauQLScMPI$",
-                "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72F86veqdoyHUqzYOW3qzhK2NE$",
-                "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72F90jHIBV6230oPiJD1whSniP$",
-                "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72FA05PnOX9UAX23LnJw2vlx3L$"
+                "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.input.variable_workflow_02XOKCY8L72F86veqdoyHUqzYOW3qzhK2NE$"
               ],
               "script_queries": [
-                {"script_query":"preparationStatus","script_query_name":"preparationStatus","script_query_type":"string"},
-                {"script_query":"preparationMessage","script_query_name":"preparationMessage","script_query_type":"string"},
-                {"script_query":"preparationResultJson","script_query_name":"preparationResultJson","script_query_type":"string"},
-                {"script_query":"organizationName","script_query_name":"organizationName","script_query_type":"string"},
-                {"script_query":"escapedOrganizationName","script_query_name":"escapedOrganizationName","script_query_type":"string"},
-                {"script_query":"targetApiUrl","script_query_name":"targetApiUrl","script_query_type":"string"},
-                {"script_query":"waitForCompletion","script_query_name":"waitForCompletion","script_query_type":"boolean"},
-                {"script_query":"waitTimeoutSeconds","script_query_name":"waitTimeoutSeconds","script_query_type":"integer"},
-                {"script_query":"helperReady","script_query_name":"helperReady","script_query_type":"boolean"}
+                {
+                  "script_query": "preparationStatus",
+                  "script_query_name": "preparationStatus",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "preparationMessage",
+                  "script_query_name": "preparationMessage",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "preparationResultJson",
+                  "script_query_name": "preparationResultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "organizationName",
+                  "script_query_name": "organizationName",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "escapedOrganizationName",
+                  "script_query_name": "escapedOrganizationName",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "targetApiUrl",
+                  "script_query_name": "targetApiUrl",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "helperReady",
+                  "script_query_name": "helperReady",
+                  "script_query_type": "boolean"
+                }
               ]
             },
             "object_type": "definition_activity"
@@ -2483,16 +2443,56 @@
                 "$activity.definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar.output.script_queries.preparationResultJson$"
               ],
               "script_queries": [
-                {"script_query": "imageStatus", "script_query_name": "imageStatus", "script_query_type": "string"},
-                {"script_query": "imageMessage", "script_query_name": "imageMessage", "script_query_type": "string"},
-                {"script_query": "imageResultJson", "script_query_name": "imageResultJson", "script_query_type": "string"},
-                {"script_query": "imageMoid", "script_query_name": "imageMoid", "script_query_type": "string"},
-                {"script_query": "imageObjectType", "script_query_name": "imageObjectType", "script_query_type": "string"},
-                {"script_query": "requestJson", "script_query_name": "requestJson", "script_query_type": "string"},
-                {"script_query": "submitApiUrl", "script_query_name": "submitApiUrl", "script_query_type": "string"},
-                {"script_query": "createdResourceUrl", "script_query_name": "createdResourceUrl", "script_query_type": "string"},
-                {"script_query": "submitObjectType", "script_query_name": "submitObjectType", "script_query_type": "string"},
-                {"script_query": "helperReady", "script_query_name": "helperReady", "script_query_type": "boolean"}
+                {
+                  "script_query": "imageStatus",
+                  "script_query_name": "imageStatus",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "imageMessage",
+                  "script_query_name": "imageMessage",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "imageResultJson",
+                  "script_query_name": "imageResultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "imageMoid",
+                  "script_query_name": "imageMoid",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "imageObjectType",
+                  "script_query_name": "imageObjectType",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "requestJson",
+                  "script_query_name": "requestJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "submitApiUrl",
+                  "script_query_name": "submitApiUrl",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "createdResourceUrl",
+                  "script_query_name": "createdResourceUrl",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "submitObjectType",
+                  "script_query_name": "submitObjectType",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "helperReady",
+                  "script_query_name": "helperReady",
+                  "script_query_type": "boolean"
+                }
               ]
             },
             "object_type": "definition_activity"
@@ -3338,13 +3338,13 @@
           {
             "unique_name": "definition_activity_02XOKCY8L71OI2W5flDHgpZGVmKB4DOtRky",
             "name": "Condition Block",
-            "title": "Firmware upgrade submission API failure",
+            "title": "Capture firmware submission API failure context",
             "type": "logic.if_else",
             "base_type": "activity",
             "properties": {
               "continue_on_failure": false,
-              "description": "Fails closed unless the API activity completed with documented HTTP 200.",
-              "display_name": "Firmware upgrade submission API failure",
+              "description": "Immediately guards the fallible POST and captures its raw status and body without terminating, so the next helper can distinguish a reliable rejection from an ambiguous submission outcome.",
+              "display_name": "Capture firmware submission API failure context",
               "skip_execution": false,
               "conditions": []
             },
@@ -3353,13 +3353,13 @@
               {
                 "unique_name": "definition_activity_02XOKCY8L71OJ3ajFTNIvULW7VTqcHDlV0K",
                 "name": "Condition Branch",
-                "title": "Firmware upgrade submission API failure",
+                "title": "Capture firmware submission API failure context",
                 "type": "logic.condition_block",
                 "base_type": "activity",
                 "properties": {
                   "continue_on_failure": false,
-                  "description": "Fails closed unless the API activity completed with documented HTTP 200.",
-                  "display_name": "Firmware upgrade submission API failure",
+                  "description": "Runs only when the POST activity failed or did not return documented HTTP 200, then falls through to structured classification.",
+                  "display_name": "Capture firmware submission API failure context",
                   "skip_execution": false,
                   "condition": {
                     "left_operand": {
@@ -3378,50 +3378,34 @@
                 "object_type": "definition_activity",
                 "actions": [
                   {
-                    "unique_name": "definition_activity_02XOKCY8L71OG5JtxJ2WSCCSz5PXlczl2bu",
+                    "unique_name": "definition_activity_02XQ1S8D3JSRC2k2znykvbQK9DYDuOqxS4n",
                     "name": "Set Variables",
-                    "title": "Set firmware upgrade submission api failure outputs",
+                    "title": "Capture raw firmware submission failure outputs",
                     "type": "core.set_multiple_variables",
                     "base_type": "activity",
                     "properties": {
                       "continue_on_failure": false,
-                      "description": "Populates all four standard outputs for firmware upgrade submission api failure.",
-                      "display_name": "Set firmware upgrade submission api failure outputs",
+                      "description": "Captures the raw API status and response immediately after a failed or non-200 submission. The structured classifier that follows replaces these provisional outputs before terminating.",
+                      "display_name": "Capture raw firmware submission failure outputs",
                       "skip_execution": false,
                       "variables_to_update": [
                         {
                           "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FB2SWbHrLitH1r33pOWfN8gq$",
-                          "variable_value_new": "502"
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71NY1QnPrXeiBllIj0oZ0gOP0p.output.status_code$"
                         },
                         {
                           "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FC5jxSq28zDsRALUWd6rcj9a$",
-                          "variable_value_new": "Firmware upgrade submission failed or returned an unexpected HTTP response"
+                          "variable_value_new": "Firmware upgrade submission failed or was rejected by Intersight"
                         },
                         {
                           "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FD6jGidJVfqHludVA351HjQE$",
-                          "variable_value_new": "The 'Submit typed firmware upgrade' request failed or did not return documented HTTP 200. Review its status and response body before retrying."
+                          "variable_value_new": "The firmware upgrade submission did not return documented HTTP 200. Result contains the upstream response when available; inspect Intersight before retrying an ambiguous request."
                         },
                         {
                           "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
-                          "variable_value_new": "{\"error\":\"API activity failed or returned unexpected HTTP status\",\"activity\":\"Submit typed firmware upgrade\",\"requestAccepted\":null,\"acceptanceUnknown\":true,\"retryRequiresInspection\":true}"
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71NY1QnPrXeiBllIj0oZ0gOP0p.output.response_body$"
                         }
                       ]
-                    },
-                    "object_type": "definition_activity"
-                  },
-                  {
-                    "unique_name": "definition_activity_02XOKCY8L71OH0mmt12kUqr4ypNddqQpgKO",
-                    "name": "Completed",
-                    "title": "Completed - firmware upgrade submission api failure",
-                    "type": "logic.completed",
-                    "base_type": "activity",
-                    "properties": {
-                      "continue_on_failure": false,
-                      "description": "Ends this terminal path after all four standard outputs are populated.",
-                      "display_name": "Completed - firmware upgrade submission api failure",
-                      "skip_execution": false,
-                      "completion_type": "failed-completed",
-                      "result_message": "Firmware upgrade submission failed or returned an unexpected HTTP response"
                     },
                     "object_type": "definition_activity"
                   }
@@ -3437,11 +3421,11 @@
             "base_type": "activity",
             "properties": {
               "continue_on_failure": true,
-              "description": "Requires documented POST HTTP 200, the exact concrete created-resource identity, target relationships, a matching firmware.Distributable relationship with Release absent, documented uppercase Status, and a validated polling identity.",
+              "description": "Classifies the submission itself. It preserves reliable upstream rejections, validates documented HTTP 200 and the exact concrete created-resource identity and relationships, and returns without polling.",
               "display_name": "Inspect accepted firmware.Distributable resource identity",
               "skip_execution": false,
               "action_timeout": 180,
-              "script": "import json\nimport re\nimport sys\n\npayload = json.loads(sys.argv[1])\nstatus_code = int(sys.argv[2])\ntarget = json.loads(sys.argv[3])\nimage = json.loads(sys.argv[4])\nprepared = json.loads(sys.argv[5])\nsubmit_object_type = sys.argv[6]\nimage_moid = sys.argv[7]\nimage_object_type = sys.argv[8]\ncreated_collection = sys.argv[9]\npreflight = json.loads(sys.argv[10])\n\ndef safe_moid(value):\n    return isinstance(value, str) and re.fullmatch(r\"[0-9a-fA-F]{24}\", value) is not None\n\ndef relation_matches(rel, moid, object_type):\n    return isinstance(rel, dict) and rel.get(\"Moid\") == moid and rel.get(\"ObjectType\") == object_type and rel.get(\"ClassId\") in (None, \"mo.MoRef\", object_type)\n\nproblems = []\ncreated_moid = \"\"\nupgrade_status_moid = \"\"\npoll_mode = \"\"\npoll_api_url = \"\"\npoll_moid = \"\"\ntarget_type = prepared.get(\"targetType\")\nexpected_submit_type = {\"Server\":\"firmware.Upgrade\",\"UCS-X Chassis\":\"firmware.ChassisUpgrade\",\"Domain\":\"firmware.SwitchUpgrade\"}.get(target_type)\nexpected_collection = {\"Server\":\"/api/v1/firmware/Upgrades\",\"UCS-X Chassis\":\"/api/v1/firmware/ChassisUpgrades\",\"Domain\":\"/api/v1/firmware/SwitchUpgrades\"}.get(target_type)\nif status_code != 200:\n    problems.append(\"Firmware create response status is not documented HTTP 200.\")\nif submit_object_type != expected_submit_type or created_collection != expected_collection:\n    problems.append(\"Submission type or created-resource collection does not match the validated target route.\")\nif not safe_moid(image_moid) or image_object_type != \"firmware.Distributable\" or image.get(\"imageMoid\") != image_moid or image.get(\"imageObjectType\") != \"firmware.Distributable\":\n    problems.append(\"Validated firmware.Distributable identity is incomplete or inconsistent.\")\nif not isinstance(payload, dict):\n    problems.append(\"Firmware create response is not an object.\")\nelse:\n    created_moid = str(payload.get(\"Moid\") or \"\")\n    if not safe_moid(created_moid):\n        problems.append(\"Created firmware resource Moid is missing or invalid.\")\n    if payload.get(\"ObjectType\") != submit_object_type or payload.get(\"ClassId\") != submit_object_type:\n        problems.append(\"Created firmware resource discriminators do not match the submitted concrete type.\")\n    if target_type == \"Server\":\n        if not relation_matches(payload.get(\"Server\"), target.get(\"targetMoid\"), target.get(\"sourceObjectType\")):\n            problems.append(\"Returned Server relationship does not match the validated target.\")\n    elif target_type == \"UCS-X Chassis\":\n        if not relation_matches(payload.get(\"Chassis\"), target.get(\"targetMoid\"), \"equipment.Chassis\"):\n            problems.append(\"Returned Chassis relationship does not match the validated UCS-X target.\")\n    elif target_type == \"Domain\":\n        returned = payload.get(\"NetworkElements\")\n        expected = {entry.get(\"Moid\") for entry in target.get(\"networkElements\", []) if isinstance(entry, dict)}\n        returned_moids = {entry.get(\"Moid\") for entry in returned if isinstance(entry, dict) and relation_matches(entry, entry.get(\"Moid\"), \"network.Element\")} if isinstance(returned, list) else set()\n        if len(expected) != 2 or not isinstance(returned, list) or len(returned) != 2 or returned_moids != expected:\n            problems.append(\"Returned NetworkElements do not exactly match the validated Domain FI A/B pair.\")\n    else:\n        problems.append(\"Unsupported target route reached submission inspection.\")\n    if not relation_matches(payload.get(\"Distributable\"), image_moid, \"firmware.Distributable\"):\n        problems.append(\"Returned Distributable relationship does not match the validated image.\")\n    if payload.get(\"Release\") not in (None, {}):\n        problems.append(\"Returned firmware resource unexpectedly contains Release.\")\n    status = payload.get(\"Status\")\n    if status not in (\"NONE\", \"IN_PROGRESS\", \"SUCCESSFUL\", \"FAILED\", \"TERMINATED\"):\n        problems.append(\"Created firmware resource Status is not a documented uppercase enum.\")\n    upgrade_status = payload.get(\"UpgradeStatus\")\n    if upgrade_status not in (None, {}):\n        if not isinstance(upgrade_status, dict) or not safe_moid(upgrade_status.get(\"Moid\")) or upgrade_status.get(\"ObjectType\") != \"firmware.UpgradeStatus\" or upgrade_status.get(\"ClassId\") not in (None, \"mo.MoRef\", \"firmware.UpgradeStatus\"):\n            problems.append(\"UpgradeStatus relationship is malformed.\")\n        else:\n            upgrade_status_moid = upgrade_status[\"Moid\"]\n\nif problems:\n    submission_status = \"invalid\"\n    submission_message = \" \".join(problems)\nelif payload.get(\"Status\") in (\"FAILED\", \"TERMINATED\"):\n    submission_status = \"failed\"\n    submission_message = \"The firmware resource was created but immediately returned terminal Status \" + payload.get(\"Status\") + \".\"\nelif payload.get(\"Status\") == \"SUCCESSFUL\":\n    submission_status = \"completed\"\n    submission_message = \"The firmware resource was created and already reports Status SUCCESSFUL.\"\nelse:\n    submission_status = \"accepted\"\n    submission_message = \"The firmware upgrade resource was accepted with documented HTTP 200; completion is not yet confirmed.\"\n\nif submission_status in (\"accepted\", \"completed\", \"failed\"):\n    if upgrade_status_moid:\n        poll_mode = \"upgrade-status\"\n        poll_api_url = \"/api/v1/firmware/UpgradeStatuses/\" + upgrade_status_moid\n        poll_moid = upgrade_status_moid\n    else:\n        poll_mode = \"created-resource\"\n        poll_api_url = created_collection + \"/\" + created_moid\n        poll_moid = created_moid\n\nsubmission_result_json = json.dumps({\n    \"status\":submission_status,\n    \"message\":submission_message,\n    \"requestAccepted\":status_code == 200,\n    \"completed\":submission_status == \"completed\",\n    \"targetType\":target_type,\n    \"targetName\":target.get(\"targetName\"),\n    \"targetMoid\":target.get(\"targetMoid\"),\n    \"imageMoid\":image_moid,\n    \"imageObjectType\":image_object_type,\n    \"createdMoid\":created_moid or None,\n    \"createdObjectType\":submit_object_type,\n    \"upgradeStatusMoid\":upgrade_status_moid or None,\n    \"pollMode\":poll_mode or None,\n    \"waitRequested\":bool(prepared.get(\"waitForCompletion\")),\n    \"acceptedVersusCompletedSemantics\":True,\n    \"releaseAbsent\":payload.get(\"Release\") in (None, {}) if isinstance(payload, dict) else False,\n    \"retryRequiresInspection\":submission_status in (\"invalid\", \"failed\"),\n    \"readinessCaveats\":target.get(\"readinessCaveats\", []),\n    \"preflight\":preflight\n}, separators=(\",\", \":\"))\ninspection_required_result = json.loads(submission_result_json)\ninspection_required_result.update({\n    \"status\":\"inspection-required\",\n    \"message\":\"The firmware upgrade request was accepted, but subsequent orchestration failed. Inspect the tracked firmware resource before retrying.\",\n    \"requestAccepted\":True,\n    \"completed\":False,\n    \"retryRequiresInspection\":True\n})\nsubmission_inspection_required_result_json = json.dumps(inspection_required_result, separators=(\",\", \":\"))\nsubmissionStatus = submission_status\nsubmissionMessage = submission_message\nsubmissionResultJson = submission_result_json\nsubmissionInspectionRequiredResultJson = submission_inspection_required_result_json\npollMode = poll_mode\npollApiUrl = poll_api_url\npollMoid = poll_moid\nhelperReady = submission_status in (\"invalid\", \"failed\", \"accepted\", \"completed\") and bool(submission_message and submission_result_json and submission_inspection_required_result_json) and (submission_status == \"invalid\" or bool(created_moid and poll_mode and poll_api_url and poll_moid))\n",
+              "script": "import json\nimport re\nimport sys\n\nresponse_raw = str(sys.argv[1] or \"\").strip()\nstatus_raw = str(sys.argv[2] or \"\").strip()\ntarget = json.loads(sys.argv[3])\nimage = json.loads(sys.argv[4])\nprepared = json.loads(sys.argv[5])\nsubmit_object_type = sys.argv[6]\nimage_moid = sys.argv[7]\nimage_object_type = sys.argv[8]\ncreated_collection = sys.argv[9]\npreflight = json.loads(sys.argv[10])\napi_activity_succeeded = str(sys.argv[11]).strip().lower() == \"true\"\norganization_moid = str(sys.argv[12] or \"\").strip()\n\ndef safe_moid(value):\n    return isinstance(value, str) and re.fullmatch(r\"[0-9a-fA-F]{24}\", value) is not None\n\ndef relation_matches(rel, moid, object_type):\n    return isinstance(rel, dict) and rel.get(\"Moid\") == moid and rel.get(\"ObjectType\") == object_type and rel.get(\"ClassId\") in (None, \"mo.MoRef\", object_type)\n\ntry:\n    status_code = int(status_raw)\nexcept Exception:\n    status_code = None\n\ntry:\n    parsed_response = json.loads(response_raw) if response_raw else None\nexcept Exception:\n    parsed_response = None\nupstream_response = parsed_response if parsed_response is not None else (response_raw or None)\nupstream_message = \"\"\nif isinstance(parsed_response, dict):\n    error_object = parsed_response.get(\"error\") if isinstance(parsed_response.get(\"error\"), dict) else {}\n    upstream_description = str(parsed_response.get(\"description\") or error_object.get(\"description\") or \"\").strip()\n    upstream_summary = str(parsed_response.get(\"message\") or error_object.get(\"message\") or \"\").strip()\n    if upstream_description and upstream_summary and upstream_description != upstream_summary:\n        upstream_message = upstream_description + \" (\" + upstream_summary + \")\"\n    else:\n        upstream_message = upstream_description or upstream_summary or str(parsed_response.get(\"error\") or \"\").strip()\n\ntarget_type = prepared.get(\"targetType\")\nexpected_submit_type = {\"Server\":\"firmware.Upgrade\",\"UCS-X Chassis\":\"firmware.ChassisUpgrade\",\"Domain\":\"firmware.SwitchUpgrade\"}.get(target_type)\nexpected_collection = {\"Server\":\"/api/v1/firmware/Upgrades\",\"UCS-X Chassis\":\"/api/v1/firmware/ChassisUpgrades\",\"Domain\":\"/api/v1/firmware/SwitchUpgrades\"}.get(target_type)\nbase_result = {\n    \"deviceOrganization\": prepared.get(\"deviceOrganization\"),\n    \"organizationMoid\": organization_moid or None,\n    \"targetType\": target_type,\n    \"targetName\": target.get(\"targetName\"),\n    \"targetMoid\": target.get(\"targetMoid\"),\n    \"targetObjectType\": target.get(\"targetObjectType\"),\n    \"targetModel\": target.get(\"targetModel\"),\n    \"sourceObjectType\": target.get(\"sourceObjectType\"),\n    \"networkElements\": target.get(\"networkElements\", []),\n    \"firmwareVersion\": prepared.get(\"firmwareVersion\"),\n    \"imageMoid\": image_moid or None,\n    \"imageObjectType\": image_object_type or None,\n    \"createdObjectType\": submit_object_type or None,\n    \"upstreamStatusCode\": status_code,\n    \"upstreamResponse\": upstream_response,\n    \"apiActivitySucceeded\": api_activity_succeeded,\n    \"monitoringPerformed\": False,\n    \"readinessCaveats\": target.get(\"readinessCaveats\", []),\n    \"preflight\": preflight,\n}\n\nif isinstance(status_code, int) and 400 <= status_code <= 499 and status_code not in (408, 499):\n    submission_status = \"api-failure\"\n    submission_status_code = str(status_code)\n    submission_message = \"Firmware upgrade request was rejected by Intersight\"\n    submission_error_message = upstream_message or (\"Intersight rejected the firmware upgrade request with HTTP \" + str(status_code) + \".\")\n    result = dict(base_result)\n    result.update({\"status\":\"rejected\",\"message\":submission_error_message,\"submissionHttpStatus\":status_code,\"requestAccepted\":False,\"acceptanceUnknown\":False,\"completed\":False,\"retryRequiresInspection\":False})\nelif status_code != 200 or not api_activity_succeeded:\n    submission_status = \"api-failure\"\n    submission_status_code = str(status_code) if isinstance(status_code, int) and 500 <= status_code <= 599 else \"502\"\n    submission_message = \"Firmware upgrade submission outcome is unknown\"\n    submission_error_message = upstream_message or \"The submission did not return a reliable documented HTTP 200 response. Inspect Intersight before retrying.\"\n    result = dict(base_result)\n    result.update({\"status\":\"acceptance-unknown\",\"message\":submission_error_message,\"submissionHttpStatus\":status_code,\"requestAccepted\":None,\"acceptanceUnknown\":True,\"completed\":False,\"retryRequiresInspection\":True})\nelse:\n    payload = parsed_response\n    problems = []\n    if not safe_moid(organization_moid):\n        problems.append(\"Validated organization Moid is missing or invalid.\")\n    created_moid = \"\"\n    upgrade_status_moid = \"\"\n    observed_status = None\n    if submit_object_type != expected_submit_type or created_collection != expected_collection:\n        problems.append(\"Submission type or created-resource collection does not match the validated target route.\")\n    if not safe_moid(image_moid) or image_object_type != \"firmware.Distributable\" or image.get(\"imageMoid\") != image_moid or image.get(\"imageObjectType\") != \"firmware.Distributable\":\n        problems.append(\"Validated firmware.Distributable identity is incomplete or inconsistent.\")\n    if not isinstance(payload, dict):\n        problems.append(\"Firmware create response is not an object.\")\n    else:\n        created_moid = str(payload.get(\"Moid\") or \"\")\n        if not safe_moid(created_moid):\n            problems.append(\"Created firmware resource Moid is missing or invalid.\")\n        if payload.get(\"ObjectType\") != submit_object_type or payload.get(\"ClassId\") != submit_object_type:\n            problems.append(\"Created firmware resource discriminators do not match the submitted concrete type.\")\n        if target_type == \"Server\":\n            if not relation_matches(payload.get(\"Server\"), target.get(\"targetMoid\"), target.get(\"sourceObjectType\")):\n                problems.append(\"Returned Server relationship does not match the validated target.\")\n        elif target_type == \"UCS-X Chassis\":\n            if not relation_matches(payload.get(\"Chassis\"), target.get(\"targetMoid\"), \"equipment.Chassis\"):\n                problems.append(\"Returned Chassis relationship does not match the validated UCS-X target.\")\n        elif target_type == \"Domain\":\n            returned = payload.get(\"NetworkElements\")\n            expected = {entry.get(\"Moid\") for entry in target.get(\"networkElements\", []) if isinstance(entry, dict)}\n            returned_moids = {entry.get(\"Moid\") for entry in returned if isinstance(entry, dict) and relation_matches(entry, entry.get(\"Moid\"), \"network.Element\")} if isinstance(returned, list) else set()\n            if len(expected) != 2 or not isinstance(returned, list) or len(returned) != 2 or returned_moids != expected:\n                problems.append(\"Returned NetworkElements do not exactly match the validated Domain FI A/B pair.\")\n        else:\n            problems.append(\"Unsupported target route reached submission inspection.\")\n        if not relation_matches(payload.get(\"Distributable\"), image_moid, \"firmware.Distributable\"):\n            problems.append(\"Returned Distributable relationship does not match the validated image.\")\n        if payload.get(\"Release\") not in (None, {}):\n            problems.append(\"Returned firmware resource unexpectedly contains Release.\")\n        observed_status = payload.get(\"Status\")\n        if observed_status not in (\"NONE\", \"IN_PROGRESS\", \"SUCCESSFUL\", \"FAILED\", \"TERMINATED\"):\n            problems.append(\"Created firmware resource Status is not a documented uppercase enum.\")\n        upgrade_status = payload.get(\"UpgradeStatus\")\n        if upgrade_status not in (None, {}):\n            if not isinstance(upgrade_status, dict) or not safe_moid(upgrade_status.get(\"Moid\")) or upgrade_status.get(\"ObjectType\") != \"firmware.UpgradeStatus\" or upgrade_status.get(\"ClassId\") not in (None, \"mo.MoRef\", \"firmware.UpgradeStatus\"):\n                problems.append(\"UpgradeStatus relationship is malformed.\")\n            else:\n                upgrade_status_moid = upgrade_status[\"Moid\"]\n\n    if problems:\n        submission_status = \"invalid\"\n        submission_status_code = \"502\"\n        submission_message = \"Firmware submission response failed identity validation\"\n        submission_error_message = \" \".join(problems)\n    elif observed_status in (\"FAILED\", \"TERMINATED\"):\n        submission_status = \"failed\"\n        submission_status_code = \"502\"\n        submission_message = \"Firmware upgrade resource reports terminal failure\"\n        submission_error_message = \"The created firmware resource immediately returned terminal Status \" + str(observed_status) + \".\"\n    elif observed_status == \"SUCCESSFUL\":\n        submission_status = \"completed\"\n        submission_status_code = \"200\"\n        submission_message = \"Firmware upgrade completed immediately\"\n        submission_error_message = \"\"\n    else:\n        submission_status = \"accepted\"\n        submission_status_code = \"202\"\n        submission_message = \"Firmware upgrade resource accepted; completion is not monitored\"\n        submission_error_message = \"\"\n\n    result = dict(base_result)\n    result.update({\n        \"status\": \"inspection-required\" if submission_status == \"invalid\" else submission_status,\n        \"message\": submission_error_message or submission_message,\n        \"submissionHttpStatus\": 200,\n        \"requestAccepted\": True,\n        \"acceptanceUnknown\": False,\n        \"completed\": submission_status == \"completed\",\n        \"createdMoid\": created_moid or None,\n        \"createdResourceApiPath\": (created_collection + \"/\" + created_moid) if created_moid else None,\n        \"observedStatus\": observed_status,\n        \"upgradeStatusMoid\": upgrade_status_moid or None,\n        \"retryRequiresInspection\": submission_status in (\"invalid\", \"failed\"),\n    })\n\nsubmissionStatus = submission_status\nsubmissionStatusCode = submission_status_code\nsubmissionMessage = submission_message\nsubmissionErrorMessage = submission_error_message\nsubmissionResultJson = json.dumps(result, separators=(\",\", \":\"))\nhelperReady = submissionStatus in (\"api-failure\", \"invalid\", \"failed\", \"accepted\", \"completed\") and re.fullmatch(r\"[1-5][0-9][0-9]\", submissionStatusCode) is not None and bool(submissionMessage and submissionResultJson) and ((submissionStatus in (\"api-failure\", \"invalid\", \"failed\") and bool(submissionErrorMessage)) or (submissionStatus in (\"accepted\", \"completed\") and submissionErrorMessage == \"\"))\n",
               "script_arguments": [
                 "$activity.definition_activity_02XOKCY8L71NY1QnPrXeiBllIj0oZ0gOP0p.output.response_body$",
                 "$activity.definition_activity_02XOKCY8L71NY1QnPrXeiBllIj0oZ0gOP0p.output.status_code$",
@@ -3452,17 +3436,41 @@
                 "$activity.definition_activity_02XOKCY8L71NA2ToNfwXMbi4MzYGbQ0NoT7.output.script_queries.imageMoid$",
                 "$activity.definition_activity_02XOKCY8L71NA2ToNfwXMbi4MzYGbQ0NoT7.output.script_queries.imageObjectType$",
                 "$activity.definition_activity_02XOKCY8L71NA2ToNfwXMbi4MzYGbQ0NoT7.output.script_queries.createdResourceUrl$",
-                "$activity.definition_activity_02XOKCY8L71NX4T7ZPtLiiGbfYKLKKxZCUv.output.script_queries.preflightResultJson$"
+                "$activity.definition_activity_02XOKCY8L71NX4T7ZPtLiiGbfYKLKKxZCUv.output.script_queries.preflightResultJson$",
+                "$activity.definition_activity_02XOKCY8L71NY1QnPrXeiBllIj0oZ0gOP0p.output.succeeded$",
+                "$activity.definition_activity_02XOKCY8L71LS2nw7NKo45VlkXKtoGowZgY.output.script_queries.organizationMoid$"
               ],
               "script_queries": [
-                {"script_query": "submissionStatus", "script_query_name": "submissionStatus", "script_query_type": "string"},
-                {"script_query": "submissionMessage", "script_query_name": "submissionMessage", "script_query_type": "string"},
-                {"script_query": "submissionResultJson", "script_query_name": "submissionResultJson", "script_query_type": "string"},
-                {"script_query": "submissionInspectionRequiredResultJson", "script_query_name": "submissionInspectionRequiredResultJson", "script_query_type": "string"},
-                {"script_query": "pollMode", "script_query_name": "pollMode", "script_query_type": "string"},
-                {"script_query": "pollApiUrl", "script_query_name": "pollApiUrl", "script_query_type": "string"},
-                {"script_query": "pollMoid", "script_query_name": "pollMoid", "script_query_type": "string"},
-                {"script_query": "helperReady", "script_query_name": "helperReady", "script_query_type": "boolean"}
+                {
+                  "script_query": "submissionStatus",
+                  "script_query_name": "submissionStatus",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "submissionStatusCode",
+                  "script_query_name": "submissionStatusCode",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "submissionMessage",
+                  "script_query_name": "submissionMessage",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "submissionErrorMessage",
+                  "script_query_name": "submissionErrorMessage",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "submissionResultJson",
+                  "script_query_name": "submissionResultJson",
+                  "script_query_type": "string"
+                },
+                {
+                  "script_query": "helperReady",
+                  "script_query_name": "helperReady",
+                  "script_query_type": "boolean"
+                }
               ]
             },
             "object_type": "definition_activity"
@@ -3485,32 +3493,48 @@
               {
                 "unique_name": "definition_activity_02XOKCY8L71ON4iU02zrMv498PQuU4kO5p4",
                 "name": "Condition Branch",
-                "title": "Firmware submission inspection helper failure",
+                "title": "Submission inspector failure after HTTP 200",
                 "type": "logic.condition_block",
                 "base_type": "activity",
                 "properties": {
                   "continue_on_failure": false,
-                  "description": "Fails closed unless the helper completed and returned its full typed contract.",
-                  "display_name": "Firmware submission inspection helper failure",
+                  "description": "Handles an inspector failure only after the API activity itself succeeded with documented HTTP 200; creation is known, but returned identity requires inspection.",
+                  "display_name": "Submission inspector failure after HTTP 200",
                   "skip_execution": false,
                   "condition": {
                     "left_operand": {
-                      "left_operand": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.succeeded$",
-                      "operator": "ne",
-                      "right_operand": true
-                    },
-                    "operator": "or",
-                    "right_operand": {
                       "left_operand": {
                         "left_operand": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.succeeded$",
+                        "operator": "ne",
+                        "right_operand": true
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.succeeded$",
+                          "operator": "eq",
+                          "right_operand": true
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.helperReady$",
+                          "operator": "ne",
+                          "right_operand": true
+                        }
+                      }
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L71NY1QnPrXeiBllIj0oZ0gOP0p.output.succeeded$",
                         "operator": "eq",
                         "right_operand": true
                       },
                       "operator": "and",
                       "right_operand": {
-                        "left_operand": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.helperReady$",
-                        "operator": "ne",
-                        "right_operand": true
+                        "left_operand": "$activity.definition_activity_02XOKCY8L71NY1QnPrXeiBllIj0oZ0gOP0p.output.status_code$",
+                        "operator": "eq",
+                        "right_operand": 200
                       }
                     }
                   }
@@ -3566,19 +3590,120 @@
                     "object_type": "definition_activity"
                   }
                 ]
+              },
+              {
+                "unique_name": "definition_activity_02XQ1YFNF8CNS3FoXNVkDMvZCJ4QHKnp5A2",
+                "name": "Condition Branch",
+                "title": "Submission inspector failure without HTTP 200",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Handles an inspector failure after a non-200 or failed API activity without claiming that Intersight accepted the request.",
+                  "display_name": "Submission inspector failure without HTTP 200",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.succeeded$",
+                        "operator": "ne",
+                        "right_operand": true
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.succeeded$",
+                          "operator": "eq",
+                          "right_operand": true
+                        },
+                        "operator": "and",
+                        "right_operand": {
+                          "left_operand": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.helperReady$",
+                          "operator": "ne",
+                          "right_operand": true
+                        }
+                      }
+                    },
+                    "operator": "and",
+                    "right_operand": {
+                      "left_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L71NY1QnPrXeiBllIj0oZ0gOP0p.output.succeeded$",
+                        "operator": "ne",
+                        "right_operand": true
+                      },
+                      "operator": "or",
+                      "right_operand": {
+                        "left_operand": "$activity.definition_activity_02XOKCY8L71NY1QnPrXeiBllIj0oZ0gOP0p.output.status_code$",
+                        "operator": "ne",
+                        "right_operand": 200
+                      }
+                    }
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XQ1YFNF8LX41gekRPKq4LagAMhzzcdx0b",
+                    "name": "Set Variables",
+                    "title": "Set unknown submission inspection failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Populates all four standard outputs conservatively when neither the API response nor the failed inspector proves acceptance.",
+                      "display_name": "Set unknown submission inspection failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FB2SWbHrLitH1r33pOWfN8gq$",
+                          "variable_value_new": "502"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FC5jxSq28zDsRALUWd6rcj9a$",
+                          "variable_value_new": "Firmware submission outcome could not be classified"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FD6jGidJVfqHludVA351HjQE$",
+                          "variable_value_new": "The submission inspector failed while the API activity lacked documented HTTP 200. Inspect the Submit typed firmware upgrade activity status and response before retrying."
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
+                          "variable_value_new": "{\"status\":\"acceptance-unknown\",\"message\":\"The submission inspector failed without a documented successful create response. Inspect the Submit typed firmware upgrade activity before retrying.\",\"requestAccepted\":null,\"completed\":false,\"acceptanceUnknown\":true,\"resourceIdentifiersAvailable\":false,\"retryRequiresInspection\":true,\"upstreamEvidenceLocation\":\"Submit typed firmware upgrade activity output\"}"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XQ1YFNF8RBK7KKUHyCl1CzGfnbLtdAe8f",
+                    "name": "Completed",
+                    "title": "Completed - unknown firmware submission outcome",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this conservative inspection-required path after all four standard outputs are populated.",
+                      "display_name": "Completed - unknown firmware submission outcome",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "Firmware submission outcome is unknown; inspect before retrying"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
               }
             ]
           },
           {
             "unique_name": "definition_activity_02XOKCY8L71OQ5ZS25I8esoNbKkAvdoRgMX",
             "name": "Condition Block",
-            "title": "Firmware submission response conflict",
+            "title": "Firmware submission response failure",
             "type": "logic.if_else",
             "base_type": "activity",
             "properties": {
               "continue_on_failure": false,
-              "description": "Stops on untrusted create response identity while warning that HTTP 200 may already have created a resource.",
-              "display_name": "Firmware submission response conflict",
+              "description": "Terminates either a classified upstream API rejection or ambiguity, or a documented HTTP-200 response that failed concrete identity validation.",
+              "display_name": "Firmware submission response failure",
               "skip_execution": false,
               "conditions": []
             },
@@ -3648,6 +3773,75 @@
                       "skip_execution": false,
                       "completion_type": "failed-completed",
                       "result_message": "Firmware submission response failed identity validation"
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_02XQ1S8D3KT0W6lPWUHHGRx1YYITBFF7Uu7",
+                "name": "Condition Branch",
+                "title": "Firmware upgrade submission rejected or uncertain",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Matches the classifier's api-failure disposition.",
+                  "display_name": "Firmware upgrade submission rejected or uncertain",
+                  "skip_execution": false,
+                  "condition": {
+                    "left_operand": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.submissionStatus$",
+                    "operator": "eq",
+                    "right_operand": "api-failure"
+                  }
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L71OG5JtxJ2WSCCSz5PXlczl2bu",
+                    "name": "Set Variables",
+                    "title": "Set firmware upgrade submission api failure outputs",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Copies the classified upstream rejection or ambiguous-submission contract into all four standard outputs.",
+                      "display_name": "Set firmware upgrade submission api failure outputs",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FB2SWbHrLitH1r33pOWfN8gq$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.submissionStatusCode$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FC5jxSq28zDsRALUWd6rcj9a$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.submissionMessage$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FD6jGidJVfqHludVA351HjQE$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.submissionErrorMessage$"
+                        },
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.submissionResultJson$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_02XOKCY8L71OH0mmt12kUqr4ypNddqQpgKO",
+                    "name": "Completed",
+                    "title": "Completed - firmware upgrade submission api failure",
+                    "type": "logic.completed",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "display_name": "Completed - firmware upgrade submission api failure",
+                      "skip_execution": false,
+                      "completion_type": "failed-completed",
+                      "result_message": "Firmware upgrade submission was rejected or its outcome requires inspection"
                     },
                     "object_type": "definition_activity"
                   }
@@ -3749,7 +3943,7 @@
             "base_type": "activity",
             "properties": {
               "continue_on_failure": false,
-              "description": "Returns success without claiming completion when waiting was not requested.",
+              "description": "Returns successful 202 after Intersight creates and identifies a valid nonterminal firmware resource. Completion is intentionally not monitored.",
               "display_name": "Firmware upgrade accepted",
               "skip_execution": false,
               "conditions": []
@@ -3764,21 +3958,13 @@
                 "base_type": "activity",
                 "properties": {
                   "continue_on_failure": false,
-                  "description": "Returns success without claiming completion when waiting was not requested.",
+                  "description": "Returns successful 202 after Intersight creates and identifies a valid nonterminal firmware resource. Completion is intentionally not monitored.",
                   "display_name": "Firmware upgrade accepted",
                   "skip_execution": false,
                   "condition": {
-                    "left_operand": {
-                      "left_operand": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.submissionStatus$",
-                      "operator": "eq",
-                      "right_operand": "accepted"
-                    },
-                    "operator": "and",
-                    "right_operand": {
-                      "left_operand": "$activity.definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar.output.script_queries.waitForCompletion$",
-                      "operator": "eq",
-                      "right_operand": false
-                    }
+                    "left_operand": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.submissionStatus$",
+                    "operator": "eq",
+                    "right_operand": "accepted"
                   }
                 },
                 "object_type": "definition_activity",
@@ -3791,17 +3977,17 @@
                     "base_type": "activity",
                     "properties": {
                       "continue_on_failure": false,
-                      "description": "Populates all four standard outputs for firmware upgrade accepted.",
+                      "description": "Populates all four standard outputs for a validated accepted firmware resource without claiming completion.",
                       "display_name": "Set firmware upgrade accepted outputs",
                       "skip_execution": false,
                       "variables_to_update": [
                         {
                           "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FB2SWbHrLitH1r33pOWfN8gq$",
-                          "variable_value_new": "200"
+                          "variable_value_new": "202"
                         },
                         {
                           "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FC5jxSq28zDsRALUWd6rcj9a$",
-                          "variable_value_new": "Firmware upgrade resource accepted"
+                          "variable_value_new": "Firmware upgrade resource accepted; completion is not monitored"
                         },
                         {
                           "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FD6jGidJVfqHludVA351HjQE$",
@@ -3823,11 +4009,11 @@
                     "base_type": "activity",
                     "properties": {
                       "continue_on_failure": false,
-                      "description": "Ends this terminal path after all four standard outputs are populated.",
+                      "description": "Ends successfully because the requested orchestration goal\u2014creating a validated Intersight upgrade resource\u2014was achieved.",
                       "display_name": "Completed - firmware upgrade accepted",
                       "skip_execution": false,
                       "completion_type": "succeeded",
-                      "result_message": "Firmware upgrade resource accepted"
+                      "result_message": "Firmware upgrade resource accepted; completion is not monitored"
                     },
                     "object_type": "definition_activity"
                   }
@@ -3920,901 +4106,6 @@
                 ]
               }
             ]
-          }
-        ]
-      },
-      {
-        "unique_name": "definition_activity_02XOLEHO2G5EW5L8ai5sCf8kf7rlRuis2eO",
-        "name": "Group",
-        "title": "Cisco Intersight - Poll firmware upgrade completion",
-        "type": "logic.group",
-        "base_type": "activity",
-        "properties": {
-          "continue_on_failure": false,
-          "description": "Runs the bounded terminal poller inline with the parent target and validated upstream values; every terminal path writes the parent four-output contract.",
-          "display_name": "Cisco Intersight - Poll firmware upgrade completion",
-          "skip_execution": false
-        },
-        "object_type": "definition_activity",
-        "actions": [
-          {
-            "unique_name": "definition_activity_02XOKCY8L71P57eNzmSt2cSsuFUjMrIwIf5",
-            "name": "Execute Python Script",
-            "title": "Initialize bounded firmware polling",
-            "type": "python3.script",
-            "base_type": "activity",
-            "properties": {
-              "continue_on_failure": true,
-              "description": "Creates one deadline and safe delays for exactly five poll attempts within the user-supplied 1-600 second bound; each delay stays below the 180-second helper timeout.",
-              "display_name": "Initialize bounded firmware polling",
-              "skip_execution": false,
-              "action_timeout": 180,
-              "script": "import json\nimport sys\nimport time\ntimeout = int(sys.argv[1])\nif timeout < 1 or timeout > 600:\n    raise ValueError(\"Wait timeout must be between 1 and 600 seconds\")\nnow = time.time()\ninitialDelay = min(2.0, max(0.25, timeout / 20.0))\npollInterval = max(1.0, max(0.0, timeout - initialDelay) / 4.0)\nif initialDelay >= 180.0 or pollInterval >= 180.0:\n    raise ValueError(\"Derived delays exceed the helper action timeout\")\ndeadlineEpoch = \"%.6f\" % (now + timeout)\ninitialDelaySeconds = \"%.6f\" % initialDelay\npollIntervalSeconds = \"%.6f\" % pollInterval\npollingResultJson = json.dumps({\"waitTimeoutSeconds\": timeout, \"initialDelaySeconds\": initialDelay, \"pollIntervalSeconds\": pollInterval, \"maximumPollAttempts\": 5}, separators=(\",\", \":\"))\nhelperReady = bool(deadlineEpoch and initialDelaySeconds and pollIntervalSeconds and pollingResultJson)",
-              "script_arguments": [
-                "$activity.definition_activity_02XP8BHRGT4LC5MntVwAGA7oMtTC9bUSWar.output.script_queries.waitTimeoutSeconds$"
-              ],
-              "script_queries": [
-                {
-                  "script_query": "deadlineEpoch",
-                  "script_query_name": "deadlineEpoch",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "initialDelaySeconds",
-                  "script_query_name": "initialDelaySeconds",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "pollIntervalSeconds",
-                  "script_query_name": "pollIntervalSeconds",
-                  "script_query_type": "string"
-                },
-                {
-                  "script_query": "helperReady",
-                  "script_query_name": "helperReady",
-                  "script_query_type": "boolean"
-                }
-              ]
-            },
-            "object_type": "definition_activity"
-          },
-          {
-            "unique_name": "definition_activity_02XOKCY8L71P86RjK5ZNqRqG8BtUlvxRtYw",
-            "name": "Condition Block",
-            "title": "Firmware polling initialization helper failure",
-            "type": "logic.if_else",
-            "base_type": "activity",
-            "properties": {
-              "continue_on_failure": false,
-              "description": "Fails closed unless the helper completed and returned its full typed contract.",
-              "display_name": "Firmware polling initialization helper failure",
-              "skip_execution": false,
-              "conditions": []
-            },
-            "object_type": "definition_activity",
-            "blocks": [
-              {
-                "unique_name": "definition_activity_02XOKCY8L71P90ncBgSmIoShdha6xUdqQvx",
-                "name": "Condition Branch",
-                "title": "Firmware polling initialization helper failure",
-                "type": "logic.condition_block",
-                "base_type": "activity",
-                "properties": {
-                  "continue_on_failure": false,
-                  "description": "Fails closed unless the helper completed and returned its full typed contract.",
-                  "display_name": "Firmware polling initialization helper failure",
-                  "skip_execution": false,
-                  "condition": {
-                    "left_operand": {
-                      "left_operand": "$activity.definition_activity_02XOKCY8L71P57eNzmSt2cSsuFUjMrIwIf5.output.succeeded$",
-                      "operator": "ne",
-                      "right_operand": true
-                    },
-                    "operator": "or",
-                    "right_operand": {
-                      "left_operand": {
-                        "left_operand": "$activity.definition_activity_02XOKCY8L71P57eNzmSt2cSsuFUjMrIwIf5.output.succeeded$",
-                        "operator": "eq",
-                        "right_operand": true
-                      },
-                      "operator": "and",
-                      "right_operand": {
-                        "left_operand": "$activity.definition_activity_02XOKCY8L71P57eNzmSt2cSsuFUjMrIwIf5.output.script_queries.helperReady$",
-                        "operator": "ne",
-                        "right_operand": true
-                      }
-                    }
-                  }
-                },
-                "object_type": "definition_activity",
-                "actions": [
-                  {
-                    "unique_name": "definition_activity_02XOKCY8L71P665ZMizpjnqYlTRhGUZb2A1",
-                    "name": "Set Variables",
-                    "title": "Set firmware polling initialization helper failure outputs",
-                    "type": "core.set_multiple_variables",
-                    "base_type": "activity",
-                    "properties": {
-                      "continue_on_failure": false,
-                      "description": "Populates all four standard outputs for firmware polling initialization helper failure.",
-                      "display_name": "Set firmware polling initialization helper failure outputs",
-                      "skip_execution": false,
-                      "variables_to_update": [
-                        {
-                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FB2SWbHrLitH1r33pOWfN8gq$",
-                          "variable_value_new": "500"
-                        },
-                        {
-                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FC5jxSq28zDsRALUWd6rcj9a$",
-                          "variable_value_new": "Firmware polling initialization helper failed or returned unusable output"
-                        },
-                        {
-                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FD6jGidJVfqHludVA351HjQE$",
-                          "variable_value_new": "The 'Initialize bounded firmware polling' helper failed or returned an incomplete contract. Review its execution details."
-                        },
-                        {
-                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
-                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.submissionInspectionRequiredResultJson$"
-                        }
-                      ]
-                    },
-                    "object_type": "definition_activity"
-                  },
-                  {
-                    "unique_name": "definition_activity_02XOKCY8L71P74jNpiMRt8uD5dtgNTtCFpt",
-                    "name": "Completed",
-                    "title": "Completed - firmware polling initialization helper failure",
-                    "type": "logic.completed",
-                    "base_type": "activity",
-                    "properties": {
-                      "continue_on_failure": false,
-                      "description": "Ends this terminal path after all four standard outputs are populated.",
-                      "display_name": "Completed - firmware polling initialization helper failure",
-                      "skip_execution": false,
-                      "completion_type": "failed-completed",
-                      "result_message": "Firmware polling initialization helper failed or returned unusable output"
-                    },
-                    "object_type": "definition_activity"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "unique_name": "definition_activity_02XOLEHO2G5EK7hOloNLeDtsg4XtX8l9Tm6",
-            "name": "While Loop",
-            "title": "Poll firmware upgrade status up to five times",
-            "type": "logic.while",
-            "base_type": "activity",
-            "properties": {
-              "continue_on_failure": false,
-              "description": "Runs one canonical bounded polling body while Polling Attempt is at most 5. Completed, failed, malformed, transport-error, and deadline paths terminate inside the body.",
-              "display_name": "Poll firmware upgrade status up to five times",
-              "skip_execution": false
-            },
-            "object_type": "definition_activity",
-            "blocks": [
-              {
-                "unique_name": "definition_activity_02XOLEHO2G5EJ4C1v6OAHce6LIMxIAwsG2F",
-                "name": "Condition Branch",
-                "title": "While Polling Attempt is at most 5",
-                "type": "logic.condition_block",
-                "base_type": "activity",
-                "properties": {
-                  "continue_on_failure": false,
-                  "description": "Executes at most five status polls; terminal paths end the workflow from inside the loop.",
-                  "display_name": "While Polling Attempt is at most 5",
-                  "skip_execution": false,
-                  "condition": {
-                    "left_operand": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XOLEHO2G5EH6jNlL6gH9kQpqPUTwwDQUE$",
-                    "operator": "lte",
-                    "right_operand": 5
-                  }
-                },
-                "object_type": "definition_activity",
-                "actions": [
-                  {
-                    "unique_name": "definition_activity_02XOKCY8L71PA70MXFSSO7WVQ9Qi8Kk66eE",
-                    "name": "Execute Python Script",
-                    "title": "Wait before firmware upgrade polling attempt",
-                    "type": "python3.script",
-                    "base_type": "activity",
-                    "properties": {
-                      "continue_on_failure": true,
-                      "description": "Uses the initial delay for attempt 1 and the shared interval for attempts 2-5, never sleeping past the validated firmware upgrade deadline.",
-                      "display_name": "Wait before firmware upgrade polling attempt",
-                      "skip_execution": false,
-                      "action_timeout": 180,
-                      "script": "import json\nimport sys\nimport time\n\ndeadline = float(sys.argv[1])\ninitialDelay = float(sys.argv[2])\npollInterval = float(sys.argv[3])\nattempt = int(sys.argv[4])\nsubmission = json.loads(sys.argv[5])\nif attempt < 1 or attempt > 5:\n    raise ValueError(\"Polling attempt must be from 1 through 5\")\nif not isinstance(submission, dict) or submission.get(\"requestAccepted\") is not True:\n    raise ValueError(\"Validated accepted submission contract is required\")\npreservedKeys = (\n    \"targetType\",\n    \"targetName\",\n    \"targetMoid\",\n    \"imageMoid\",\n    \"imageObjectType\",\n    \"createdMoid\",\n    \"createdObjectType\",\n    \"upgradeStatusMoid\",\n    \"pollMode\",\n    \"readinessCaveats\",\n    \"retryRequiresInspection\"\n)\nif any(key not in submission for key in preservedKeys):\n    raise ValueError(\"Accepted submission contract is missing terminal identity fields\")\nrequestedDelay = initialDelay if attempt == 1 else pollInterval\nif requestedDelay < 0 or requestedDelay >= 180:\n    raise ValueError(\"Polling delay is outside safe helper bound\")\nstage = \"firmware upgrade poll \" + str(attempt)\nremaining = deadline - time.time()\nif remaining <= 0:\n    waitStatus = \"timeout\"\n    waitMessage = \"The firmware upgrade wait deadline was reached before \" + stage + \".\"\n    timeoutResult = {key: submission.get(key) for key in preservedKeys}\n    timeoutResult.update({\n        \"requestAccepted\": True,\n        \"completed\": False,\n        \"timeout\": True,\n        \"stage\": stage,\n        \"attempt\": attempt\n    })\n    waitResultJson = json.dumps(timeoutResult, separators=(\",\", \":\"))\nelse:\n    actualDelay = min(requestedDelay, remaining)\n    time.sleep(actualDelay)\n    waitStatus = \"ready\"\n    waitMessage = \"The bounded delay before \" + stage + \" completed.\"\n    waitResultJson = json.dumps({\"stage\":stage,\"attempt\":attempt,\"requestedDelaySeconds\":requestedDelay,\"actualDelaySeconds\":actualDelay}, separators=(\",\", \":\"))\nhelperReady = waitStatus in (\"ready\", \"timeout\") and bool(waitMessage and waitResultJson)\n",
-                      "script_arguments": [
-                        "$activity.definition_activity_02XOKCY8L71P57eNzmSt2cSsuFUjMrIwIf5.output.script_queries.deadlineEpoch$",
-                        "$activity.definition_activity_02XOKCY8L71P57eNzmSt2cSsuFUjMrIwIf5.output.script_queries.initialDelaySeconds$",
-                        "$activity.definition_activity_02XOKCY8L71P57eNzmSt2cSsuFUjMrIwIf5.output.script_queries.pollIntervalSeconds$",
-                        "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XOLEHO2G5EH6jNlL6gH9kQpqPUTwwDQUE$",
-                        "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.submissionResultJson$"
-                      ],
-                      "script_queries": [
-                        {
-                          "script_query": "waitStatus",
-                          "script_query_name": "waitStatus",
-                          "script_query_type": "string"
-                        },
-                        {
-                          "script_query": "waitMessage",
-                          "script_query_name": "waitMessage",
-                          "script_query_type": "string"
-                        },
-                        {
-                          "script_query": "waitResultJson",
-                          "script_query_name": "waitResultJson",
-                          "script_query_type": "string"
-                        },
-                        {
-                          "script_query": "helperReady",
-                          "script_query_name": "helperReady",
-                          "script_query_type": "boolean"
-                        }
-                      ]
-                    },
-                    "object_type": "definition_activity"
-                  },
-                  {
-                    "unique_name": "definition_activity_02XOKCY8L71PF1tkO7XuPM3rMAaboAF8aET",
-                    "name": "Condition Block",
-                    "title": "Validate polling delay and bounded timeout",
-                    "type": "logic.if_else",
-                    "base_type": "activity",
-                    "properties": {
-                      "continue_on_failure": false,
-                      "description": "Combines the mutually exclusive delay-helper failure and bounded-timeout routes without changing either terminal contract.",
-                      "display_name": "Validate polling delay and bounded timeout",
-                      "skip_execution": false,
-                      "conditions": []
-                    },
-                    "object_type": "definition_activity",
-                    "blocks": [
-                      {
-                        "unique_name": "definition_activity_02XOKCY8L71PG50oq2Cg7lFjZI3b5Er1UvN",
-                        "name": "Condition Branch",
-                        "title": "Firmware polling attempt delay helper failure",
-                        "type": "logic.condition_block",
-                        "base_type": "activity",
-                        "properties": {
-                          "continue_on_failure": false,
-                          "description": "Fails closed unless the helper completed and returned its full typed contract.",
-                          "display_name": "Firmware polling attempt delay helper failure",
-                          "skip_execution": false,
-                          "condition": {
-                            "left_operand": {
-                              "left_operand": "$activity.definition_activity_02XOKCY8L71PA70MXFSSO7WVQ9Qi8Kk66eE.output.succeeded$",
-                              "operator": "ne",
-                              "right_operand": true
-                            },
-                            "operator": "or",
-                            "right_operand": {
-                              "left_operand": {
-                                "left_operand": "$activity.definition_activity_02XOKCY8L71PA70MXFSSO7WVQ9Qi8Kk66eE.output.succeeded$",
-                                "operator": "eq",
-                                "right_operand": true
-                              },
-                              "operator": "and",
-                              "right_operand": {
-                                "left_operand": "$activity.definition_activity_02XOKCY8L71PA70MXFSSO7WVQ9Qi8Kk66eE.output.script_queries.helperReady$",
-                                "operator": "ne",
-                                "right_operand": true
-                              }
-                            }
-                          }
-                        },
-                        "object_type": "definition_activity",
-                        "actions": [
-                          {
-                            "unique_name": "definition_activity_02XOKCY8L71PD6HgoOfW1SVHrHdInfgJVGI",
-                            "name": "Set Variables",
-                            "title": "Set firmware polling attempt delay helper failure outputs",
-                            "type": "core.set_multiple_variables",
-                            "base_type": "activity",
-                            "properties": {
-                              "continue_on_failure": false,
-                              "description": "Populates all four standard outputs for firmware polling attempt delay helper failure.",
-                              "display_name": "Set firmware polling attempt delay helper failure outputs",
-                              "skip_execution": false,
-                              "variables_to_update": [
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FB2SWbHrLitH1r33pOWfN8gq$",
-                                  "variable_value_new": "500"
-                                },
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FC5jxSq28zDsRALUWd6rcj9a$",
-                                  "variable_value_new": "Firmware polling attempt delay helper failed or returned unusable output"
-                                },
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FD6jGidJVfqHludVA351HjQE$",
-                                  "variable_value_new": "The 'Wait before firmware polling attempt' helper failed or returned an incomplete contract. Review its execution details."
-                                },
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
-                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.submissionInspectionRequiredResultJson$"
-                                }
-                              ]
-                            },
-                            "object_type": "definition_activity"
-                          },
-                          {
-                            "unique_name": "definition_activity_02XOKCY8L71PE50JAUmAbaBJVsiLTvA3BjF",
-                            "name": "Completed",
-                            "title": "Completed - firmware polling attempt delay helper failure",
-                            "type": "logic.completed",
-                            "base_type": "activity",
-                            "properties": {
-                              "continue_on_failure": false,
-                              "description": "Ends this terminal path after all four standard outputs are populated.",
-                              "display_name": "Completed - firmware polling attempt delay helper failure",
-                              "skip_execution": false,
-                              "completion_type": "failed-completed",
-                              "result_message": "Firmware polling attempt delay helper failed or returned unusable output"
-                            },
-                            "object_type": "definition_activity"
-                          }
-                        ]
-                      },
-                      {
-                        "unique_name": "definition_activity_02XOKCY8L71PK65EFBNeRJPScSbL0njiGpt",
-                        "name": "Condition Branch",
-                        "title": "Firmware polling timeout before current attempt",
-                        "type": "logic.condition_block",
-                        "base_type": "activity",
-                        "properties": {
-                          "continue_on_failure": false,
-                          "description": "Stops when the shared deadline is exhausted before this attempt.",
-                          "display_name": "Firmware polling timeout before current attempt",
-                          "skip_execution": false,
-                          "condition": {
-                            "left_operand": "$activity.definition_activity_02XOKCY8L71PA70MXFSSO7WVQ9Qi8Kk66eE.output.script_queries.waitStatus$",
-                            "operator": "eq",
-                            "right_operand": "timeout"
-                          }
-                        },
-                        "object_type": "definition_activity",
-                        "actions": [
-                          {
-                            "unique_name": "definition_activity_02XOKCY8L71PH2adlRKUIA6RcWWQC0OS4SJ",
-                            "name": "Set Variables",
-                            "title": "Set firmware polling timeout before current attempt outputs",
-                            "type": "core.set_multiple_variables",
-                            "base_type": "activity",
-                            "properties": {
-                              "continue_on_failure": false,
-                              "description": "Populates all four standard outputs for firmware polling timeout before current attempt.",
-                              "display_name": "Set firmware polling timeout before current attempt outputs",
-                              "skip_execution": false,
-                              "variables_to_update": [
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FB2SWbHrLitH1r33pOWfN8gq$",
-                                  "variable_value_new": "504"
-                                },
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FC5jxSq28zDsRALUWd6rcj9a$",
-                                  "variable_value_new": "Firmware polling timed out"
-                                },
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FD6jGidJVfqHludVA351HjQE$",
-                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71PA70MXFSSO7WVQ9Qi8Kk66eE.output.script_queries.waitMessage$"
-                                },
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
-                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71PA70MXFSSO7WVQ9Qi8Kk66eE.output.script_queries.waitResultJson$"
-                                }
-                              ]
-                            },
-                            "object_type": "definition_activity"
-                          },
-                          {
-                            "unique_name": "definition_activity_02XOKCY8L71PI2wiasXExlEygUYJj6GcPHG",
-                            "name": "Completed",
-                            "title": "Completed - firmware polling timeout before current attempt",
-                            "type": "logic.completed",
-                            "base_type": "activity",
-                            "properties": {
-                              "continue_on_failure": false,
-                              "description": "Ends this terminal path after all four standard outputs are populated.",
-                              "display_name": "Completed - firmware polling timeout before current attempt",
-                              "skip_execution": false,
-                              "completion_type": "failed-completed",
-                              "result_message": "Firmware polling timed out"
-                            },
-                            "object_type": "definition_activity"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "unique_name": "definition_activity_02XOKCY8L71PB2IQDMMzLkttQ7eowN1uoTo",
-                    "name": "Generic Cisco Intersight API Request",
-                    "title": "Get firmware upgrade status (current attempt)",
-                    "type": "intersight.api_request",
-                    "base_type": "activity",
-                    "properties": {
-                      "continue_on_failure": true,
-                      "description": "Reads the exact firmware upgrade item status for the current bounded polling attempt. A generic request remains necessary because no embedded purpose-built status poller is available; replace it with a purpose-built atomic when Cisco publishes one.",
-                      "display_name": "Get firmware upgrade status (current attempt)",
-                      "skip_execution": false,
-                      "action_timeout": 180,
-                      "api_method": "GET",
-                      "api_url": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.pollApiUrl$",
-                      "content_type": "application/json",
-                      "endpoint": "primary",
-                      "runtime_user": {
-                        "target_default": true
-                      },
-                      "target": {
-                        "use_workflow_target": true
-                      }
-                    },
-                    "object_type": "definition_activity"
-                  },
-                  {
-                    "unique_name": "definition_activity_02XOKCY8L71PN1je9H6t8r8r07PsJRTcj6i",
-                    "name": "Condition Block",
-                    "title": "Firmware status polling attempt API failure",
-                    "type": "logic.if_else",
-                    "base_type": "activity",
-                    "properties": {
-                      "continue_on_failure": false,
-                      "description": "Fails closed unless the API activity completed with documented HTTP 200.",
-                      "display_name": "Firmware status polling attempt API failure",
-                      "skip_execution": false,
-                      "conditions": []
-                    },
-                    "object_type": "definition_activity",
-                    "blocks": [
-                      {
-                        "unique_name": "definition_activity_02XOKCY8L71PO636z2751jPJ4FXZdjhCNwM",
-                        "name": "Condition Branch",
-                        "title": "Firmware status polling attempt API failure",
-                        "type": "logic.condition_block",
-                        "base_type": "activity",
-                        "properties": {
-                          "continue_on_failure": false,
-                          "description": "Fails closed unless the API activity completed with documented HTTP 200.",
-                          "display_name": "Firmware status polling attempt API failure",
-                          "skip_execution": false,
-                          "condition": {
-                            "left_operand": {
-                              "left_operand": "$activity.definition_activity_02XOKCY8L71PB2IQDMMzLkttQ7eowN1uoTo.output.succeeded$",
-                              "operator": "ne",
-                              "right_operand": true
-                            },
-                            "operator": "or",
-                            "right_operand": {
-                              "left_operand": "$activity.definition_activity_02XOKCY8L71PB2IQDMMzLkttQ7eowN1uoTo.output.status_code$",
-                              "operator": "ne",
-                              "right_operand": 200
-                            }
-                          }
-                        },
-                        "object_type": "definition_activity",
-                        "actions": [
-                          {
-                            "unique_name": "definition_activity_02XOKCY8L71PL0IDYqsqpSC6qJ8sFiCAfT3",
-                            "name": "Set Variables",
-                            "title": "Set firmware status polling attempt api failure outputs",
-                            "type": "core.set_multiple_variables",
-                            "base_type": "activity",
-                            "properties": {
-                              "continue_on_failure": false,
-                              "description": "Populates all four standard outputs for firmware status polling attempt api failure.",
-                              "display_name": "Set firmware status polling attempt api failure outputs",
-                              "skip_execution": false,
-                              "variables_to_update": [
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FB2SWbHrLitH1r33pOWfN8gq$",
-                                  "variable_value_new": "502"
-                                },
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FC5jxSq28zDsRALUWd6rcj9a$",
-                                  "variable_value_new": "Firmware status polling attempt failed or returned an unexpected HTTP response"
-                                },
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FD6jGidJVfqHludVA351HjQE$",
-                                  "variable_value_new": "The 'Get firmware status (current attempt)' request failed or did not return documented HTTP 200. Review its status and response body before retrying."
-                                },
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
-                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.submissionInspectionRequiredResultJson$"
-                                }
-                              ]
-                            },
-                            "object_type": "definition_activity"
-                          },
-                          {
-                            "unique_name": "definition_activity_02XOKCY8L71PM2HN05hm8WwpDNqWCCmLCqE",
-                            "name": "Completed",
-                            "title": "Completed - firmware status polling attempt api failure",
-                            "type": "logic.completed",
-                            "base_type": "activity",
-                            "properties": {
-                              "continue_on_failure": false,
-                              "description": "Ends this terminal path after all four standard outputs are populated.",
-                              "display_name": "Completed - firmware status polling attempt api failure",
-                              "skip_execution": false,
-                              "completion_type": "failed-completed",
-                              "result_message": "Firmware status polling attempt failed or returned an unexpected HTTP response"
-                            },
-                            "object_type": "definition_activity"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "unique_name": "definition_activity_02XOKCY8L71PC05n4Rlb0cF08c3qHm7DIIk",
-                    "name": "Execute Python Script",
-                    "title": "Inspect firmware upgrade status (current attempt)",
-                    "type": "python3.script",
-                    "base_type": "activity",
-                    "properties": {
-                      "continue_on_failure": true,
-                      "description": "Validates identity, documented terminal states, and response consistency for the current firmware upgrade poll.",
-                      "display_name": "Inspect firmware upgrade status (current attempt)",
-                      "skip_execution": false,
-                      "action_timeout": 180,
-                      "script": "import json\nimport re\nimport sys\npayload = json.loads(sys.argv[1])\nstatusCode = int(sys.argv[2])\npollMode = sys.argv[3]\nexpectedMoid = sys.argv[4]\nsubmitObjectType = sys.argv[5]\nsubmission = json.loads(sys.argv[6])\nattempt = int(sys.argv[7])\n\ndef safe_moid(value):\n    return isinstance(value, str) and re.fullmatch(r\"[A-Za-z0-9][A-Za-z0-9._~-]{0,127}\", value) is not None\n\nproblems = []\nobservedStatus = \"\"\nif statusCode != 200:\n    problems.append(\"Poll response status is not documented HTTP 200.\")\nif not isinstance(payload, dict):\n    problems.append(\"Poll response is not an object.\")\nelif payload.get(\"Moid\") != expectedMoid or not safe_moid(payload.get(\"Moid\")):\n    problems.append(\"Poll response Moid does not match the exact tracked resource.\")\nelif pollMode == \"upgrade-status\":\n    if payload.get(\"ObjectType\") != \"firmware.UpgradeStatus\" or payload.get(\"ClassId\") != \"firmware.UpgradeStatus\":\n        problems.append(\"UpgradeStatus poll discriminators are invalid.\")\n    observedStatus = payload.get(\"Overallstatus\")\n    allowed = {\"none\", \"started\", \"prepare initiating\", \"prepare initiated\", \"prepared\", \"download initiating\", \"download initiated\", \"downloading\", \"downloaded\", \"upgrade initiating on fabric A\", \"upgrade initiated on fabric A\", \"upgrading fabric A\", \"rebooting fabric A\", \"upgraded fabric A\", \"upgrade initiating on fabric B\", \"upgrade initiated on fabric B\", \"upgrading fabric B\", \"rebooting fabric B\", \"upgraded fabric B\", \"upgrade initiating\", \"upgrade initiated\", \"upgrading\", \"oob images staging\", \"oob images staged\", \"rebooting\", \"upgraded\", \"success\", \"failed\", \"terminated\", \"pending\", \"ReadyForCache\", \"Caching\", \"Cached\", \"CachingFailed\"}\n    if observedStatus not in allowed:\n        problems.append(\"UpgradeStatus Overallstatus is not a documented enum.\")\nelif pollMode == \"created-resource\":\n    if payload.get(\"ObjectType\") != submitObjectType or payload.get(\"ClassId\") != submitObjectType:\n        problems.append(\"Created-resource poll discriminators are invalid.\")\n    observedStatus = payload.get(\"Status\")\n    if observedStatus not in (\"NONE\", \"IN_PROGRESS\", \"SUCCESSFUL\", \"FAILED\", \"TERMINATED\"):\n        problems.append(\"Created-resource Status is not a documented uppercase enum.\")\nelse:\n    problems.append(\"Poll mode is invalid.\")\n\nif problems:\n    pollStatus = \"invalid\"\n    pollMessage = \" \".join(problems)\nelif (pollMode == \"upgrade-status\" and observedStatus == \"success\") or (pollMode == \"created-resource\" and observedStatus == \"SUCCESSFUL\"):\n    pollStatus = \"completed\"\n    pollMessage = \"Firmware upgrade completion was confirmed by the exact tracked resource.\"\nelif (pollMode == \"upgrade-status\" and observedStatus in (\"failed\", \"terminated\", \"CachingFailed\")) or (pollMode == \"created-resource\" and observedStatus in (\"FAILED\", \"TERMINATED\")):\n    pollStatus = \"failed\"\n    pollMessage = \"The exact tracked firmware resource reported terminal failure state \" + str(observedStatus) + \".\"\nelse:\n    pollStatus = \"in-progress\"\n    pollMessage = \"The exact tracked firmware resource remains nonterminal at attempt \" + str(attempt) + \".\"\n\npollResultJson = json.dumps({\n    \"status\": pollStatus,\n    \"message\": pollMessage,\n    \"requestAccepted\": True,\n    \"completed\": pollStatus == \"completed\",\n    \"attempt\": attempt,\n    \"maximumPollAttempts\": 5,\n    \"pollMode\": pollMode,\n    \"trackedMoid\": expectedMoid,\n    \"observedStatus\": observedStatus or None,\n    \"createdMoid\": submission.get(\"createdMoid\"),\n    \"createdObjectType\": submission.get(\"createdObjectType\"),\n    \"targetType\": submission.get(\"targetType\"),\n    \"targetMoid\": submission.get(\"targetMoid\"),\n    \"imageMoid\": submission.get(\"imageMoid\"),\n    \"readinessCaveats\": submission.get(\"readinessCaveats\", []),\n    \"retryRequiresInspection\": pollStatus in (\"invalid\", \"failed\")\n}, separators=(\",\", \":\"))\nhelperReady = pollStatus in (\"invalid\", \"failed\", \"completed\", \"in-progress\") and bool(pollMessage and pollResultJson)\npollTerminalMessage = \"Firmware status response failed validation\" if pollStatus == \"invalid\" else \"Firmware upgrade reported terminal failure\" if pollStatus == \"failed\" else pollMessage",
-                      "script_arguments": [
-                        "$activity.definition_activity_02XOKCY8L71PB2IQDMMzLkttQ7eowN1uoTo.output.response_body$",
-                        "$activity.definition_activity_02XOKCY8L71PB2IQDMMzLkttQ7eowN1uoTo.output.status_code$",
-                        "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.pollMode$",
-                        "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.pollMoid$",
-                        "$activity.definition_activity_02XOKCY8L71NA2ToNfwXMbi4MzYGbQ0NoT7.output.script_queries.submitObjectType$",
-                        "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.submissionResultJson$",
-                        "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XOLEHO2G5EH6jNlL6gH9kQpqPUTwwDQUE$"
-                      ],
-                      "script_queries": [
-                        {
-                          "script_query": "pollStatus",
-                          "script_query_name": "pollStatus",
-                          "script_query_type": "string"
-                        },
-                        {
-                          "script_query": "pollMessage",
-                          "script_query_name": "pollMessage",
-                          "script_query_type": "string"
-                        },
-                        {
-                          "script_query": "pollResultJson",
-                          "script_query_name": "pollResultJson",
-                          "script_query_type": "string"
-                        },
-                        {
-                          "script_query": "helperReady",
-                          "script_query_name": "helperReady",
-                          "script_query_type": "boolean"
-                        },
-                        {
-                          "script_query": "pollTerminalMessage",
-                          "script_query_name": "pollTerminalMessage",
-                          "script_query_type": "string"
-                        }
-                      ]
-                    },
-                    "object_type": "definition_activity"
-                  },
-                  {
-                    "unique_name": "definition_activity_02XOKCY8L71PR6b9lQmH1no5fA1l0l41H5V",
-                    "name": "Condition Block",
-                    "title": "Validate inspected polling terminal status",
-                    "type": "logic.if_else",
-                    "base_type": "activity",
-                    "properties": {
-                      "continue_on_failure": false,
-                      "description": "Routes technical helper failure, invalid or failed resource status, and proven completion from one inspected poll result.",
-                      "display_name": "Validate inspected polling terminal status",
-                      "skip_execution": false,
-                      "conditions": []
-                    },
-                    "object_type": "definition_activity",
-                    "blocks": [
-                      {
-                        "unique_name": "definition_activity_02XOKCY8L71PS6WccQVOuenZvQzebwO7s2s",
-                        "name": "Condition Branch",
-                        "title": "Firmware status inspection helper failure",
-                        "type": "logic.condition_block",
-                        "base_type": "activity",
-                        "properties": {
-                          "continue_on_failure": false,
-                          "description": "Fails closed unless the helper completed and returned its full typed contract.",
-                          "display_name": "Firmware status inspection helper failure",
-                          "skip_execution": false,
-                          "condition": {
-                            "left_operand": {
-                              "left_operand": "$activity.definition_activity_02XOKCY8L71PC05n4Rlb0cF08c3qHm7DIIk.output.succeeded$",
-                              "operator": "ne",
-                              "right_operand": true
-                            },
-                            "operator": "or",
-                            "right_operand": {
-                              "left_operand": {
-                                "left_operand": "$activity.definition_activity_02XOKCY8L71PC05n4Rlb0cF08c3qHm7DIIk.output.succeeded$",
-                                "operator": "eq",
-                                "right_operand": true
-                              },
-                              "operator": "and",
-                              "right_operand": {
-                                "left_operand": "$activity.definition_activity_02XOKCY8L71PC05n4Rlb0cF08c3qHm7DIIk.output.script_queries.helperReady$",
-                                "operator": "ne",
-                                "right_operand": true
-                              }
-                            }
-                          }
-                        },
-                        "object_type": "definition_activity",
-                        "actions": [
-                          {
-                            "unique_name": "definition_activity_02XOKCY8L71PP23VIczYKOlNZJ8tmlxPUiZ",
-                            "name": "Set Variables",
-                            "title": "Set firmware status inspection helper failure outputs",
-                            "type": "core.set_multiple_variables",
-                            "base_type": "activity",
-                            "properties": {
-                              "continue_on_failure": false,
-                              "description": "Populates all four standard outputs for firmware status inspection helper failure.",
-                              "display_name": "Set firmware status inspection helper failure outputs",
-                              "skip_execution": false,
-                              "variables_to_update": [
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FB2SWbHrLitH1r33pOWfN8gq$",
-                                  "variable_value_new": "500"
-                                },
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FC5jxSq28zDsRALUWd6rcj9a$",
-                                  "variable_value_new": "Firmware status inspection helper failed or returned unusable output"
-                                },
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FD6jGidJVfqHludVA351HjQE$",
-                                  "variable_value_new": "The 'Inspect firmware status (current attempt)' helper failed or returned an incomplete contract. Review its execution details."
-                                },
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
-                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71NZ5jKuk4PMXYobzdRwlGXs3m.output.script_queries.submissionInspectionRequiredResultJson$"
-                                }
-                              ]
-                            },
-                            "object_type": "definition_activity"
-                          },
-                          {
-                            "unique_name": "definition_activity_02XOKCY8L71PQ3ViUlbMiZbQlCrTtu03uEI",
-                            "name": "Completed",
-                            "title": "Completed - firmware status inspection helper failure",
-                            "type": "logic.completed",
-                            "base_type": "activity",
-                            "properties": {
-                              "continue_on_failure": false,
-                              "description": "Ends this terminal path after all four standard outputs are populated.",
-                              "display_name": "Completed - firmware status inspection helper failure",
-                              "skip_execution": false,
-                              "completion_type": "failed-completed",
-                              "result_message": "Firmware status inspection helper failed or returned unusable output"
-                            },
-                            "object_type": "definition_activity"
-                          }
-                        ]
-                      },
-                      {
-                        "unique_name": "definition_activity_02XOKCY8L71PW6QUdRlaI3hXbrQDFQtpG4E",
-                        "name": "Condition Branch",
-                        "title": "Polled resource reported invalid or failed terminal status",
-                        "type": "logic.condition_block",
-                        "base_type": "activity",
-                        "properties": {
-                          "continue_on_failure": false,
-                          "description": "Combines the two documented 502 routes while retaining the inspector's exact error and result payload.",
-                          "display_name": "Polled resource reported invalid or failed terminal status",
-                          "skip_execution": false,
-                          "condition": {
-                            "left_operand": "$activity.definition_activity_02XOKCY8L71PC05n4Rlb0cF08c3qHm7DIIk.output.script_queries.pollStatus$",
-                            "operator": "mregex",
-                            "right_operand": "^(invalid|failed)$"
-                          }
-                        },
-                        "object_type": "definition_activity",
-                        "actions": [
-                          {
-                            "unique_name": "definition_activity_02XOKCY8L71PT3ZoP0L5ZZmUUMAG1D1BZcs",
-                            "name": "Set Variables",
-                            "title": "Set firmware status conflict at current attempt outputs",
-                            "type": "core.set_multiple_variables",
-                            "base_type": "activity",
-                            "properties": {
-                              "continue_on_failure": false,
-                              "description": "Populates all four standard outputs for firmware status conflict at current attempt.",
-                              "display_name": "Set firmware status conflict at current attempt outputs",
-                              "skip_execution": false,
-                              "variables_to_update": [
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FB2SWbHrLitH1r33pOWfN8gq$",
-                                  "variable_value_new": "502"
-                                },
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FC5jxSq28zDsRALUWd6rcj9a$",
-                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71PC05n4Rlb0cF08c3qHm7DIIk.output.script_queries.pollTerminalMessage$"
-                                },
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FD6jGidJVfqHludVA351HjQE$",
-                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71PC05n4Rlb0cF08c3qHm7DIIk.output.script_queries.pollMessage$"
-                                },
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
-                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71PC05n4Rlb0cF08c3qHm7DIIk.output.script_queries.pollResultJson$"
-                                }
-                              ]
-                            },
-                            "object_type": "definition_activity"
-                          },
-                          {
-                            "unique_name": "definition_activity_02XOKCY8L71PU6OkMUo6YsQlYb0UUUrQBCQ",
-                            "name": "Completed",
-                            "title": "Completed - firmware status conflict at current attempt",
-                            "type": "logic.completed",
-                            "base_type": "activity",
-                            "properties": {
-                              "continue_on_failure": false,
-                              "description": "Ends this terminal path after all four standard outputs are populated.",
-                              "display_name": "Completed - firmware status conflict at current attempt",
-                              "skip_execution": false,
-                              "completion_type": "failed-completed",
-                              "result_message": "$activity.definition_activity_02XOKCY8L71PC05n4Rlb0cF08c3qHm7DIIk.output.script_queries.pollTerminalMessage$"
-                            },
-                            "object_type": "definition_activity"
-                          }
-                        ]
-                      },
-                      {
-                        "unique_name": "definition_activity_02XOKCY8L71Q43EI27zqoInz44y1P771Mmi",
-                        "name": "Condition Branch",
-                        "title": "Firmware upgrade completion at current attempt",
-                        "type": "logic.condition_block",
-                        "base_type": "activity",
-                        "properties": {
-                          "continue_on_failure": false,
-                          "description": "Returns success only when the exact tracked resource reports success/SUCCESSFUL.",
-                          "display_name": "Firmware upgrade completion at current attempt",
-                          "skip_execution": false,
-                          "condition": {
-                            "left_operand": "$activity.definition_activity_02XOKCY8L71PC05n4Rlb0cF08c3qHm7DIIk.output.script_queries.pollStatus$",
-                            "operator": "eq",
-                            "right_operand": "completed"
-                          }
-                        },
-                        "object_type": "definition_activity",
-                        "actions": [
-                          {
-                            "unique_name": "definition_activity_02XOKCY8L71Q1755CgRTt7gIABJ7AZyukW1",
-                            "name": "Set Variables",
-                            "title": "Set firmware upgrade completion at current attempt outputs",
-                            "type": "core.set_multiple_variables",
-                            "base_type": "activity",
-                            "properties": {
-                              "continue_on_failure": false,
-                              "description": "Populates all four standard outputs for firmware upgrade completion at current attempt.",
-                              "display_name": "Set firmware upgrade completion at current attempt outputs",
-                              "skip_execution": false,
-                              "variables_to_update": [
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FB2SWbHrLitH1r33pOWfN8gq$",
-                                  "variable_value_new": "200"
-                                },
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FC5jxSq28zDsRALUWd6rcj9a$",
-                                  "variable_value_new": "Firmware upgrade completed"
-                                },
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FD6jGidJVfqHludVA351HjQE$",
-                                  "variable_value_new": ""
-                                },
-                                {
-                                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
-                                  "variable_value_new": "$activity.definition_activity_02XOKCY8L71PC05n4Rlb0cF08c3qHm7DIIk.output.script_queries.pollResultJson$"
-                                }
-                              ]
-                            },
-                            "object_type": "definition_activity"
-                          },
-                          {
-                            "unique_name": "definition_activity_02XOKCY8L71Q244bqxmcVrmsUIRAiLrF4Kf",
-                            "name": "Completed",
-                            "title": "Completed - firmware upgrade completion at current attempt",
-                            "type": "logic.completed",
-                            "base_type": "activity",
-                            "properties": {
-                              "continue_on_failure": false,
-                              "description": "Ends this terminal path after all four standard outputs are populated.",
-                              "display_name": "Completed - firmware upgrade completion at current attempt",
-                              "skip_execution": false,
-                              "completion_type": "succeeded",
-                              "result_message": "Firmware upgrade completed"
-                            },
-                            "object_type": "definition_activity"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "unique_name": "definition_activity_02XOLEHO2G5EI5kaehAXjYLUrJ8nF1nre0H",
-                    "name": "Set Variables",
-                    "title": "Record last poll result and increment polling attempt",
-                    "type": "core.set_multiple_variables",
-                    "base_type": "activity",
-                    "properties": {
-                      "continue_on_failure": false,
-                      "description": "Caches the latest validated nonterminal poll result and advances the bounded polling counter.",
-                      "display_name": "Record last poll result and increment polling attempt",
-                      "skip_execution": false,
-                      "variables_to_update": [
-                        {
-                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XOLEHO2G5EH6jNlL6gH9kQpqPUTwwDQUE$",
-                          "variable_value_new": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XOLEHO2G5EH6jNlL6gH9kQpqPUTwwDQUE$+1"
-                        },
-                        {
-                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XP2I0CDTFP2701mzfprxNpan8qkjRnAtT$",
-                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71PC05n4Rlb0cF08c3qHm7DIIk.output.script_queries.pollResultJson$"
-                        }
-                      ]
-                    },
-                    "object_type": "definition_activity"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "unique_name": "definition_activity_02XOKCY8L71TL4ZKic9JNJcsKO7Z7CSDNEm",
-            "name": "Set Variables",
-            "title": "Set firmware polling exhaustion outputs",
-            "type": "core.set_multiple_variables",
-            "base_type": "activity",
-            "properties": {
-              "continue_on_failure": false,
-              "description": "Populates all four standard outputs after five nonterminal attempts.",
-              "display_name": "Set firmware polling exhaustion outputs",
-              "skip_execution": false,
-              "variables_to_update": [
-                {
-                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FB2SWbHrLitH1r33pOWfN8gq$",
-                  "variable_value_new": "504"
-                },
-                {
-                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FC5jxSq28zDsRALUWd6rcj9a$",
-                  "variable_value_new": "Firmware polling timed out"
-                },
-                {
-                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FD6jGidJVfqHludVA351HjQE$",
-                  "variable_value_new": "The firmware upgrade remained in a documented nonterminal state after five bounded attempts. Inspect the created resource before retrying."
-                },
-                {
-                  "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.output.variable_workflow_02XOKCY8L72FE2gpBJF68reaRfWGtPqw6Tw$",
-                  "variable_value_new": "$workflow.definition_workflow_02XOKCY8L727N6XRbUaRIiFCevRevuGnIMH.local.variable_workflow_02XP2I0CDTFP2701mzfprxNpan8qkjRnAtT$"
-                }
-              ]
-            },
-            "object_type": "definition_activity"
-          },
-          {
-            "unique_name": "definition_activity_02XOKCY8L71TM0gx5DrjkQKrUOmAkgkWkMn",
-            "name": "Completed",
-            "title": "Completed - firmware polling exhaustion",
-            "type": "logic.completed",
-            "base_type": "activity",
-            "properties": {
-              "continue_on_failure": false,
-              "description": "Ends this terminal path after all four standard outputs are populated.",
-              "display_name": "Completed - firmware polling exhaustion",
-              "skip_execution": false,
-              "completion_type": "failed-completed",
-              "result_message": "Firmware polling timed out"
-            },
-            "object_type": "definition_activity"
           }
         ]
       }
