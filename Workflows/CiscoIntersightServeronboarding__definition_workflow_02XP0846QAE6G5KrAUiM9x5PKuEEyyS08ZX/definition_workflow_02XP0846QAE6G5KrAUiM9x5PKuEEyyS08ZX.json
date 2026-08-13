@@ -360,7 +360,7 @@
     "properties": {
       "atomic": {"is_atomic": false},
       "delete_workflow_instance": false,
-      "description": "Onboards one Cisco Intersight Blade or Rack server with five atomics: prove the target identity, derive and assign a same-organization Server Profile, submit ordered Deploy then Activate actions with reboot authorization, wait up to ten minutes for exact healthy association with no queued or running work, then start vMedia OS installation. OS content is resolved only by exact identity, concrete type, and organization permission; Intersight decides repository readiness, metadata compatibility, model support, and content combinations. This version sends no Answers or AdditionalParameters. Profile derivation returns 409 instead of reusing an existing name and waits up to five minutes. OS waiting is optional and limited to three minutes; otherwise success means accepted, not completed. A bounded timeout becomes parent 202 only when the atomic proves acceptance with pending evidence. Import the five atomics before this workflow and select an authorized intersight.endpoint target.",
+      "description": "Onboards one Cisco Intersight Blade or Rack server with five atomics: prove the target identity, derive and assign a same-organization Server Profile, submit ordered Deploy then Activate actions with reboot authorization, wait up to thirty minutes for exact healthy association with no queued or running work, then start vMedia OS installation. OS content is resolved only by exact identity, concrete type, and organization permission; Intersight decides repository readiness, metadata compatibility, model support, and content combinations. This version sends no Answers or AdditionalParameters. Profile derivation returns 409 instead of reusing an existing name and waits up to five minutes. OS waiting is optional and limited to three minutes; otherwise success means accepted, not completed. A bounded timeout becomes parent 202 only when the atomic proves acceptance with pending evidence. Import the five atomics before this workflow and select an authorized intersight.endpoint target.",
       "display_name": "Cisco Intersight - Server onboarding",
       "runtime_user": {"override_target_runtime_user": false, "specify_on_workflow_start": false, "target_default": true},
       "target": {"target_type": "intersight.endpoint", "specify_on_workflow_start": true}
@@ -889,7 +889,7 @@
         "base_type": "subworkflow",
         "properties": {
           "continue_on_failure": true,
-          "description": "Passes Confirm Server Onboarding as explicit Server activation and reboot authorization. The atomic submits ordered Deploy then Activate actions and waits up to ten minutes for the exact assigned server to be fully associated and healthy before OS installation.",
+          "description": "Passes Confirm Server Onboarding as explicit Server activation and reboot authorization. The atomic submits ordered Deploy then Activate actions and waits up to thirty minutes for the exact assigned server to be fully associated and healthy before OS installation.",
           "display_name": "Deploy assigned Server Profile",
           "skip_execution": false,
           "input": {
@@ -898,7 +898,7 @@
             "variable_workflow_02XOKCY8L72AW6LO5DAi2pYfZWkyy2rr2KZ": "$workflow.definition_workflow_02XP0846QAE6G5KrAUiM9x5PKuEEyyS08ZX.input.variable_workflow_02XP0846QB1BS57ig7Wafjfn4m3s9selNfF$",
             "variable_workflow_02XOKCY8L72F90jHIBV6230oPiJD1whSniP": "$workflow.definition_workflow_02XP0846QAE6G5KrAUiM9x5PKuEEyyS08ZX.input.variable_workflow_02XP0846QC9B41WGVJUqQdIRZplX7z3Lek4$",
             "variable_workflow_02XOKCY8L72AX6V72SldzHcdmWAQGiavXZT": true,
-            "variable_workflow_02XOKCY8L72AY0cI7K8umHRmYp7fRCqL9bD": 600
+            "variable_workflow_02XOKCY8L72AY0cI7K8umHRmYp7fRCqL9bD": 1800
           },
           "runtime_user": {"target_default": true},
           "target": {"target_type": "intersight.endpoint", "use_workflow_target": true},
@@ -978,11 +978,11 @@
                 "base_type": "activity",
                 "properties": {
                   "continue_on_failure": true,
-                  "description": "Exposes acceptedPending only when Result proves requestAccepted=true, deploymentCompleted=false, and either timeout=true or an explicit documented deployment progress state.",
+                  "description": "Exposes acceptedPending only when Result proves requestAccepted=true, deploymentCompleted=false, and explicit timeout, documented progress-state, or exact requested-activation Not-activated handoff evidence.",
                   "display_name": "Verify accepted incomplete profile deployment",
                   "skip_execution": false,
                   "action_timeout": 180,
-                  "script": "import json\nimport sys\n\nacceptedPending = False\nclassificationMessage = \"Profile deployment timeout was not proven accepted and incomplete.\"\nprogressStates = {\"Assigned\", \"Preparing\", \"Validating\", \"Evaluating\", \"Configuring\", \"Analyzing\", \"Activating\", \"Waiting-for-resource\"}\ntry:\n    payload = json.loads(sys.argv[1])\n    if not isinstance(payload, dict):\n        raise ValueError(\"Result is not a JSON object.\")\n    pendingEvidence = payload.get(\"timeout\") is True or payload.get(\"ConfigStateSummary\") in progressStates\n    acceptedPending = payload.get(\"requestAccepted\") is True and payload.get(\"deploymentCompleted\") is False and pendingEvidence\n    classificationMessage = \"Profile deployment was accepted and has explicit bounded-timeout or progress-state evidence.\" if acceptedPending else \"Result does not prove accepted incomplete deployment with explicit pending evidence.\"\nexcept Exception as exc:\n    classificationMessage = str(exc)",
+                  "script": "import json\nimport sys\n\nacceptedPending = False\nclassificationMessage = \"Profile deployment timeout was not proven accepted and incomplete.\"\nprogressStates = {\"Assigned\", \"Preparing\", \"Validating\", \"Evaluating\", \"Configuring\", \"Analyzing\", \"Activating\", \"Waiting-for-resource\"}\ntry:\n    payload = json.loads(sys.argv[1])\n    if not isinstance(payload, dict):\n        raise ValueError(\"Result is not a JSON object.\")\n    activationHandoff = (\n        payload.get(\"activateAndRebootServer\") is True and\n        payload.get(\"InconsistencyReason\") == [\"Not-activated\"]\n    )\n    pendingEvidence = (\n        payload.get(\"timeout\") is True or\n        payload.get(\"ConfigStateSummary\") in progressStates or\n        activationHandoff\n    )\n    acceptedPending = payload.get(\"requestAccepted\") is True and payload.get(\"deploymentCompleted\") is False and pendingEvidence\n    classificationMessage = \"Profile deployment was accepted and has explicit bounded-timeout, progress-state, or activation-handoff evidence.\" if acceptedPending else \"Result does not prove accepted incomplete deployment with explicit pending evidence.\"\nexcept Exception as exc:\n    classificationMessage = str(exc)",
                   "script_arguments": ["$activity.definition_activity_02XP0846QGO9C2gmaqLjD7sY2OOjVKmQVuq.output.variable_workflow_02XOKCY8L72B01bLgTbIiQ60UKOvswdJUVR$"],
                   "script_queries": [
                     {"script_query": "acceptedPending", "script_query_name": "acceptedPending", "script_query_type": "boolean"}
