@@ -157,7 +157,7 @@
           "scope": "input",
           "name": "SCU or OSDU Image",
           "type": "datatype.string",
-          "description": "Exact imported SCU or OSDU image name or Moid.",
+          "description": "Exact SCU or OSDU image Name or Moid. Internally hosted content must be Imported with a positive size; externally hosted HTTP, NFS, or CIFS content must retain a valid concrete source. SupportedModels is informational and is not enforced.",
           "is_required": true,
           "display_on_wizard": false,
           "is_invisible": false,
