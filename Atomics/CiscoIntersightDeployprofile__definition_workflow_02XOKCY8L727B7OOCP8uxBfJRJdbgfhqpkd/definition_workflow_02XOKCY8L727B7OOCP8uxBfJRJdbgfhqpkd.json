@@ -67,7 +67,7 @@
           "is_invisible": false,
           "variable_string_format": ""
         },
-        "unique_name": "variable_workflow_02XR1DZONK3W2Fzjwa362Tk6EZ8xfXlo9cb",
+        "unique_name": "variable_workflow_02XOKCY8L72F90jHIBV6230oPiJD1whSniP",
         "object_type": "variable_workflow"
       },
       {
@@ -211,7 +211,7 @@
           "is_invisible": true,
           "variable_string_format": ""
         },
-        "unique_name": "variable_workflow_02XR1DZONK3W2A2rsNQR4e8Oy1CSmhVgy0f",
+        "unique_name": "variable_workflow_02XOKCY8L72FA05PnOX9UAX23LnJw2vlx3L",
         "object_type": "variable_workflow"
       },
       {
@@ -227,7 +227,7 @@
           "is_invisible": true,
           "variable_string_format": ""
         },
-        "unique_name": "variable_workflow_02XR1DZONK3W2fR0xkg9RTcfCisU684p3Pz",
+        "unique_name": "variable_workflow_02XOLEHO2G5EH6jNlL6gH9kQpqPUTwwDQUE",
         "object_type": "variable_workflow"
       },
       {
@@ -243,7 +243,7 @@
           "is_invisible": true,
           "variable_string_format": "json"
         },
-        "unique_name": "variable_workflow_02XR1DZONK3W2zk9ZfmqSs1GO8Qpzg1IZqv",
+        "unique_name": "variable_workflow_02XP2I0CDTFP2701mzfprxNpan8qkjRnAtT",
         "object_type": "variable_workflow"
       }
     ],
@@ -282,7 +282,7 @@
                 "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.input.variable_workflow_02XOKCY8L72AW6LO5DAi2pYfZWkyy2rr2KZ$",
                 "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.input.variable_workflow_02XOKCY8L72AX6V72SldzHcdmWAQGiavXZT$",
                 "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.input.variable_workflow_02XOKCY8L72AY0cI7K8umHRmYp7fRCqL9bD$",
-                "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.input.variable_workflow_02XR1DZONK3W2Fzjwa362Tk6EZ8xfXlo9cb$"
+                "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.input.variable_workflow_02XOKCY8L72F90jHIBV6230oPiJD1whSniP$"
               ],
               "script_queries": [
                 {
@@ -1535,7 +1535,7 @@
         "object_type": "definition_activity",
         "actions": [
           {
-            "unique_name": "definition_activity_02XR1DZONK3W27EpNSBydPlIrhnVOztdTud",
+            "unique_name": "definition_activity_02XOLEHO2G5EW5L8ai5sCf8kf7rlRuis2eO",
             "name": "Condition Block",
             "title": "Choose safe profile deployment request",
             "type": "logic.if_else",
@@ -1550,7 +1550,7 @@
             "object_type": "definition_activity",
             "blocks": [
               {
-                "unique_name": "definition_activity_02XR1DZONK3W2Lr2TgRUhyQBB4my9Rm692T",
+                "unique_name": "definition_activity_02XOKCY8L71P57eNzmSt2cSsuFUjMrIwIf5",
                 "name": "Condition Branch",
                 "title": "Server deploy and activation requested",
                 "type": "logic.condition_block",
@@ -1569,7 +1569,7 @@
                 "object_type": "definition_activity",
                 "actions": [
                   {
-                    "unique_name": "definition_activity_02XR1DZONK3W2oucESPQVV5fCrIS3oQsOz4",
+                    "unique_name": "definition_activity_02XOKCY8L71P86RjK5ZNqRqG8BtUlvxRtYw",
                     "name": "Generic Cisco Intersight API Request",
                     "title": "Submit Server deploy and activation schedule",
                     "type": "intersight.api_request",
@@ -1595,7 +1595,7 @@
                     "object_type": "definition_activity"
                   },
                   {
-                    "unique_name": "definition_activity_02XR1DZONK3W2UJZUri2X2atlRr8XF37Ldb",
+                    "unique_name": "definition_activity_02XOKCY8L71P90ncBgSmIoShdha6xUdqQvx",
                     "name": "Set Variables",
                     "title": "Record Server deploy and activation response",
                     "type": "core.set_multiple_variables",
@@ -1607,16 +1607,16 @@
                       "skip_execution": false,
                       "variables_to_update": [
                         {
-                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XR1DZONK3W2A2rsNQR4e8Oy1CSmhVgy0f$",
-                          "variable_value_new": "$activity.definition_activity_02XR1DZONK3W2oucESPQVV5fCrIS3oQsOz4.output.succeeded$"
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XOKCY8L72FA05PnOX9UAX23LnJw2vlx3L$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71P86RjK5ZNqRqG8BtUlvxRtYw.output.succeeded$"
                         },
                         {
-                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XR1DZONK3W2fR0xkg9RTcfCisU684p3Pz$",
-                          "variable_value_new": "$activity.definition_activity_02XR1DZONK3W2oucESPQVV5fCrIS3oQsOz4.output.status_code$"
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XOLEHO2G5EH6jNlL6gH9kQpqPUTwwDQUE$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71P86RjK5ZNqRqG8BtUlvxRtYw.output.status_code$"
                         },
                         {
-                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XR1DZONK3W2zk9ZfmqSs1GO8Qpzg1IZqv$",
-                          "variable_value_new": "$activity.definition_activity_02XR1DZONK3W2oucESPQVV5fCrIS3oQsOz4.output.response_body$"
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XP2I0CDTFP2701mzfprxNpan8qkjRnAtT$",
+                          "variable_value_new": "$activity.definition_activity_02XOKCY8L71P86RjK5ZNqRqG8BtUlvxRtYw.output.response_body$"
                         }
                       ]
                     },
@@ -1625,7 +1625,7 @@
                 ]
               },
               {
-                "unique_name": "definition_activity_02XR1DZONK3W22UCywfp673f8fjMJUVJ1ob",
+                "unique_name": "definition_activity_02XOKCY8L71P665ZMizpjnqYlTRhGUZb2A1",
                 "name": "Condition Branch",
                 "title": "Deploy-only profile request",
                 "type": "logic.condition_block",
@@ -1670,7 +1670,7 @@
                     "object_type": "definition_activity"
                   },
                   {
-                    "unique_name": "definition_activity_02XR1DZONK3W2qm9hc2gKcsTwyoy8XuNBzY",
+                    "unique_name": "definition_activity_02XOKCY8L71P74jNpiMRt8uD5dtgNTtCFpt",
                     "name": "Set Variables",
                     "title": "Record deploy-only response",
                     "type": "core.set_multiple_variables",
@@ -1682,15 +1682,15 @@
                       "skip_execution": false,
                       "variables_to_update": [
                         {
-                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XR1DZONK3W2A2rsNQR4e8Oy1CSmhVgy0f$",
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XOKCY8L72FA05PnOX9UAX23LnJw2vlx3L$",
                           "variable_value_new": "$activity.definition_activity_02XOKCY8L703A1bEyw4k4NNGykgXn0Yp2GJ.output.succeeded$"
                         },
                         {
-                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XR1DZONK3W2fR0xkg9RTcfCisU684p3Pz$",
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XOLEHO2G5EH6jNlL6gH9kQpqPUTwwDQUE$",
                           "variable_value_new": "$activity.definition_activity_02XOKCY8L703A1bEyw4k4NNGykgXn0Yp2GJ.output.status_code$"
                         },
                         {
-                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XR1DZONK3W2zk9ZfmqSs1GO8Qpzg1IZqv$",
+                          "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XP2I0CDTFP2701mzfprxNpan8qkjRnAtT$",
                           "variable_value_new": "$activity.definition_activity_02XOKCY8L703A1bEyw4k4NNGykgXn0Yp2GJ.output.response_body$"
                         }
                       ]
@@ -1729,27 +1729,27 @@
                   "skip_execution": false,
                   "condition": {
                     "left_operand": {
-                      "left_operand": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XR1DZONK3W2A2rsNQR4e8Oy1CSmhVgy0f$",
+                      "left_operand": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XOKCY8L72FA05PnOX9UAX23LnJw2vlx3L$",
                       "operator": "ne",
                       "right_operand": true
                     },
                     "operator": "or",
                     "right_operand": {
                       "left_operand": {
-                        "left_operand": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XR1DZONK3W2A2rsNQR4e8Oy1CSmhVgy0f$",
+                        "left_operand": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XOKCY8L72FA05PnOX9UAX23LnJw2vlx3L$",
                         "operator": "eq",
                         "right_operand": true
                       },
                       "operator": "and",
                       "right_operand": {
                         "left_operand": {
-                          "left_operand": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XR1DZONK3W2fR0xkg9RTcfCisU684p3Pz$",
+                          "left_operand": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XOLEHO2G5EH6jNlL6gH9kQpqPUTwwDQUE$",
                           "operator": "lt",
                           "right_operand": 200
                         },
                         "operator": "or",
                         "right_operand": {
-                          "left_operand": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XR1DZONK3W2fR0xkg9RTcfCisU684p3Pz$",
+                          "left_operand": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XOLEHO2G5EH6jNlL6gH9kQpqPUTwwDQUE$",
                           "operator": "gte",
                           "right_operand": 300
                         }
@@ -1785,7 +1785,7 @@
                         },
                         {
                           "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.output.variable_workflow_02XOKCY8L72B01bLgTbIiQ60UKOvswdJUVR$",
-                          "variable_value_new": "{\"error\":\"Profile deployment request failed or returned a non-2xx response\",\"statusCode\":\"$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XR1DZONK3W2fR0xkg9RTcfCisU684p3Pz$\",\"activity\":\"Profile deployment request\"}"
+                          "variable_value_new": "{\"error\":\"Profile deployment request failed or returned a non-2xx response\",\"statusCode\":\"$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XOLEHO2G5EH6jNlL6gH9kQpqPUTwwDQUE$\",\"activity\":\"Profile deployment request\"}"
                         }
                       ]
                     },
@@ -1825,7 +1825,7 @@
               "action_timeout": 180,
               "script": "import json\nimport sys\n\nacceptanceStatus = \"helper-failure\"\nacceptanceStatusCode = \"500\"\nacceptanceMessage = \"Deployment response inspection did not complete.\"\nacceptanceResultJson = json.dumps({\"error\": acceptanceMessage}, separators=(\",\", \":\"))\n\ntry:\n    item = json.loads(sys.argv[1])\n    expectedMoid = sys.argv[2]\n    expectedName = sys.argv[3]\n    expectedObjectType = sys.argv[4]\n    expectedTargetPlatform = sys.argv[5]\n    profileType = sys.argv[6]\n    expectedOrganizationMoid = sys.argv[7]\n    expectedAssignedServerMoid = sys.argv[8]\n    expectedAssignedServerObjectType = sys.argv[9]\n    activationRequested = sys.argv[10]\n    if not isinstance(item, dict):\n        raise ValueError(\"The deployment response body is not a JSON object.\")\n\n    moid = item.get(\"Moid\")\n    name = item.get(\"Name\")\n    objectType = item.get(\"ObjectType\")\n    targetPlatform = item.get(\"TargetPlatform\")\n    organization = item.get(\"Organization\")\n    organizationMoid = organization.get(\"Moid\") if isinstance(organization, dict) else None\n    error = \"\"\n    if moid != expectedMoid:\n        error = \"The deployment response Moid does not match the selected profile.\"\n    elif name != expectedName:\n        error = \"The deployment response Name does not match the selected profile.\"\n    elif objectType != expectedObjectType:\n        error = \"The deployment response ObjectType does not match the mapped concrete profile type.\"\n    elif organizationMoid != expectedOrganizationMoid:\n        error = \"The deployment response Organization does not match the selected profile organization.\"\n    elif expectedTargetPlatform and targetPlatform != expectedTargetPlatform:\n        error = \"The deployment response TargetPlatform does not match the requested profile type.\"\n    elif activationRequested not in (\"true\", \"false\"):\n        error = \"The normalized activation request is invalid.\"\n\n    if not error and profileType == \"Server\":\n        assigned = item.get(\"AssignedServer\")\n        assignedMoid = assigned.get(\"Moid\") if isinstance(assigned, dict) else None\n        assignedObjectType = assigned.get(\"ObjectType\") if isinstance(assigned, dict) else None\n        if assignedMoid != expectedAssignedServerMoid or assignedObjectType != expectedAssignedServerObjectType:\n            error = \"The deployment response AssignedServer does not match the exact pre-request Server target.\"\n        associated = item.get(\"AssociatedServer\")\n        if not error and associated is not None:\n            associatedMoid = associated.get(\"Moid\") if isinstance(associated, dict) else None\n            associatedObjectType = associated.get(\"ObjectType\") if isinstance(associated, dict) else None\n            if associatedMoid != expectedAssignedServerMoid or associatedObjectType != expectedAssignedServerObjectType:\n                error = \"The deployment response AssociatedServer conflicts with the exact pre-request Server target.\"\n\n    if error:\n        acceptanceStatus = \"invalid-resource\"\n        acceptanceStatusCode = \"502\"\n        acceptanceMessage = error\n        acceptanceResultJson = json.dumps({\n            \"error\": error,\n            \"requestMayHaveBeenAccepted\": True,\n            \"profileType\": profileType,\n            \"activateAndRebootServer\": activationRequested == \"true\"\n        }, separators=(\",\", \":\"))\n    else:\n        context = item.get(\"ConfigContext\")\n        returnedState = context.get(\"ConfigStateSummary\") if isinstance(context, dict) else None\n        acceptanceStatus = \"ready\"\n        acceptanceStatusCode = \"202\"\n        requestMode = \"deploy-and-activate\" if activationRequested == \"true\" else \"deploy-only\"\n        acceptanceMessage = \"Cisco Intersight accepted the %s profile %s request; completion has not been verified.\" % (profileType, requestMode)\n        acceptanceResultJson = json.dumps({\n            \"requestAccepted\": True,\n            \"deploymentCompleted\": False,\n            \"requestMode\": requestMode,\n            \"activateAndRebootServer\": activationRequested == \"true\",\n            \"Moid\": moid,\n            \"Name\": name,\n            \"ObjectType\": objectType,\n            \"TargetPlatform\": targetPlatform,\n            \"OrganizationMoid\": organizationMoid,\n            \"AssignedServerMoid\": expectedAssignedServerMoid or None,\n            \"returnedAction\": item.get(\"Action\"),\n            \"returnedScheduledActions\": item.get(\"ScheduledActions\"),\n            \"returnedConfigStateSummary\": returnedState\n        }, separators=(\",\", \":\"))\nexcept Exception as exc:\n    acceptanceStatus = \"helper-failure\"\n    acceptanceStatusCode = \"500\"\n    acceptanceMessage = str(exc)\n    acceptanceResultJson = json.dumps({\"error\": \"Deployment response inspection failed\", \"detail\": acceptanceMessage, \"requestMayHaveBeenAccepted\": True}, separators=(\",\", \":\"))",
               "script_arguments": [
-                "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XR1DZONK3W2zk9ZfmqSs1GO8Qpzg1IZqv$",
+                "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XP2I0CDTFP2701mzfprxNpan8qkjRnAtT$",
                 "$activity.definition_activity_02XOKCY8L70322by4knASHDOlVc67XuO2N8.output.script_queries.profileMoid$",
                 "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.input.variable_workflow_02XOKCY8L72AW6LO5DAi2pYfZWkyy2rr2KZ$",
                 "$activity.definition_activity_02XOKCY8L702C0LB1I5TFvJZP0fOul6gdrl.output.script_queries.expectedObjectType$",
@@ -2120,7 +2120,7 @@
                       "variables_to_update": [
                         {
                           "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.output.variable_workflow_02XOKCY8L72AZ7aIjxWGkWDqYrz2NmxwgMO$",
-                          "variable_value_new": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XR1DZONK3W2fR0xkg9RTcfCisU684p3Pz$"
+                          "variable_value_new": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.local.variable_workflow_02XOLEHO2G5EH6jNlL6gH9kQpqPUTwwDQUE$"
                         },
                         {
                           "variable_to_update": "$workflow.definition_workflow_02XOKCY8L727B7OOCP8uxBfJRJdbgfhqpkd.output.variable_workflow_02XOKCY8L72B10P5q8XBVm5VJub4UHTzOmW$",
