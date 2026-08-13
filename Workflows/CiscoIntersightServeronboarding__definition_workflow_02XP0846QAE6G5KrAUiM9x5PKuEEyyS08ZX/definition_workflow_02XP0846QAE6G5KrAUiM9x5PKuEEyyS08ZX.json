@@ -125,7 +125,7 @@
           "scope": "input",
           "name": "OS Configuration File",
           "type": "datatype.string",
-          "description": "Exact Cisco Intersight OS Configuration File name or Moid.",
+          "description": "Exact organization-permitted Cisco Intersight OS Configuration File Name or Moid. Supported and repository metadata are not local validity gates. This workflow version supplies no Answers or AdditionalParameters; Intersight decides whether the file can be used as submitted.",
           "is_required": true,
           "display_on_wizard": false,
           "is_invisible": false,
@@ -141,7 +141,7 @@
           "scope": "input",
           "name": "Operating System Image",
           "type": "datatype.string",
-          "description": "Exact imported Operating System Image name or Moid.",
+          "description": "Exact organization-permitted Operating System Image Name or Moid. Import, source, vendor, and compatibility metadata are not prevalidated; Intersight decides repository readiness and compatibility at submission.",
           "is_required": true,
           "display_on_wizard": false,
           "is_invisible": false,
@@ -157,7 +157,7 @@
           "scope": "input",
           "name": "SCU or OSDU Image",
           "type": "datatype.string",
-          "description": "Exact SCU or OSDU image Name or Moid. Internally hosted content must be Imported with a positive size; externally hosted HTTP, NFS, or CIFS content must retain a valid concrete source. SupportedModels is informational and is not enforced.",
+          "description": "Exact organization-permitted SCU or OSDU Image Name or Moid. Import, source, vendor, SupportedModels, and compatibility metadata are not prevalidated; Intersight decides repository readiness and compatibility at submission.",
           "is_required": true,
           "display_on_wizard": false,
           "is_invisible": false,
@@ -189,7 +189,7 @@
           "scope": "input",
           "name": "Confirm Server Onboarding",
           "type": "datatype.boolean",
-          "description": "Explicit safety confirmation. Set true only after verifying the profile/template inputs, target Moid and type, matching server Name or Serial, and OS content/target selections.",
+          "description": "Explicit safety confirmation. Set true only after verifying the profile/template inputs, target Moid and type, matching server Name or Serial, and the intended OS content and install target. Intersight remains authoritative for content readiness and compatibility.",
           "is_required": true,
           "display_on_wizard": false,
           "is_invisible": false,
@@ -360,7 +360,7 @@
     "properties": {
       "atomic": {"is_atomic": false},
       "delete_workflow_instance": false,
-      "description": "Onboards one Cisco Intersight Blade or Rack server by reusing five required atomics: prove that Target Moid/type and Server Name or Serial identify the same server, derive a same-organization Server Profile from a named template, assign it to that exact server, deploy and wait up to ten minutes for Associated, then start vMedia OS installation. The derive atomic owns destination absence and returns 409 instead of reusing an existing profile. Derivation waits up to five minutes. OS waiting is optional and limited to three minutes; success otherwise means accepted, not completed. A bounded timeout becomes parent 202 only when the atomic Result proves the mutation was accepted and remains incomplete with explicit pending evidence. Import the five atomics unchanged before this workflow and select an authorized intersight.endpoint target.",
+      "description": "Onboards one Cisco Intersight Blade or Rack server with five atomics: prove the target identity, derive a same-organization Server Profile, assign and deploy it, wait up to ten minutes for Associated, then start vMedia OS installation. OS content is resolved only by exact identity, concrete type, and organization permission; Intersight decides repository readiness, metadata compatibility, model support, and content combinations. This version sends no Answers or AdditionalParameters. Profile derivation returns 409 instead of reusing an existing name and waits up to five minutes. OS waiting is optional and limited to three minutes; otherwise success means accepted, not completed. A bounded timeout becomes parent 202 only when the atomic proves acceptance with pending evidence. Import the five atomics before this workflow and select an authorized intersight.endpoint target.",
       "display_name": "Cisco Intersight - Server onboarding",
       "runtime_user": {"override_target_runtime_user": false, "specify_on_workflow_start": false, "target_default": true},
       "target": {"target_type": "intersight.endpoint", "specify_on_workflow_start": true}
@@ -1100,7 +1100,7 @@
         "title": "Start OS installation with optional initial wait",
         "type": "logic.if_else",
         "base_type": "activity",
-        "properties": {"continue_on_failure": false, "description": "Runs exactly one OS atomic branch: immediate accepted semantics by default or a fixed three-minute initial status wait.", "display_name": "Start OS installation with optional initial wait", "skip_execution": false, "conditions": []},
+        "properties": {"continue_on_failure": false, "description": "Runs exactly one OS atomic branch: immediate accepted semantics by default or a fixed three-minute initial status wait. Content identity and request shape are checked locally; Intersight decides repository readiness and compatibility.", "display_name": "Start OS installation with optional initial wait", "skip_execution": false, "conditions": []},
         "object_type": "definition_activity",
         "blocks": [
           {
@@ -1120,7 +1120,7 @@
                 "base_type": "subworkflow",
                 "properties": {
                   "continue_on_failure": true,
-                  "description": "Uses the existing OS atomic's server/content/target validation, idempotency preflight, request submission, and acceptance inspection without long polling.",
+                  "description": "Uses the OS atomic's exact server, content identity, organization, and install-target checks, idempotency preflight, request submission, and acceptance inspection without long polling. It does not prevalidate content combinations.",
                   "display_name": "Start OS installation",
                   "skip_execution": false,
                   "input": {
@@ -1262,7 +1262,7 @@
                 "base_type": "subworkflow",
                 "properties": {
                   "continue_on_failure": true,
-                  "description": "Uses the existing OS atomic and its bounded poller for up to three minutes.",
+                  "description": "Uses the OS atomic's exact identity and request-shape checks, then its bounded initial-status poller for up to three minutes. Intersight decides repository readiness and content compatibility.",
                   "display_name": "Start OS installation and poll initial status",
                   "skip_execution": false,
                   "input": {
